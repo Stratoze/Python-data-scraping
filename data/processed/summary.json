@@ -1,0 +1,176 @@
+{
+  "n": 395,
+  "pass_rate": 0.6709,
+  "n_pass": 265,
+  "n_fail": 130,
+  "unique_schools": [
+    "GP",
+    "MS"
+  ],
+  "unique_mjobs": [
+    "at_home",
+    "health",
+    "other",
+    "services",
+    "teacher"
+  ],
+  "unique_fjobs": [
+    "at_home",
+    "health",
+    "other",
+    "services",
+    "teacher"
+  ],
+  "by_studytime": {
+    "1": {
+      "mean": 10.05,
+      "std": 4.96,
+      "n": 105
+    },
+    "2": {
+      "mean": 10.17,
+      "std": 4.22,
+      "n": 198
+    },
+    "3": {
+      "mean": 11.4,
+      "std": 4.64,
+      "n": 65
+    },
+    "4": {
+      "mean": 11.26,
+      "std": 5.28,
+      "n": 27
+    }
+  },
+  "by_absence_level": {
+    "high": {
+      "mean": 10.37,
+      "std": 3.2,
+      "n": 83
+    },
+    "low": {
+      "mean": 9.82,
+      "std": 5.61,
+      "n": 191
+    },
+    "medium": {
+      "mean": 11.38,
+      "std": 3.25,
+      "n": 121
+    }
+  },
+  "by_failures": {
+    "0": {
+      "mean": 11.25,
+      "std": 4.17,
+      "n": 312
+    },
+    "1": {
+      "mean": 8.12,
+      "std": 4.71,
+      "n": 50
+    },
+    "2": {
+      "mean": 6.24,
+      "std": 4.84,
+      "n": 17
+    },
+    "3": {
+      "mean": 5.69,
+      "std": 4.19,
+      "n": 16
+    }
+  },
+  "by_internet": {
+    "no": {
+      "mean": 9.41,
+      "std": 4.49,
+      "n": 66
+    },
+    "yes": {
+      "mean": 10.62,
+      "std": 4.58,
+      "n": 329
+    }
+  },
+  "by_risk_group": {
+    "high": {
+      "mean": 5.68,
+      "std": 3.8,
+      "n": 137
+    },
+    "low": {
+      "mean": 13.63,
+      "std": 2.47,
+      "n": 167
+    },
+    "medium": {
+      "mean": 11.65,
+      "std": 1.99,
+      "n": 91
+    }
+  },
+  "corr_G1_G2_G3": {
+    "G1_G2": 0.852,
+    "G1_G3": 0.801,
+    "G2_G3": 0.905
+  },
+  "corr_full": {
+    "G1": {
+      "G1": 1.0,
+      "G2": 0.852,
+      "G3": 0.801,
+      "absences": -0.031,
+      "failures": -0.355,
+      "studytime": 0.161
+    },
+    "G2": {
+      "G1": 0.852,
+      "G2": 1.0,
+      "G3": 0.905,
+      "absences": -0.032,
+      "failures": -0.356,
+      "studytime": 0.136
+    },
+    "G3": {
+      "G1": 0.801,
+      "G2": 0.905,
+      "G3": 1.0,
+      "absences": 0.034,
+      "failures": -0.36,
+      "studytime": 0.098
+    },
+    "absences": {
+      "G1": -0.031,
+      "G2": -0.032,
+      "G3": 0.034,
+      "absences": 1.0,
+      "failures": 0.064,
+      "studytime": -0.063
+    },
+    "failures": {
+      "G1": -0.355,
+      "G2": -0.356,
+      "G3": -0.36,
+      "absences": 0.064,
+      "failures": 1.0,
+      "studytime": -0.174
+    },
+    "studytime": {
+      "G1": 0.161,
+      "G2": 0.136,
+      "G3": 0.098,
+      "absences": -0.063,
+      "failures": -0.174,
+      "studytime": 1.0
+    }
+  },
+  "thresholds": [
+    10,
+    10,
+    4,
+    10,
+    2
+  ]
+}
