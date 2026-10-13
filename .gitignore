@@ -2,3 +2,5 @@
 __pycache__/
 .uv-cache/
 .ipynb_checkpoints/
+.idea/
+.pytest_cache/

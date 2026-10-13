@@ -1,8 +1,5 @@
 {
-  "n": 395,
-  "pass_rate": 0.6709,
-  "n_pass": 265,
-  "n_fail": 130,
+  "primary_subject": "mat",
   "unique_schools": [
     "GP",
     "MS"
@@ -21,156 +18,2196 @@
     "services",
     "teacher"
   ],
-  "by_studytime": {
-    "1": {
-      "mean": 10.05,
-      "std": 4.96,
-      "n": 105
-    },
-    "2": {
-      "mean": 10.17,
-      "std": 4.22,
-      "n": 198
-    },
-    "3": {
-      "mean": 11.4,
-      "std": 4.64,
-      "n": 65
-    },
-    "4": {
-      "mean": 11.26,
-      "std": 5.28,
-      "n": 27
-    }
-  },
-  "by_absence_level": {
-    "high": {
-      "mean": 10.37,
-      "std": 3.2,
-      "n": 83
-    },
-    "low": {
-      "mean": 9.82,
-      "std": 5.61,
-      "n": 191
-    },
-    "medium": {
-      "mean": 11.38,
-      "std": 3.25,
-      "n": 121
-    }
-  },
-  "by_failures": {
-    "0": {
-      "mean": 11.25,
-      "std": 4.17,
-      "n": 312
-    },
-    "1": {
-      "mean": 8.12,
-      "std": 4.71,
-      "n": 50
-    },
-    "2": {
-      "mean": 6.24,
-      "std": 4.84,
-      "n": 17
-    },
-    "3": {
-      "mean": 5.69,
-      "std": 4.19,
-      "n": 16
-    }
-  },
-  "by_internet": {
-    "no": {
-      "mean": 9.41,
-      "std": 4.49,
-      "n": 66
-    },
-    "yes": {
-      "mean": 10.62,
-      "std": 4.58,
-      "n": 329
-    }
-  },
-  "by_risk_group": {
-    "high": {
-      "mean": 5.68,
-      "std": 3.8,
-      "n": 137
-    },
-    "low": {
-      "mean": 13.63,
-      "std": 2.47,
-      "n": 167
-    },
-    "medium": {
-      "mean": 11.65,
-      "std": 1.99,
-      "n": 91
-    }
-  },
-  "corr_G1_G2_G3": {
-    "G1_G2": 0.852,
-    "G1_G3": 0.801,
-    "G2_G3": 0.905
-  },
-  "corr_full": {
-    "G1": {
-      "G1": 1.0,
-      "G2": 0.852,
-      "G3": 0.801,
-      "absences": -0.031,
-      "failures": -0.355,
-      "studytime": 0.161
-    },
-    "G2": {
-      "G1": 0.852,
-      "G2": 1.0,
-      "G3": 0.905,
-      "absences": -0.032,
-      "failures": -0.356,
-      "studytime": 0.136
-    },
-    "G3": {
-      "G1": 0.801,
-      "G2": 0.905,
-      "G3": 1.0,
-      "absences": 0.034,
-      "failures": -0.36,
-      "studytime": 0.098
-    },
-    "absences": {
-      "G1": -0.031,
-      "G2": -0.032,
-      "G3": 0.034,
-      "absences": 1.0,
-      "failures": 0.064,
-      "studytime": -0.063
-    },
-    "failures": {
-      "G1": -0.355,
-      "G2": -0.356,
-      "G3": -0.36,
-      "absences": 0.064,
-      "failures": 1.0,
-      "studytime": -0.174
-    },
-    "studytime": {
-      "G1": 0.161,
-      "G2": 0.136,
-      "G3": 0.098,
-      "absences": -0.063,
-      "failures": -0.174,
-      "studytime": 1.0
-    }
-  },
   "thresholds": [
     10,
     10,
     4,
     10,
     2
-  ]
+  ],
+  "anomaly_thresholds": [
+    1.5,
+    8,
+    6,
+    20
+  ],
+  "cleaning_log": {
+    "rows_in": 1044,
+    "n_cells_stripped": 0,
+    "n_non_numeric": {
+      "age": 0,
+      "Medu": 0,
+      "Fedu": 0,
+      "traveltime": 0,
+      "studytime": 0,
+      "failures": 0,
+      "famrel": 0,
+      "freetime": 0,
+      "goout": 0,
+      "Dalc": 0,
+      "Walc": 0,
+      "health": 0,
+      "absences": 0,
+      "G1": 0,
+      "G2": 0,
+      "G3": 0
+    },
+    "n_out_of_range": {
+      "age": 0,
+      "Medu": 0,
+      "Fedu": 0,
+      "traveltime": 0,
+      "studytime": 0,
+      "failures": 0,
+      "famrel": 0,
+      "freetime": 0,
+      "goout": 0,
+      "Dalc": 0,
+      "Walc": 0,
+      "health": 0,
+      "absences": 0,
+      "G1": 0,
+      "G2": 0,
+      "G3": 0
+    },
+    "n_invalid_yes_no": {
+      "schoolsup": 0,
+      "famsup": 0,
+      "paid": 0,
+      "activities": 0,
+      "nursery": 0,
+      "higher": 0,
+      "internet": 0,
+      "romantic": 0
+    },
+    "n_duplicates_dropped": 0,
+    "n_missing_required_dropped": 0,
+    "absence_outlier_fence": {
+      "mat": 20.0,
+      "por": 15.0
+    },
+    "rows_out": 1044
+  },
+  "anomaly_counts": {
+    "mat": {
+      "dropout_suspect": 38,
+      "g2_zero": 13,
+      "grade_drop": 0,
+      "absence_outlier": 15,
+      "age_outlier": 5,
+      "inconsistent_grade": 0
+    },
+    "por": {
+      "dropout_suspect": 15,
+      "g2_zero": 7,
+      "grade_drop": 1,
+      "absence_outlier": 21,
+      "age_outlier": 9,
+      "inconsistent_grade": 0
+    }
+  },
+  "scopes": {
+    "all": {
+      "n": 395,
+      "pass_rate": 0.6709,
+      "n_pass": 265,
+      "n_fail": 130,
+      "by_studytime": {
+        "1": {
+          "mean": 10.05,
+          "std": 4.96,
+          "n": 105
+        },
+        "2": {
+          "mean": 10.17,
+          "std": 4.22,
+          "n": 198
+        },
+        "3": {
+          "mean": 11.4,
+          "std": 4.64,
+          "n": 65
+        },
+        "4": {
+          "mean": 11.26,
+          "std": 5.28,
+          "n": 27
+        }
+      },
+      "by_absence_level": {
+        "high": {
+          "mean": 10.37,
+          "std": 3.2,
+          "n": 83
+        },
+        "low": {
+          "mean": 9.82,
+          "std": 5.61,
+          "n": 191
+        },
+        "medium": {
+          "mean": 11.38,
+          "std": 3.25,
+          "n": 121
+        }
+      },
+      "by_failures": {
+        "0": {
+          "mean": 11.25,
+          "std": 4.17,
+          "n": 312
+        },
+        "1": {
+          "mean": 8.12,
+          "std": 4.71,
+          "n": 50
+        },
+        "2": {
+          "mean": 6.24,
+          "std": 4.84,
+          "n": 17
+        },
+        "3": {
+          "mean": 5.69,
+          "std": 4.19,
+          "n": 16
+        }
+      },
+      "by_internet": {
+        "no": {
+          "mean": 9.41,
+          "std": 4.49,
+          "n": 66
+        },
+        "yes": {
+          "mean": 10.62,
+          "std": 4.58,
+          "n": 329
+        }
+      },
+      "by_studytime_internet": {
+        "1|no": {
+          "mean": 9.74,
+          "std": 4.74,
+          "n": 19
+        },
+        "1|yes": {
+          "mean": 10.12,
+          "std": 5.03,
+          "n": 86
+        },
+        "2|no": {
+          "mean": 9.19,
+          "std": 4.14,
+          "n": 37
+        },
+        "2|yes": {
+          "mean": 10.4,
+          "std": 4.21,
+          "n": 161
+        },
+        "3|no": {
+          "mean": 9.17,
+          "std": 4.71,
+          "n": 6
+        },
+        "3|yes": {
+          "mean": 11.63,
+          "std": 4.61,
+          "n": 59
+        },
+        "4|no": {
+          "mean": 10.25,
+          "std": 7.5,
+          "n": 4
+        },
+        "4|yes": {
+          "mean": 11.43,
+          "std": 5.01,
+          "n": 23
+        }
+      },
+      "by_famsup": {
+        "no": {
+          "mean": 10.64,
+          "std": 4.64,
+          "n": 153
+        },
+        "yes": {
+          "mean": 10.27,
+          "std": 4.55,
+          "n": 242
+        }
+      },
+      "by_schoolsup": {
+        "no": {
+          "mean": 10.56,
+          "std": 4.77,
+          "n": 344
+        },
+        "yes": {
+          "mean": 9.43,
+          "std": 2.87,
+          "n": 51
+        }
+      },
+      "by_paid": {
+        "no": {
+          "mean": 9.99,
+          "std": 5.13,
+          "n": 214
+        },
+        "yes": {
+          "mean": 10.92,
+          "std": 3.79,
+          "n": 181
+        }
+      },
+      "by_risk_group": {
+        "high": {
+          "mean": 6.22,
+          "std": 3.85,
+          "n": 149
+        },
+        "low": {
+          "mean": 13.57,
+          "std": 2.51,
+          "n": 169
+        },
+        "medium": {
+          "mean": 11.6,
+          "std": 2.83,
+          "n": 77
+        }
+      },
+      "corr_G1_G2_G3": {
+        "G1_G2": 0.852,
+        "G1_G3": 0.801,
+        "G2_G3": 0.905
+      },
+      "corr_full": {
+        "G1": {
+          "G1": 1.0,
+          "G2": 0.852,
+          "G3": 0.801,
+          "studytime": 0.161,
+          "failures": -0.355,
+          "absences": -0.031,
+          "famsup_bin": -0.085
+        },
+        "G2": {
+          "G1": 0.852,
+          "G2": 1.0,
+          "G3": 0.905,
+          "studytime": 0.136,
+          "failures": -0.356,
+          "absences": -0.032,
+          "famsup_bin": -0.059
+        },
+        "G3": {
+          "G1": 0.801,
+          "G2": 0.905,
+          "G3": 1.0,
+          "studytime": 0.098,
+          "failures": -0.36,
+          "absences": 0.034,
+          "famsup_bin": -0.039
+        },
+        "studytime": {
+          "G1": 0.161,
+          "G2": 0.136,
+          "G3": 0.098,
+          "studytime": 1.0,
+          "failures": -0.174,
+          "absences": -0.063,
+          "famsup_bin": 0.145
+        },
+        "failures": {
+          "G1": -0.355,
+          "G2": -0.356,
+          "G3": -0.36,
+          "studytime": -0.174,
+          "failures": 1.0,
+          "absences": 0.064,
+          "famsup_bin": -0.055
+        },
+        "absences": {
+          "G1": -0.031,
+          "G2": -0.032,
+          "G3": 0.034,
+          "studytime": -0.063,
+          "failures": 0.064,
+          "absences": 1.0,
+          "famsup_bin": 0.024
+        },
+        "famsup_bin": {
+          "G1": -0.085,
+          "G2": -0.059,
+          "G3": -0.039,
+          "studytime": 0.145,
+          "failures": -0.055,
+          "absences": 0.024,
+          "famsup_bin": 1.0
+        }
+      },
+      "group_tests": {
+        "internet": {
+          "test": "Welch t-test",
+          "n_yes": 329,
+          "n_no": 66,
+          "mean_yes": 10.62,
+          "mean_no": 9.41,
+          "diff": 1.21,
+          "ci95": [
+            0.0,
+            2.41
+          ],
+          "stat": 1.99,
+          "df": 94.2,
+          "p": 0.0496,
+          "effect": 0.26,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.152,
+          "significant": false
+        },
+        "famsup": {
+          "test": "Welch t-test",
+          "n_yes": 242,
+          "n_no": 153,
+          "mean_yes": 10.27,
+          "mean_no": 10.64,
+          "diff": -0.37,
+          "ci95": [
+            -1.3,
+            0.57
+          ],
+          "stat": -0.77,
+          "df": 318.9,
+          "p": 0.44,
+          "effect": -0.08,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.44,
+          "significant": false
+        },
+        "schoolsup": {
+          "test": "Welch t-test",
+          "n_yes": 51,
+          "n_no": 344,
+          "mean_yes": 9.43,
+          "mean_no": 10.56,
+          "diff": -1.13,
+          "ci95": [
+            -2.08,
+            -0.18
+          ],
+          "stat": -2.37,
+          "df": 97.1,
+          "p": 0.0197,
+          "effect": -0.25,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.0985,
+          "significant": false
+        },
+        "paid": {
+          "test": "Welch t-test",
+          "n_yes": 181,
+          "n_no": 214,
+          "mean_yes": 10.92,
+          "mean_no": 9.99,
+          "diff": 0.94,
+          "ci95": [
+            0.05,
+            1.82
+          ],
+          "stat": 2.08,
+          "df": 386.4,
+          "p": 0.0379,
+          "effect": 0.21,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.152,
+          "significant": false
+        },
+        "studytime": {
+          "test": "one-way ANOVA",
+          "k_groups": 4,
+          "stat": 1.73,
+          "p": 0.161,
+          "effect": 0.013,
+          "effect_name": "eta²",
+          "kruskal_H": 7.58,
+          "p_kruskal": 0.0556,
+          "p_holm": 0.322,
+          "significant": false
+        },
+        "absence_level": {
+          "test": "one-way ANOVA",
+          "k_groups": 3,
+          "stat": 4.36,
+          "p": 0.0134,
+          "effect": 0.022,
+          "effect_name": "eta²",
+          "kruskal_H": 3.45,
+          "p_kruskal": 0.178,
+          "p_holm": 0.0804,
+          "significant": false
+        },
+        "failures": {
+          "test": "one-way ANOVA",
+          "k_groups": 4,
+          "stat": 20.78,
+          "p": 1.64e-12,
+          "effect": 0.138,
+          "effect_name": "eta²",
+          "kruskal_H": 53.12,
+          "p_kruskal": 1.73e-11,
+          "p_holm": 1.15e-11,
+          "significant": true
+        }
+      },
+      "corr_tests": {
+        "G1": {
+          "r": 0.801,
+          "p": 9e-90,
+          "ci95": [
+            0.763,
+            0.834
+          ]
+        },
+        "G2": {
+          "r": 0.905,
+          "p": 7.63e-148,
+          "ci95": [
+            0.885,
+            0.921
+          ]
+        },
+        "studytime": {
+          "r": 0.098,
+          "p": 0.0521,
+          "ci95": [
+            -0.001,
+            0.195
+          ]
+        },
+        "failures": {
+          "r": -0.36,
+          "p": 1.47e-13,
+          "ci95": [
+            -0.443,
+            -0.271
+          ]
+        },
+        "absences": {
+          "r": 0.034,
+          "p": 0.497,
+          "ci95": [
+            -0.065,
+            0.132
+          ]
+        },
+        "famsup_bin": {
+          "r": -0.039,
+          "p": 0.438,
+          "ci95": [
+            -0.137,
+            0.06
+          ]
+        }
+      }
+    },
+    "exclude_dropout": {
+      "n": 357,
+      "pass_rate": 0.7423,
+      "n_pass": 265,
+      "n_fail": 92,
+      "by_studytime": {
+        "1": {
+          "mean": 11.47,
+          "std": 3.41,
+          "n": 92
+        },
+        "2": {
+          "mean": 11.07,
+          "std": 3.07,
+          "n": 182
+        },
+        "3": {
+          "mean": 12.56,
+          "std": 2.99,
+          "n": 59
+        },
+        "4": {
+          "mean": 12.67,
+          "std": 3.6,
+          "n": 24
+        }
+      },
+      "by_absence_level": {
+        "high": {
+          "mean": 10.37,
+          "std": 3.2,
+          "n": 83
+        },
+        "low": {
+          "mean": 12.26,
+          "std": 3.04,
+          "n": 153
+        },
+        "medium": {
+          "mean": 11.38,
+          "std": 3.25,
+          "n": 121
+        }
+      },
+      "by_failures": {
+        "0": {
+          "mean": 11.94,
+          "std": 3.19,
+          "n": 294
+        },
+        "1": {
+          "mean": 10.15,
+          "std": 2.6,
+          "n": 40
+        },
+        "2": {
+          "mean": 8.83,
+          "std": 3.01,
+          "n": 12
+        },
+        "3": {
+          "mean": 8.27,
+          "std": 1.68,
+          "n": 11
+        }
+      },
+      "by_internet": {
+        "no": {
+          "mean": 10.71,
+          "std": 2.97,
+          "n": 58
+        },
+        "yes": {
+          "mean": 11.68,
+          "std": 3.26,
+          "n": 299
+        }
+      },
+      "by_studytime_internet": {
+        "1|no": {
+          "mean": 10.88,
+          "std": 3.46,
+          "n": 17
+        },
+        "1|yes": {
+          "mean": 11.6,
+          "std": 3.41,
+          "n": 75
+        },
+        "2|no": {
+          "mean": 10.3,
+          "std": 2.73,
+          "n": 33
+        },
+        "2|yes": {
+          "mean": 11.23,
+          "std": 3.12,
+          "n": 149
+        },
+        "3|no": {
+          "mean": 11.0,
+          "std": 1.58,
+          "n": 5
+        },
+        "3|yes": {
+          "mean": 12.7,
+          "std": 3.06,
+          "n": 54
+        },
+        "4|no": {
+          "mean": 13.67,
+          "std": 3.79,
+          "n": 3
+        },
+        "4|yes": {
+          "mean": 12.52,
+          "std": 3.64,
+          "n": 21
+        }
+      },
+      "by_famsup": {
+        "no": {
+          "mean": 11.8,
+          "std": 3.18,
+          "n": 138
+        },
+        "yes": {
+          "mean": 11.35,
+          "std": 3.25,
+          "n": 219
+        }
+      },
+      "by_schoolsup": {
+        "no": {
+          "mean": 11.83,
+          "std": 3.22,
+          "n": 307
+        },
+        "yes": {
+          "mean": 9.62,
+          "std": 2.55,
+          "n": 50
+        }
+      },
+      "by_paid": {
+        "no": {
+          "mean": 11.61,
+          "std": 3.4,
+          "n": 184
+        },
+        "yes": {
+          "mean": 11.43,
+          "std": 3.04,
+          "n": 173
+        }
+      },
+      "by_risk_group": {
+        "high": {
+          "mean": 8.2,
+          "std": 1.78,
+          "n": 113
+        },
+        "low": {
+          "mean": 13.57,
+          "std": 2.51,
+          "n": 169
+        },
+        "medium": {
+          "mean": 11.91,
+          "std": 2.12,
+          "n": 75
+        }
+      },
+      "corr_G1_G2_G3": {
+        "G1_G2": 0.902,
+        "G1_G3": 0.892,
+        "G2_G3": 0.966
+      },
+      "corr_full": {
+        "G1": {
+          "G1": 1.0,
+          "G2": 0.902,
+          "G3": 0.892,
+          "studytime": 0.141,
+          "failures": -0.302,
+          "absences": -0.12,
+          "famsup_bin": -0.096
+        },
+        "G2": {
+          "G1": 0.902,
+          "G2": 1.0,
+          "G3": 0.966,
+          "studytime": 0.12,
+          "failures": -0.301,
+          "absences": -0.2,
+          "famsup_bin": -0.072
+        },
+        "G3": {
+          "G1": 0.892,
+          "G2": 0.966,
+          "G3": 1.0,
+          "studytime": 0.127,
+          "failures": -0.294,
+          "absences": -0.213,
+          "famsup_bin": -0.067
+        },
+        "studytime": {
+          "G1": 0.141,
+          "G2": 0.12,
+          "G3": 0.127,
+          "studytime": 1.0,
+          "failures": -0.131,
+          "absences": -0.075,
+          "famsup_bin": 0.165
+        },
+        "failures": {
+          "G1": -0.302,
+          "G2": -0.301,
+          "G3": -0.294,
+          "studytime": -0.131,
+          "failures": 1.0,
+          "absences": 0.148,
+          "famsup_bin": -0.064
+        },
+        "absences": {
+          "G1": -0.12,
+          "G2": -0.2,
+          "G3": -0.213,
+          "studytime": -0.075,
+          "failures": 0.148,
+          "absences": 1.0,
+          "famsup_bin": 0.025
+        },
+        "famsup_bin": {
+          "G1": -0.096,
+          "G2": -0.072,
+          "G3": -0.067,
+          "studytime": 0.165,
+          "failures": -0.064,
+          "absences": 0.025,
+          "famsup_bin": 1.0
+        }
+      },
+      "group_tests": {
+        "internet": {
+          "test": "Welch t-test",
+          "n_yes": 299,
+          "n_no": 58,
+          "mean_yes": 11.68,
+          "mean_no": 10.71,
+          "diff": 0.98,
+          "ci95": [
+            0.11,
+            1.84
+          ],
+          "stat": 2.25,
+          "df": 85.8,
+          "p": 0.0268,
+          "effect": 0.3,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.0804,
+          "significant": false
+        },
+        "famsup": {
+          "test": "Welch t-test",
+          "n_yes": 219,
+          "n_no": 138,
+          "mean_yes": 11.35,
+          "mean_no": 11.8,
+          "diff": -0.45,
+          "ci95": [
+            -1.13,
+            0.24
+          ],
+          "stat": -1.28,
+          "df": 296.4,
+          "p": 0.202,
+          "effect": -0.14,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.404,
+          "significant": false
+        },
+        "schoolsup": {
+          "test": "Welch t-test",
+          "n_yes": 50,
+          "n_no": 307,
+          "mean_yes": 9.62,
+          "mean_no": 11.83,
+          "diff": -2.21,
+          "ci95": [
+            -3.02,
+            -1.41
+          ],
+          "stat": -5.46,
+          "df": 76.9,
+          "p": 5.61e-07,
+          "effect": -0.71,
+          "effect_name": "Cohen's d",
+          "p_holm": 3.37e-06,
+          "significant": true
+        },
+        "paid": {
+          "test": "Welch t-test",
+          "n_yes": 173,
+          "n_no": 184,
+          "mean_yes": 11.43,
+          "mean_no": 11.61,
+          "diff": -0.19,
+          "ci95": [
+            -0.86,
+            0.48
+          ],
+          "stat": -0.55,
+          "df": 354.1,
+          "p": 0.585,
+          "effect": -0.06,
+          "effect_name": "Cohen's d",
+          "p_holm": 0.585,
+          "significant": false
+        },
+        "studytime": {
+          "test": "one-way ANOVA",
+          "k_groups": 4,
+          "stat": 4.38,
+          "p": 0.00482,
+          "effect": 0.036,
+          "effect_name": "eta²",
+          "kruskal_H": 11.18,
+          "p_kruskal": 0.0108,
+          "p_holm": 0.0193,
+          "significant": true
+        },
+        "absence_level": {
+          "test": "one-way ANOVA",
+          "k_groups": 3,
+          "stat": 9.85,
+          "p": 6.86e-05,
+          "effect": 0.053,
+          "effect_name": "eta²",
+          "kruskal_H": 19.1,
+          "p_kruskal": 7.1e-05,
+          "p_holm": 0.000343,
+          "significant": true
+        },
+        "failures": {
+          "test": "one-way ANOVA",
+          "k_groups": 4,
+          "stat": 11.49,
+          "p": 3.3e-07,
+          "effect": 0.089,
+          "effect_name": "eta²",
+          "kruskal_H": 34.17,
+          "p_kruskal": 1.82e-07,
+          "p_holm": 2.31e-06,
+          "significant": true
+        }
+      },
+      "corr_tests": {
+        "G1": {
+          "r": 0.892,
+          "p": 2.47e-124,
+          "ci95": [
+            0.868,
+            0.911
+          ]
+        },
+        "G2": {
+          "r": 0.966,
+          "p": 1.03e-209,
+          "ci95": [
+            0.958,
+            0.972
+          ]
+        },
+        "studytime": {
+          "r": 0.127,
+          "p": 0.0166,
+          "ci95": [
+            0.023,
+            0.228
+          ]
+        },
+        "failures": {
+          "r": -0.294,
+          "p": 1.53e-08,
+          "ci95": [
+            -0.386,
+            -0.196
+          ]
+        },
+        "absences": {
+          "r": -0.213,
+          "p": 4.92e-05,
+          "ci95": [
+            -0.31,
+            -0.112
+          ]
+        },
+        "famsup_bin": {
+          "r": -0.067,
+          "p": 0.205,
+          "ci95": [
+            -0.17,
+            0.037
+          ]
+        }
+      }
+    }
+  },
+  "risk_eval": {
+    "all": {
+      "n": 395,
+      "fail_rate": 0.3291,
+      "fail_rate_by_group": {
+        "low": 0.0118,
+        "medium": 0.0779,
+        "high": 0.8188
+      },
+      "tiers": {
+        "low": {
+          "n": 169,
+          "n_fail": 2,
+          "fail_rate": 0.0118,
+          "fail_rate_ci95": [
+            0.0033,
+            0.0421
+          ]
+        },
+        "medium": {
+          "n": 77,
+          "n_fail": 6,
+          "fail_rate": 0.0779,
+          "fail_rate_ci95": [
+            0.0362,
+            0.1598
+          ]
+        },
+        "high": {
+          "n": 149,
+          "n_fail": 122,
+          "fail_rate": 0.8188,
+          "fail_rate_ci95": [
+            0.7492,
+            0.8724
+          ]
+        },
+        "medium_vs_low": {
+          "odds_ratio": 7.06,
+          "relative_risk": 6.6,
+          "p": 0.0128,
+          "significant": true
+        }
+      },
+      "high": {
+        "tp": 122,
+        "fp": 27,
+        "fn": 8,
+        "tn": 238,
+        "precision": 0.8188,
+        "precision_ci95": [
+          0.7492,
+          0.8724
+        ],
+        "recall": 0.9385,
+        "recall_ci95": [
+          0.8833,
+          0.9685
+        ]
+      },
+      "high_or_medium": {
+        "tp": 128,
+        "fp": 98,
+        "fn": 2,
+        "tn": 167,
+        "precision": 0.5664,
+        "precision_ci95": [
+          0.5012,
+          0.6293
+        ],
+        "recall": 0.9846,
+        "recall_ci95": [
+          0.9456,
+          0.9958
+        ]
+      }
+    },
+    "exclude_dropout": {
+      "n": 357,
+      "fail_rate": 0.2577,
+      "fail_rate_by_group": {
+        "low": 0.0118,
+        "medium": 0.0533,
+        "high": 0.7611
+      },
+      "tiers": {
+        "low": {
+          "n": 169,
+          "n_fail": 2,
+          "fail_rate": 0.0118,
+          "fail_rate_ci95": [
+            0.0033,
+            0.0421
+          ]
+        },
+        "medium": {
+          "n": 75,
+          "n_fail": 4,
+          "fail_rate": 0.0533,
+          "fail_rate_ci95": [
+            0.0209,
+            0.1293
+          ]
+        },
+        "high": {
+          "n": 113,
+          "n_fail": 86,
+          "fail_rate": 0.7611,
+          "fail_rate_ci95": [
+            0.6747,
+            0.8303
+          ]
+        },
+        "medium_vs_low": {
+          "odds_ratio": 4.7,
+          "relative_risk": 4.5,
+          "p": 0.074,
+          "significant": false
+        }
+      },
+      "high": {
+        "tp": 86,
+        "fp": 27,
+        "fn": 6,
+        "tn": 238,
+        "precision": 0.7611,
+        "precision_ci95": [
+          0.6747,
+          0.8303
+        ],
+        "recall": 0.9348,
+        "recall_ci95": [
+          0.8649,
+          0.9698
+        ]
+      },
+      "high_or_medium": {
+        "tp": 90,
+        "fp": 98,
+        "fn": 2,
+        "tn": 167,
+        "precision": 0.4787,
+        "precision_ci95": [
+          0.4085,
+          0.5498
+        ],
+        "recall": 0.9783,
+        "recall_ci95": [
+          0.9242,
+          0.994
+        ]
+      }
+    },
+    "holdout_por": {
+      "n": 649,
+      "fail_rate": 0.1541,
+      "fail_rate_by_group": {
+        "low": 0.0051,
+        "medium": 0.0792,
+        "high": 0.5921
+      },
+      "tiers": {
+        "low": {
+          "n": 396,
+          "n_fail": 2,
+          "fail_rate": 0.0051,
+          "fail_rate_ci95": [
+            0.0014,
+            0.0182
+          ]
+        },
+        "medium": {
+          "n": 101,
+          "n_fail": 8,
+          "fail_rate": 0.0792,
+          "fail_rate_ci95": [
+            0.0407,
+            0.1486
+          ]
+        },
+        "high": {
+          "n": 152,
+          "n_fail": 90,
+          "fail_rate": 0.5921,
+          "fail_rate_ci95": [
+            0.5126,
+            0.667
+          ]
+        },
+        "medium_vs_low": {
+          "odds_ratio": 16.95,
+          "relative_risk": 15.5,
+          "p": 7.2e-05,
+          "significant": true
+        }
+      },
+      "high": {
+        "tp": 90,
+        "fp": 62,
+        "fn": 10,
+        "tn": 487,
+        "precision": 0.5921,
+        "precision_ci95": [
+          0.5126,
+          0.667
+        ],
+        "recall": 0.9,
+        "recall_ci95": [
+          0.8256,
+          0.9448
+        ]
+      },
+      "high_or_medium": {
+        "tp": 98,
+        "fp": 155,
+        "fn": 2,
+        "tn": 394,
+        "precision": 0.3874,
+        "precision_ci95": [
+          0.3294,
+          0.4486
+        ],
+        "recall": 0.98,
+        "recall_ci95": [
+          0.93,
+          0.9945
+        ]
+      }
+    },
+    "holdout_por_only": {
+      "n": 275,
+      "fail_rate": 0.2545,
+      "fail_rate_by_group": {
+        "low": 0.0079,
+        "medium": 0.098,
+        "high": 0.6598
+      },
+      "tiers": {
+        "low": {
+          "n": 127,
+          "n_fail": 1,
+          "fail_rate": 0.0079,
+          "fail_rate_ci95": [
+            0.0014,
+            0.0433
+          ]
+        },
+        "medium": {
+          "n": 51,
+          "n_fail": 5,
+          "fail_rate": 0.098,
+          "fail_rate_ci95": [
+            0.0426,
+            0.2098
+          ]
+        },
+        "high": {
+          "n": 97,
+          "n_fail": 64,
+          "fail_rate": 0.6598,
+          "fail_rate_ci95": [
+            0.561,
+            0.7464
+          ]
+        },
+        "medium_vs_low": {
+          "odds_ratio": 13.7,
+          "relative_risk": 12.4,
+          "p": 0.0078,
+          "significant": true
+        }
+      },
+      "high": {
+        "tp": 64,
+        "fp": 33,
+        "fn": 6,
+        "tn": 172,
+        "precision": 0.6598,
+        "precision_ci95": [
+          0.561,
+          0.7464
+        ],
+        "recall": 0.9143,
+        "recall_ci95": [
+          0.8253,
+          0.9601
+        ]
+      },
+      "high_or_medium": {
+        "tp": 69,
+        "fp": 79,
+        "fn": 1,
+        "tn": 126,
+        "precision": 0.4662,
+        "precision_ci95": [
+          0.3877,
+          0.5464
+        ],
+        "recall": 0.9857,
+        "recall_ci95": [
+          0.9234,
+          0.9975
+        ]
+      }
+    }
+  },
+  "subject_comparison": {
+    "mat": {
+      "n": 395,
+      "n_dropout_suspect": 38,
+      "pass_rate": 0.6709,
+      "mean_G3": 10.42,
+      "mean_G3_exclude_dropout": 11.52,
+      "corr_G2_G3_exclude_dropout": 0.966,
+      "corr_absences_G3_exclude_dropout": -0.213,
+      "corr_failures_G3_exclude_dropout": -0.294
+    },
+    "por": {
+      "n": 649,
+      "n_dropout_suspect": 15,
+      "pass_rate": 0.8459,
+      "mean_G3": 11.91,
+      "mean_G3_exclude_dropout": 12.19,
+      "corr_G2_G3_exclude_dropout": 0.934,
+      "corr_absences_G3_exclude_dropout": -0.196,
+      "corr_failures_G3_exclude_dropout": -0.388
+    }
+  },
+  "regression": {
+    "mat": {
+      "factors": {
+        "n": 357,
+        "n_predictors": 13,
+        "r2": 0.234,
+        "adj_r2": 0.205,
+        "coef": {
+          "intercept": {
+            "b": 13.007,
+            "se": 2.746,
+            "ci95": [
+              7.606,
+              18.408
+            ],
+            "p": 3.19e-06,
+            "significant": true
+          },
+          "studytime": {
+            "b": 0.514,
+            "se": 0.22,
+            "ci95": [
+              0.081,
+              0.948
+            ],
+            "p": 0.0202,
+            "significant": true
+          },
+          "failures": {
+            "b": -0.898,
+            "se": 0.248,
+            "ci95": [
+              -1.385,
+              -0.411
+            ],
+            "p": 0.000334,
+            "significant": true
+          },
+          "absences": {
+            "b": -0.064,
+            "se": 0.021,
+            "ci95": [
+              -0.106,
+              -0.023
+            ],
+            "p": 0.00262,
+            "significant": true
+          },
+          "famsup_bin": {
+            "b": -0.52,
+            "se": 0.353,
+            "ci95": [
+              -1.214,
+              0.174
+            ],
+            "p": 0.142,
+            "significant": false
+          },
+          "schoolsup_bin": {
+            "b": -2.184,
+            "se": 0.471,
+            "ci95": [
+              -3.11,
+              -1.258
+            ],
+            "p": 4.99e-06,
+            "significant": true
+          },
+          "paid_bin": {
+            "b": -0.603,
+            "se": 0.343,
+            "ci95": [
+              -1.278,
+              0.071
+            ],
+            "p": 0.0793,
+            "significant": false
+          },
+          "internet_bin": {
+            "b": 0.527,
+            "se": 0.455,
+            "ci95": [
+              -0.367,
+              1.421
+            ],
+            "p": 0.247,
+            "significant": false
+          },
+          "higher_bin": {
+            "b": 0.203,
+            "se": 0.814,
+            "ci95": [
+              -1.399,
+              1.805
+            ],
+            "p": 0.803,
+            "significant": false
+          },
+          "Medu": {
+            "b": 0.267,
+            "se": 0.187,
+            "ci95": [
+              -0.1,
+              0.635
+            ],
+            "p": 0.154,
+            "significant": false
+          },
+          "Fedu": {
+            "b": 0.186,
+            "se": 0.193,
+            "ci95": [
+              -0.194,
+              0.566
+            ],
+            "p": 0.336,
+            "significant": false
+          },
+          "male": {
+            "b": 0.402,
+            "se": 0.334,
+            "ci95": [
+              -0.255,
+              1.06
+            ],
+            "p": 0.23,
+            "significant": false
+          },
+          "age": {
+            "b": -0.21,
+            "se": 0.143,
+            "ci95": [
+              -0.49,
+              0.071
+            ],
+            "p": 0.143,
+            "significant": false
+          },
+          "urban": {
+            "b": 0.604,
+            "se": 0.398,
+            "ci95": [
+              -0.179,
+              1.388
+            ],
+            "p": 0.13,
+            "significant": false
+          }
+        }
+      },
+      "factors_plus_grades": {
+        "n": 357,
+        "n_predictors": 15,
+        "r2": 0.937,
+        "adj_r2": 0.934,
+        "coef": {
+          "intercept": {
+            "b": 0.358,
+            "se": 0.777,
+            "ci95": [
+              -1.169,
+              1.885
+            ],
+            "p": 0.645,
+            "significant": false
+          },
+          "studytime": {
+            "b": 0.025,
+            "se": 0.06,
+            "ci95": [
+              -0.094,
+              0.143
+            ],
+            "p": 0.682,
+            "significant": false
+          },
+          "failures": {
+            "b": -0.009,
+            "se": 0.1,
+            "ci95": [
+              -0.205,
+              0.187
+            ],
+            "p": 0.926,
+            "significant": false
+          },
+          "absences": {
+            "b": -0.013,
+            "se": 0.005,
+            "ci95": [
+              -0.023,
+              -0.002
+            ],
+            "p": 0.0165,
+            "significant": true
+          },
+          "famsup_bin": {
+            "b": 0.108,
+            "se": 0.109,
+            "ci95": [
+              -0.107,
+              0.322
+            ],
+            "p": 0.323,
+            "significant": false
+          },
+          "schoolsup_bin": {
+            "b": -0.133,
+            "se": 0.165,
+            "ci95": [
+              -0.458,
+              0.193
+            ],
+            "p": 0.422,
+            "significant": false
+          },
+          "paid_bin": {
+            "b": -0.166,
+            "se": 0.099,
+            "ci95": [
+              -0.362,
+              0.029
+            ],
+            "p": 0.0952,
+            "significant": false
+          },
+          "internet_bin": {
+            "b": 0.011,
+            "se": 0.125,
+            "ci95": [
+              -0.234,
+              0.257
+            ],
+            "p": 0.93,
+            "significant": false
+          },
+          "higher_bin": {
+            "b": -0.147,
+            "se": 0.234,
+            "ci95": [
+              -0.607,
+              0.313
+            ],
+            "p": 0.531,
+            "significant": false
+          },
+          "Medu": {
+            "b": 0.029,
+            "se": 0.049,
+            "ci95": [
+              -0.067,
+              0.124
+            ],
+            "p": 0.553,
+            "significant": false
+          },
+          "Fedu": {
+            "b": -0.054,
+            "se": 0.05,
+            "ci95": [
+              -0.152,
+              0.044
+            ],
+            "p": 0.278,
+            "significant": false
+          },
+          "male": {
+            "b": -0.034,
+            "se": 0.1,
+            "ci95": [
+              -0.232,
+              0.164
+            ],
+            "p": 0.735,
+            "significant": false
+          },
+          "age": {
+            "b": 0.006,
+            "se": 0.04,
+            "ci95": [
+              -0.073,
+              0.084
+            ],
+            "p": 0.887,
+            "significant": false
+          },
+          "urban": {
+            "b": 0.143,
+            "se": 0.107,
+            "ci95": [
+              -0.068,
+              0.353
+            ],
+            "p": 0.183,
+            "significant": false
+          },
+          "G1": {
+            "b": 0.12,
+            "se": 0.035,
+            "ci95": [
+              0.051,
+              0.188
+            ],
+            "p": 0.000643,
+            "significant": true
+          },
+          "G2": {
+            "b": 0.87,
+            "se": 0.035,
+            "ci95": [
+              0.802,
+              0.938
+            ],
+            "p": 4.45e-79,
+            "significant": true
+          }
+        }
+      }
+    },
+    "por": {
+      "factors": {
+        "n": 634,
+        "n_predictors": 13,
+        "r2": 0.321,
+        "adj_r2": 0.307,
+        "coef": {
+          "intercept": {
+            "b": 5.107,
+            "se": 1.348,
+            "ci95": [
+              2.46,
+              7.754
+            ],
+            "p": 0.000166,
+            "significant": true
+          },
+          "studytime": {
+            "b": 0.409,
+            "se": 0.121,
+            "ci95": [
+              0.172,
+              0.646
+            ],
+            "p": 0.000758,
+            "significant": true
+          },
+          "failures": {
+            "b": -1.29,
+            "se": 0.179,
+            "ci95": [
+              -1.642,
+              -0.938
+            ],
+            "p": 1.73e-12,
+            "significant": true
+          },
+          "absences": {
+            "b": -0.079,
+            "se": 0.024,
+            "ci95": [
+              -0.125,
+              -0.032
+            ],
+            "p": 0.000917,
+            "significant": true
+          },
+          "famsup_bin": {
+            "b": -0.239,
+            "se": 0.192,
+            "ci95": [
+              -0.616,
+              0.138
+            ],
+            "p": 0.214,
+            "significant": false
+          },
+          "schoolsup_bin": {
+            "b": -0.962,
+            "se": 0.259,
+            "ci95": [
+              -1.47,
+              -0.455
+            ],
+            "p": 0.000216,
+            "significant": true
+          },
+          "paid_bin": {
+            "b": -0.647,
+            "se": 0.336,
+            "ci95": [
+              -1.306,
+              0.012
+            ],
+            "p": 0.0544,
+            "significant": false
+          },
+          "internet_bin": {
+            "b": 0.289,
+            "se": 0.221,
+            "ci95": [
+              -0.146,
+              0.724
+            ],
+            "p": 0.192,
+            "significant": false
+          },
+          "higher_bin": {
+            "b": 1.833,
+            "se": 0.301,
+            "ci95": [
+              1.241,
+              2.425
+            ],
+            "p": 2.08e-09,
+            "significant": true
+          },
+          "Medu": {
+            "b": 0.391,
+            "se": 0.112,
+            "ci95": [
+              0.172,
+              0.61
+            ],
+            "p": 0.000493,
+            "significant": true
+          },
+          "Fedu": {
+            "b": 0.071,
+            "se": 0.119,
+            "ci95": [
+              -0.162,
+              0.304
+            ],
+            "p": 0.55,
+            "significant": false
+          },
+          "male": {
+            "b": -0.582,
+            "se": 0.198,
+            "ci95": [
+              -0.971,
+              -0.192
+            ],
+            "p": 0.00349,
+            "significant": true
+          },
+          "age": {
+            "b": 0.247,
+            "se": 0.078,
+            "ci95": [
+              0.094,
+              0.4
+            ],
+            "p": 0.00158,
+            "significant": true
+          },
+          "urban": {
+            "b": 0.315,
+            "se": 0.203,
+            "ci95": [
+              -0.084,
+              0.714
+            ],
+            "p": 0.122,
+            "significant": false
+          }
+        }
+      },
+      "factors_plus_grades": {
+        "n": 634,
+        "n_predictors": 15,
+        "r2": 0.886,
+        "adj_r2": 0.884,
+        "coef": {
+          "intercept": {
+            "b": -0.938,
+            "se": 0.568,
+            "ci95": [
+              -2.053,
+              0.177
+            ],
+            "p": 0.0991,
+            "significant": false
+          },
+          "studytime": {
+            "b": 0.022,
+            "se": 0.043,
+            "ci95": [
+              -0.063,
+              0.107
+            ],
+            "p": 0.614,
+            "significant": false
+          },
+          "failures": {
+            "b": -0.208,
+            "se": 0.101,
+            "ci95": [
+              -0.407,
+              -0.01
+            ],
+            "p": 0.0398,
+            "significant": true
+          },
+          "absences": {
+            "b": -0.009,
+            "se": 0.009,
+            "ci95": [
+              -0.027,
+              0.009
+            ],
+            "p": 0.344,
+            "significant": false
+          },
+          "famsup_bin": {
+            "b": -0.007,
+            "se": 0.076,
+            "ci95": [
+              -0.156,
+              0.142
+            ],
+            "p": 0.924,
+            "significant": false
+          },
+          "schoolsup_bin": {
+            "b": -0.136,
+            "se": 0.143,
+            "ci95": [
+              -0.417,
+              0.146
+            ],
+            "p": 0.344,
+            "significant": false
+          },
+          "paid_bin": {
+            "b": -0.176,
+            "se": 0.131,
+            "ci95": [
+              -0.434,
+              0.081
+            ],
+            "p": 0.18,
+            "significant": false
+          },
+          "internet_bin": {
+            "b": 0.089,
+            "se": 0.088,
+            "ci95": [
+              -0.083,
+              0.262
+            ],
+            "p": 0.309,
+            "significant": false
+          },
+          "higher_bin": {
+            "b": 0.266,
+            "se": 0.137,
+            "ci95": [
+              -0.003,
+              0.534
+            ],
+            "p": 0.0526,
+            "significant": false
+          },
+          "Medu": {
+            "b": 0.043,
+            "se": 0.045,
+            "ci95": [
+              -0.046,
+              0.132
+            ],
+            "p": 0.34,
+            "significant": false
+          },
+          "Fedu": {
+            "b": -0.035,
+            "se": 0.044,
+            "ci95": [
+              -0.122,
+              0.051
+            ],
+            "p": 0.418,
+            "significant": false
+          },
+          "male": {
+            "b": -0.146,
+            "se": 0.075,
+            "ci95": [
+              -0.293,
+              0.002
+            ],
+            "p": 0.0527,
+            "significant": false
+          },
+          "age": {
+            "b": 0.115,
+            "se": 0.033,
+            "ci95": [
+              0.051,
+              0.18
+            ],
+            "p": 0.000495,
+            "significant": true
+          },
+          "urban": {
+            "b": 0.004,
+            "se": 0.08,
+            "ci95": [
+              -0.152,
+              0.161
+            ],
+            "p": 0.955,
+            "significant": false
+          },
+          "G1": {
+            "b": 0.192,
+            "se": 0.032,
+            "ci95": [
+              0.129,
+              0.256
+            ],
+            "p": 4.14e-09,
+            "significant": true
+          },
+          "G2": {
+            "b": 0.746,
+            "se": 0.031,
+            "ci95": [
+              0.685,
+              0.807
+            ],
+            "p": 1.07e-90,
+            "significant": true
+          }
+        }
+      }
+    }
+  },
+  "sensitivity": {
+    "mat": {
+      "all": {
+        "n": 395,
+        "r_absences_G3": 0.034,
+        "p": 0.497,
+        "ci95": [
+          -0.065,
+          0.132
+        ],
+        "mean_G3_by_absence_level": {
+          "high": 10.37,
+          "low": 9.82,
+          "medium": 11.38
+        },
+        "anova_p": 0.0134,
+        "pass_rate": 0.6709
+      },
+      "exclude_dropout": {
+        "n": 357,
+        "r_absences_G3": -0.213,
+        "p": 4.92e-05,
+        "ci95": [
+          -0.31,
+          -0.112
+        ],
+        "mean_G3_by_absence_level": {
+          "high": 10.37,
+          "low": 12.26,
+          "medium": 11.38
+        },
+        "anova_p": 6.86e-05,
+        "pass_rate": 0.7423
+      },
+      "exclude_dropout_and_zero_absences": {
+        "n": 280,
+        "r_absences_G3": -0.176,
+        "p": 0.00312,
+        "ci95": [
+          -0.287,
+          -0.06
+        ],
+        "mean_G3_by_absence_level": {
+          "high": 10.37,
+          "low": 11.91,
+          "medium": 11.38
+        },
+        "anova_p": 0.00787,
+        "pass_rate": 0.7143
+      },
+      "dropout_pattern": {
+        "n_dropout": 38,
+        "n_dropout_absences_zero": 38,
+        "share_absences_zero_others": 0.2157
+      }
+    },
+    "por": {
+      "all": {
+        "n": 649,
+        "r_absences_G3": -0.091,
+        "p": 0.0199,
+        "ci95": [
+          -0.167,
+          -0.015
+        ],
+        "mean_G3_by_absence_level": {
+          "high": 11.13,
+          "low": 12.07,
+          "medium": 11.88
+        },
+        "anova_p": 0.0821,
+        "pass_rate": 0.8459
+      },
+      "exclude_dropout": {
+        "n": 634,
+        "r_absences_G3": -0.196,
+        "p": 6.54e-07,
+        "ci95": [
+          -0.27,
+          -0.12
+        ],
+        "mean_G3_by_absence_level": {
+          "high": 11.13,
+          "low": 12.57,
+          "medium": 11.88
+        },
+        "anova_p": 2.54e-05,
+        "pass_rate": 0.8659
+      },
+      "exclude_dropout_and_zero_absences": {
+        "n": 405,
+        "r_absences_G3": -0.142,
+        "p": 0.00407,
+        "ci95": [
+          -0.237,
+          -0.046
+        ],
+        "mean_G3_by_absence_level": {
+          "high": 11.13,
+          "low": 12.12,
+          "medium": 11.88
+        },
+        "anova_p": 0.034,
+        "pass_rate": 0.837
+      },
+      "dropout_pattern": {
+        "n_dropout": 15,
+        "n_dropout_absences_zero": 15,
+        "share_absences_zero_others": 0.3612
+      }
+    }
+  },
+  "dropout_profile": {
+    "n": 38,
+    "n_absences_zero": 38,
+    "n_g2_zero": 13,
+    "mean_G1": 7.53,
+    "mean_G2": 4.66,
+    "share_absences_zero_others": 0.2157
+  },
+  "pisa_context": {
+    "mathematics": {
+      "2000": {
+        "portugal": 454,
+        "portugal_rank": 23,
+        "oecd_average": 492
+      },
+      "2003": {
+        "portugal": 466,
+        "portugal_rank": 30,
+        "oecd_average": 499
+      },
+      "2006": {
+        "portugal": 466,
+        "portugal_rank": 35,
+        "oecd_average": 494
+      },
+      "2009": {
+        "portugal": 487,
+        "portugal_rank": 31,
+        "oecd_average": 495
+      },
+      "2012": {
+        "portugal": 487,
+        "portugal_rank": 29,
+        "oecd_average": 494
+      },
+      "2015": {
+        "portugal": 492,
+        "portugal_rank": 29,
+        "oecd_average": 490
+      },
+      "2018": {
+        "portugal": 492,
+        "portugal_rank": 28,
+        "oecd_average": 489
+      },
+      "2022": {
+        "portugal": 472,
+        "portugal_rank": 29,
+        "oecd_average": 472
+      },
+      "2025": {
+        "portugal": 460,
+        "portugal_rank": 30,
+        "oecd_average": 463
+      }
+    },
+    "reading": {
+      "2000": {
+        "portugal": 470,
+        "portugal_rank": 26,
+        "oecd_average": 493
+      },
+      "2003": {
+        "portugal": 478,
+        "portugal_rank": 28,
+        "oecd_average": 494
+      },
+      "2006": {
+        "portugal": 472,
+        "portugal_rank": 30,
+        "oecd_average": 489
+      },
+      "2009": {
+        "portugal": 489,
+        "portugal_rank": 25,
+        "oecd_average": 493
+      },
+      "2012": {
+        "portugal": 488,
+        "portugal_rank": 31,
+        "oecd_average": 496
+      },
+      "2015": {
+        "portugal": 498,
+        "portugal_rank": 21,
+        "oecd_average": 493
+      },
+      "2018": {
+        "portugal": 492,
+        "portugal_rank": 24,
+        "oecd_average": 487
+      },
+      "2022": {
+        "portugal": 477,
+        "portugal_rank": 24,
+        "oecd_average": 476
+      },
+      "2025": {
+        "portugal": 462,
+        "portugal_rank": 26,
+        "oecd_average": 461
+      }
+    },
+    "science": {
+      "2006": {
+        "portugal": 474,
+        "portugal_rank": 36,
+        "oecd_average": 498
+      },
+      "2009": {
+        "portugal": 493,
+        "portugal_rank": 30,
+        "oecd_average": 501
+      },
+      "2012": {
+        "portugal": 489,
+        "portugal_rank": 34,
+        "oecd_average": 501
+      },
+      "2015": {
+        "portugal": 501,
+        "portugal_rank": 23,
+        "oecd_average": 493
+      },
+      "2018": {
+        "portugal": 492,
+        "portugal_rank": 26,
+        "oecd_average": 489
+      },
+      "2022": {
+        "portugal": 484,
+        "portugal_rank": 30,
+        "oecd_average": 485
+      },
+      "2025": {
+        "portugal": 482,
+        "portugal_rank": 29,
+        "oecd_average": 482
+      }
+    }
+  },
+  "pisa_source": {
+    "url": "https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment",
+    "revision_id": 1378067005,
+    "permalink": "https://en.wikipedia.org/w/index.php?oldid=1378067005",
+    "scraped_at": "2026-10-13T06:44:49+00:00",
+    "n_rows": 2342
+  },
+  "pisa_oecd_check": {
+    "2025": {
+      "tolerance": 0,
+      "n_compared": 274,
+      "n_within_tolerance": 274,
+      "n_exact": 274,
+      "max_abs_diff": 0,
+      "mismatches": []
+    },
+    "2022": {
+      "tolerance": 1,
+      "n_compared": 211,
+      "n_within_tolerance": 208,
+      "n_exact": 161,
+      "max_abs_diff": 7,
+      "mismatches": [
+        {
+          "country": "Palestinian Authority",
+          "subject": "mathematics",
+          "score": 366,
+          "oecd": 372
+        },
+        {
+          "country": "Palestinian Authority",
+          "subject": "science",
+          "score": 369,
+          "oecd": 376
+        },
+        {
+          "country": "Palestinian Authority",
+          "subject": "reading",
+          "score": 349,
+          "oecd": 356
+        }
+      ]
+    },
+    "missing_in_wikipedia": {
+      "mathematics": [
+        "Uzbekistan"
+      ],
+      "science": [],
+      "reading": [
+        "Uzbekistan"
+      ]
+    },
+    "missing_in_oecd": {
+      "mathematics": [],
+      "science": [],
+      "reading": []
+    }
+  },
+  "pisa_oecd_source": {
+    "source": "OECD (2026), PISA 2025 Results (Volume I): Future-Ready Students, OECD Publishing, Paris",
+    "doi": "https://doi.org/10.1787/73451bc5-en",
+    "table": "Table I.1. Snapshot of performance in science, reading, mathematics and computational problem-solving (page 30)",
+    "columns": "mean scores 2025 (science, reading, mathematics) and score difference PISA 2022 to PISA 2025; 'm' = missing",
+    "licence": "CC BY 4.0",
+    "extracted": "2026-10-13, from the OECD PDF; computational problem solving column dropped",
+    "n_rows": 92
+  }
 }

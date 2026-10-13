@@ -1,0 +1,9 @@
+{
+  "source": "OECD (2026), PISA 2025 Results (Volume I): Future-Ready Students, OECD Publishing, Paris",
+  "doi": "https://doi.org/10.1787/73451bc5-en",
+  "table": "Table I.1. Snapshot of performance in science, reading, mathematics and computational problem-solving (page 30)",
+  "columns": "mean scores 2025 (science, reading, mathematics) and score difference PISA 2022 to PISA 2025; 'm' = missing",
+  "licence": "CC BY 4.0",
+  "extracted": "2026-10-13, from the OECD PDF; computational problem solving column dropped",
+  "n_rows": 92
+}

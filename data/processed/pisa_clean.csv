@@ -1,0 +1,1663 @@
+source,year,subject,rank,country,score
+comparison,2000,mathematics,1,Hong Kong,560
+comparison,2000,mathematics,2,Japan,557
+comparison,2000,mathematics,3,South Korea,547
+comparison,2000,mathematics,4,New Zealand,537
+comparison,2000,mathematics,5,Finland,536
+comparison,2000,mathematics,6,Australia,533
+comparison,2000,mathematics,6,Canada,533
+comparison,2000,mathematics,7,Switzerland,529
+comparison,2000,mathematics,7,United Kingdom,529
+comparison,2000,mathematics,8,Belgium,520
+comparison,2000,mathematics,9,France,517
+comparison,2000,mathematics,10,Denmark,514
+comparison,2000,mathematics,10,Iceland,514
+comparison,2000,mathematics,11,Sweden,510
+comparison,2000,mathematics,12,Austria,503
+comparison,2000,mathematics,12,Ireland,503
+comparison,2000,mathematics,13,Norway,499
+comparison,2000,mathematics,14,Czech Republic,498
+comparison,2000,mathematics,15,United States,493
+comparison,2000,mathematics,16,Germany,490
+comparison,2000,mathematics,17,Hungary,488
+comparison,2000,mathematics,18,Russia,478
+comparison,2000,mathematics,19,Spain,476
+comparison,2000,mathematics,20,Poland,470
+comparison,2000,mathematics,21,Latvia,463
+comparison,2000,mathematics,22,Italy,457
+comparison,2000,mathematics,23,Portugal,454
+comparison,2000,mathematics,24,Greece,447
+comparison,2000,mathematics,25,Luxembourg,446
+comparison,2000,mathematics,26,Israel,433
+comparison,2000,mathematics,27,Thailand,432
+comparison,2000,mathematics,28,Bulgaria,430
+comparison,2000,mathematics,29,Romania,426
+comparison,2000,mathematics,30,Argentina,388
+comparison,2000,mathematics,31,Mexico,387
+comparison,2000,mathematics,32,Chile,384
+comparison,2000,mathematics,33,Albania,381
+comparison,2000,mathematics,33,Macedonia,381
+comparison,2000,mathematics,34,Indonesia,367
+comparison,2000,mathematics,35,Brazil,334
+comparison,2000,mathematics,36,Peru,292
+comparison,2000,mathematics,,OECD average,492
+comparison,2003,mathematics,1,Hong Kong,550
+comparison,2003,mathematics,2,Finland,544
+comparison,2003,mathematics,3,South Korea,542
+comparison,2003,mathematics,4,Netherlands,538
+comparison,2003,mathematics,5,Japan,534
+comparison,2003,mathematics,6,Canada,532
+comparison,2003,mathematics,7,Belgium,529
+comparison,2003,mathematics,8,Macau,527
+comparison,2003,mathematics,9,Switzerland,527
+comparison,2003,mathematics,10,Australia,524
+comparison,2003,mathematics,11,New Zealand,523
+comparison,2003,mathematics,12,Czech Republic,516
+comparison,2003,mathematics,13,Iceland,515
+comparison,2003,mathematics,14,Denmark,514
+comparison,2003,mathematics,15,France,511
+comparison,2003,mathematics,16,Sweden,509
+comparison,2003,mathematics,17,United Kingdom,508
+comparison,2003,mathematics,18,Austria,506
+comparison,2003,mathematics,19,Germany,503
+comparison,2003,mathematics,20,Ireland,503
+comparison,2003,mathematics,21,Slovakia,498
+comparison,2003,mathematics,22,Norway,495
+comparison,2003,mathematics,23,Luxembourg,493
+comparison,2003,mathematics,24,Poland,490
+comparison,2003,mathematics,25,Hungary,490
+comparison,2003,mathematics,26,Spain,485
+comparison,2003,mathematics,27,Latvia,483
+comparison,2003,mathematics,28,United States,483
+comparison,2003,mathematics,29,Russia,468
+comparison,2003,mathematics,30,Portugal,466
+comparison,2003,mathematics,31,Italy,466
+comparison,2003,mathematics,32,Greece,445
+comparison,2003,mathematics,33,Turkey,423
+comparison,2003,mathematics,34,Uruguay,422
+comparison,2003,mathematics,35,Thailand,417
+comparison,2003,mathematics,36,Mexico,385
+comparison,2003,mathematics,37,Indonesia,360
+comparison,2003,mathematics,38,Tunisia,359
+comparison,2003,mathematics,39,Brazil,356
+comparison,2003,mathematics,,OECD average,499
+comparison,2006,mathematics,1,Taiwan,549
+comparison,2006,mathematics,2,Finland,548
+comparison,2006,mathematics,3,Hong Kong,547
+comparison,2006,mathematics,4,South Korea,547
+comparison,2006,mathematics,5,Netherlands,531
+comparison,2006,mathematics,6,Switzerland,530
+comparison,2006,mathematics,7,Canada,527
+comparison,2006,mathematics,8,Macau,525
+comparison,2006,mathematics,9,Japan,523
+comparison,2006,mathematics,10,New Zealand,522
+comparison,2006,mathematics,11,Belgium,520
+comparison,2006,mathematics,12,Australia,520
+comparison,2006,mathematics,13,Estonia,515
+comparison,2006,mathematics,14,Denmark,513
+comparison,2006,mathematics,15,Czech Republic,510
+comparison,2006,mathematics,16,Iceland,506
+comparison,2006,mathematics,17,Austria,505
+comparison,2006,mathematics,18,Slovenia,504
+comparison,2006,mathematics,19,Germany,504
+comparison,2006,mathematics,20,Sweden,502
+comparison,2006,mathematics,21,Ireland,501
+comparison,2006,mathematics,22,France,496
+comparison,2006,mathematics,23,United Kingdom,495
+comparison,2006,mathematics,24,Poland,495
+comparison,2006,mathematics,25,Slovakia,492
+comparison,2006,mathematics,26,Hungary,491
+comparison,2006,mathematics,27,Luxembourg,490
+comparison,2006,mathematics,28,Norway,490
+comparison,2006,mathematics,29,Lithuania,486
+comparison,2006,mathematics,30,Latvia,486
+comparison,2006,mathematics,31,Spain,480
+comparison,2006,mathematics,32,Russia,476
+comparison,2006,mathematics,33,United States,474
+comparison,2006,mathematics,34,Croatia,467
+comparison,2006,mathematics,35,Portugal,466
+comparison,2006,mathematics,36,Italy,462
+comparison,2006,mathematics,37,Greece,459
+comparison,2006,mathematics,38,Israel,442
+comparison,2006,mathematics,39,Uruguay,427
+comparison,2006,mathematics,40,Turkey,424
+comparison,2006,mathematics,41,Thailand,417
+comparison,2006,mathematics,42,Romania,415
+comparison,2006,mathematics,43,Bulgaria,413
+comparison,2006,mathematics,44,Chile,411
+comparison,2006,mathematics,45,Mexico,406
+comparison,2006,mathematics,46,Montenegro,399
+comparison,2006,mathematics,47,Indonesia,391
+comparison,2006,mathematics,48,Jordan,384
+comparison,2006,mathematics,49,Colombia,370
+comparison,2006,mathematics,50,Brazil,370
+comparison,2006,mathematics,51,Tunisia,365
+comparison,2006,mathematics,52,Qatar,318
+comparison,2006,mathematics,,OECD average,494
+comparison,2009,mathematics,1,Singapore,562
+comparison,2009,mathematics,2,Hong Kong,555
+comparison,2009,mathematics,3,South Korea,546
+comparison,2009,mathematics,4,Taiwan,543
+comparison,2009,mathematics,5,Finland,541
+comparison,2009,mathematics,6,Switzerland,534
+comparison,2009,mathematics,7,Japan,529
+comparison,2009,mathematics,8,Canada,527
+comparison,2009,mathematics,9,Netherlands,526
+comparison,2009,mathematics,10,Macau,525
+comparison,2009,mathematics,11,New Zealand,519
+comparison,2009,mathematics,12,Belgium,515
+comparison,2009,mathematics,13,Australia,514
+comparison,2009,mathematics,14,Germany,513
+comparison,2009,mathematics,15,Estonia,512
+comparison,2009,mathematics,16,Iceland,507
+comparison,2009,mathematics,17,Denmark,503
+comparison,2009,mathematics,18,Slovenia,501
+comparison,2009,mathematics,19,Norway,498
+comparison,2009,mathematics,20,France,497
+comparison,2009,mathematics,21,Slovakia,497
+comparison,2009,mathematics,22,Austria,496
+comparison,2009,mathematics,23,Poland,495
+comparison,2009,mathematics,24,Sweden,494
+comparison,2009,mathematics,25,Czech Republic,493
+comparison,2009,mathematics,26,United Kingdom,492
+comparison,2009,mathematics,27,Hungary,490
+comparison,2009,mathematics,28,Luxembourg,489
+comparison,2009,mathematics,29,United States,487
+comparison,2009,mathematics,30,Ireland,487
+comparison,2009,mathematics,31,Portugal,487
+comparison,2009,mathematics,32,Spain,483
+comparison,2009,mathematics,33,Italy,483
+comparison,2009,mathematics,34,Latvia,482
+comparison,2009,mathematics,35,Lithuania,477
+comparison,2009,mathematics,36,Russia,468
+comparison,2009,mathematics,37,Greece,466
+comparison,2009,mathematics,38,Croatia,460
+comparison,2009,mathematics,39,Israel,447
+comparison,2009,mathematics,40,Turkey,445
+comparison,2009,mathematics,41,Bulgaria,428
+comparison,2009,mathematics,42,Romania,427
+comparison,2009,mathematics,43,Uruguay,427
+comparison,2009,mathematics,44,Chile,421
+comparison,2009,mathematics,45,Thailand,419
+comparison,2009,mathematics,46,Mexico,419
+comparison,2009,mathematics,47,Trinidad and Tobago,414
+comparison,2009,mathematics,48,Kazakhstan,405
+comparison,2009,mathematics,49,Montenegro,403
+comparison,2009,mathematics,50,Jordan,387
+comparison,2009,mathematics,51,Brazil,386
+comparison,2009,mathematics,52,Colombia,381
+comparison,2009,mathematics,53,Albania,377
+comparison,2009,mathematics,54,Tunisia,371
+comparison,2009,mathematics,55,Indonesia,371
+comparison,2009,mathematics,56,Qatar,368
+comparison,2009,mathematics,57,Peru,365
+comparison,2009,mathematics,,OECD average,495
+comparison,2012,mathematics,1,China Shanghai,613
+comparison,2012,mathematics,1,Singapore,573
+comparison,2012,mathematics,2,Hong Kong,561
+comparison,2012,mathematics,3,Taiwan,560
+comparison,2012,mathematics,4,South Korea,554
+comparison,2012,mathematics,5,Macau,538
+comparison,2012,mathematics,6,Japan,536
+comparison,2012,mathematics,7,Switzerland,531
+comparison,2012,mathematics,8,Netherlands,523
+comparison,2012,mathematics,9,Estonia,521
+comparison,2012,mathematics,10,Finland,519
+comparison,2012,mathematics,11,Canada,518
+comparison,2012,mathematics,12,Poland,518
+comparison,2012,mathematics,13,Belgium,515
+comparison,2012,mathematics,14,Germany,514
+comparison,2012,mathematics,15,Vietnam,511
+comparison,2012,mathematics,16,Austria,506
+comparison,2012,mathematics,17,Australia,504
+comparison,2012,mathematics,18,Ireland,501
+comparison,2012,mathematics,19,Slovenia,501
+comparison,2012,mathematics,20,Denmark,500
+comparison,2012,mathematics,21,New Zealand,500
+comparison,2012,mathematics,22,Czech Republic,499
+comparison,2012,mathematics,23,France,495
+comparison,2012,mathematics,24,United Kingdom,494
+comparison,2012,mathematics,25,Iceland,493
+comparison,2012,mathematics,26,Latvia,491
+comparison,2012,mathematics,27,Luxembourg,490
+comparison,2012,mathematics,28,Norway,489
+comparison,2012,mathematics,29,Portugal,487
+comparison,2012,mathematics,30,Italy,485
+comparison,2012,mathematics,31,Spain,484
+comparison,2012,mathematics,32,Russia,482
+comparison,2012,mathematics,33,Slovakia,482
+comparison,2012,mathematics,34,United States,481
+comparison,2012,mathematics,35,Lithuania,479
+comparison,2012,mathematics,36,Sweden,478
+comparison,2012,mathematics,37,Hungary,477
+comparison,2012,mathematics,38,Croatia,471
+comparison,2012,mathematics,39,Israel,466
+comparison,2012,mathematics,40,Greece,453
+comparison,2012,mathematics,41,Turkey,448
+comparison,2012,mathematics,42,Romania,445
+comparison,2012,mathematics,43,Bulgaria,439
+comparison,2012,mathematics,44,United Arab Emirates,434
+comparison,2012,mathematics,45,Kazakhstan,432
+comparison,2012,mathematics,46,Thailand,427
+comparison,2012,mathematics,47,Chile,423
+comparison,2012,mathematics,48,Malaysia,421
+comparison,2012,mathematics,49,Argentina CABA,418
+comparison,2012,mathematics,50,Mexico,413
+comparison,2012,mathematics,51,Montenegro,410
+comparison,2012,mathematics,52,Uruguay,409
+comparison,2012,mathematics,53,Costa Rica,407
+comparison,2012,mathematics,54,Albania,394
+comparison,2012,mathematics,55,Brazil,389
+comparison,2012,mathematics,56,Tunisia,388
+comparison,2012,mathematics,57,Jordan,386
+comparison,2012,mathematics,58,Colombia,376
+comparison,2012,mathematics,59,Qatar,376
+comparison,2012,mathematics,60,Indonesia,375
+comparison,2012,mathematics,61,Peru,368
+comparison,2012,mathematics,,OECD average,494
+comparison,2015,mathematics,1,Singapore,564
+comparison,2015,mathematics,2,Hong Kong,548
+comparison,2015,mathematics,3,Macau,544
+comparison,2015,mathematics,4,Taiwan,542
+comparison,2015,mathematics,5,Japan,532
+comparison,2015,mathematics,6,China B-S-J-G,531
+comparison,2015,mathematics,7,South Korea,524
+comparison,2015,mathematics,8,Switzerland,521
+comparison,2015,mathematics,9,Estonia,520
+comparison,2015,mathematics,10,Canada,516
+comparison,2015,mathematics,11,Netherlands,512
+comparison,2015,mathematics,12,Denmark,511
+comparison,2015,mathematics,13,Finland,511
+comparison,2015,mathematics,14,Slovenia,510
+comparison,2015,mathematics,15,Belgium,507
+comparison,2015,mathematics,16,Germany,506
+comparison,2015,mathematics,17,Poland,504
+comparison,2015,mathematics,18,Ireland,504
+comparison,2015,mathematics,19,Norway,502
+comparison,2015,mathematics,20,Austria,497
+comparison,2015,mathematics,21,New Zealand,495
+comparison,2015,mathematics,22,Vietnam,495
+comparison,2015,mathematics,23,Russia,494
+comparison,2015,mathematics,24,Sweden,494
+comparison,2015,mathematics,25,Australia,494
+comparison,2015,mathematics,26,France,493
+comparison,2015,mathematics,27,United Kingdom,492
+comparison,2015,mathematics,28,Czech Republic,492
+comparison,2015,mathematics,29,Portugal,492
+comparison,2015,mathematics,30,Italy,490
+comparison,2015,mathematics,31,Iceland,488
+comparison,2015,mathematics,32,Spain,486
+comparison,2015,mathematics,33,Luxembourg,486
+comparison,2015,mathematics,34,Latvia,482
+comparison,2015,mathematics,35,Malta,479
+comparison,2015,mathematics,36,Lithuania,478
+comparison,2015,mathematics,37,Hungary,477
+comparison,2015,mathematics,38,Slovakia,475
+comparison,2015,mathematics,39,Israel,470
+comparison,2015,mathematics,40,United States,470
+comparison,2015,mathematics,41,Croatia,464
+comparison,2015,mathematics,42,Kazakhstan,460
+comparison,2015,mathematics,43,Argentina CABA,456
+comparison,2015,mathematics,44,Greece,454
+comparison,2015,mathematics,45,Malaysia,446
+comparison,2015,mathematics,46,Romania,444
+comparison,2015,mathematics,47,Bulgaria,441
+comparison,2015,mathematics,48,Cyprus,437
+comparison,2015,mathematics,49,United Arab Emirates,427
+comparison,2015,mathematics,50,Chile,423
+comparison,2015,mathematics,51,Turkey,420
+comparison,2015,mathematics,52,Moldova,420
+comparison,2015,mathematics,53,Uruguay,418
+comparison,2015,mathematics,54,Montenegro,418
+comparison,2015,mathematics,55,Trinidad and Tobago,417
+comparison,2015,mathematics,56,Thailand,415
+comparison,2015,mathematics,57,Albania,413
+comparison,2015,mathematics,58,Argentina,409
+comparison,2015,mathematics,59,Mexico,408
+comparison,2015,mathematics,60,Georgia,404
+comparison,2015,mathematics,61,Qatar,402
+comparison,2015,mathematics,62,Costa Rica,400
+comparison,2015,mathematics,63,Lebanon,396
+comparison,2015,mathematics,64,Colombia,390
+comparison,2015,mathematics,65,Peru,387
+comparison,2015,mathematics,66,Indonesia,386
+comparison,2015,mathematics,67,Jordan,380
+comparison,2015,mathematics,68,Brazil,377
+comparison,2015,mathematics,69,Macedonia,371
+comparison,2015,mathematics,70,Tunisia,367
+comparison,2015,mathematics,71,Kosovo,362
+comparison,2015,mathematics,72,Algeria,360
+comparison,2015,mathematics,73,Dominican Republic,328
+comparison,2015,mathematics,,OECD average,490
+comparison,2018,mathematics,1,China B-S-J-Z,591
+comparison,2018,mathematics,2,Singapore,569
+comparison,2018,mathematics,3,Macau,558
+comparison,2018,mathematics,4,Hong Kong,551
+comparison,2018,mathematics,5,Taiwan,531
+comparison,2018,mathematics,6,Japan,527
+comparison,2018,mathematics,7,South Korea,526
+comparison,2018,mathematics,8,Estonia,523
+comparison,2018,mathematics,9,Netherlands,519
+comparison,2018,mathematics,10,Poland,516
+comparison,2018,mathematics,11,Switzerland,515
+comparison,2018,mathematics,12,Canada,512
+comparison,2018,mathematics,13,Denmark,509
+comparison,2018,mathematics,14,Slovenia,509
+comparison,2018,mathematics,15,Belgium,508
+comparison,2018,mathematics,16,Finland,507
+comparison,2018,mathematics,17,Sweden,502
+comparison,2018,mathematics,18,United Kingdom,502
+comparison,2018,mathematics,19,Norway,501
+comparison,2018,mathematics,20,Germany,500
+comparison,2018,mathematics,21,Ireland,500
+comparison,2018,mathematics,22,Czech Republic,499
+comparison,2018,mathematics,23,Austria,499
+comparison,2018,mathematics,24,Latvia,496
+comparison,2018,mathematics,25,France,495
+comparison,2018,mathematics,26,Iceland,495
+comparison,2018,mathematics,27,New Zealand,494
+comparison,2018,mathematics,28,Portugal,492
+comparison,2018,mathematics,29,Australia,491
+comparison,2018,mathematics,30,Russia,488
+comparison,2018,mathematics,31,Italy,487
+comparison,2018,mathematics,32,Slovakia,486
+comparison,2018,mathematics,33,Luxembourg,483
+comparison,2018,mathematics,34,Spain,481
+comparison,2018,mathematics,35,Lithuania,481
+comparison,2018,mathematics,36,Hungary,481
+comparison,2018,mathematics,37,United States,478
+comparison,2018,mathematics,38,Belarus,472
+comparison,2018,mathematics,39,Malta,472
+comparison,2018,mathematics,40,Croatia,464
+comparison,2018,mathematics,41,Israel,463
+comparison,2018,mathematics,42,Turkey,454
+comparison,2018,mathematics,43,Ukraine,453
+comparison,2018,mathematics,44,Greece,451
+comparison,2018,mathematics,45,Cyprus,451
+comparison,2018,mathematics,46,Serbia,448
+comparison,2018,mathematics,47,Malaysia,440
+comparison,2018,mathematics,48,Albania,437
+comparison,2018,mathematics,49,Bulgaria,436
+comparison,2018,mathematics,50,United Arab Emirates,435
+comparison,2018,mathematics,51,Brunei,430
+comparison,2018,mathematics,52,Romania,430
+comparison,2018,mathematics,53,Montenegro,430
+comparison,2018,mathematics,54,Kazakhstan,423
+comparison,2018,mathematics,55,Moldova,421
+comparison,2018,mathematics,56,Azerbaijan Baku,420
+comparison,2018,mathematics,57,Thailand,419
+comparison,2018,mathematics,58,Uruguay,418
+comparison,2018,mathematics,59,Chile,417
+comparison,2018,mathematics,60,Qatar,414
+comparison,2018,mathematics,61,Mexico,409
+comparison,2018,mathematics,62,Bosnia and Herzegovina,406
+comparison,2018,mathematics,63,Costa Rica,402
+comparison,2018,mathematics,64,Peru,400
+comparison,2018,mathematics,65,Jordan,400
+comparison,2018,mathematics,66,Georgia,398
+comparison,2018,mathematics,67,Macedonia,394
+comparison,2018,mathematics,68,Lebanon,393
+comparison,2018,mathematics,69,Colombia,391
+comparison,2018,mathematics,70,Brazil,384
+comparison,2018,mathematics,71,Argentina,379
+comparison,2018,mathematics,72,Indonesia,379
+comparison,2018,mathematics,73,Saudi Arabia,373
+comparison,2018,mathematics,74,Morocco,368
+comparison,2018,mathematics,75,Kosovo,366
+comparison,2018,mathematics,76,Panama,353
+comparison,2018,mathematics,77,Philippines,353
+comparison,2018,mathematics,78,Dominican Republic,325
+comparison,2018,mathematics,,OECD average,489
+comparison,2022,mathematics,1,Singapore,575
+comparison,2022,mathematics,2,Macau,552
+comparison,2022,mathematics,3,Taiwan,547
+comparison,2022,mathematics,4,Hong Kong,540
+comparison,2022,mathematics,5,Japan,536
+comparison,2022,mathematics,6,South Korea,527
+comparison,2022,mathematics,7,Estonia,510
+comparison,2022,mathematics,8,Switzerland,508
+comparison,2022,mathematics,9,Canada,497
+comparison,2022,mathematics,10,Netherlands,493
+comparison,2022,mathematics,11,Ireland,492
+comparison,2022,mathematics,12,Belgium,489
+comparison,2022,mathematics,13,Denmark,489
+comparison,2022,mathematics,14,United Kingdom,489
+comparison,2022,mathematics,15,Poland,489
+comparison,2022,mathematics,16,Austria,487
+comparison,2022,mathematics,17,Australia,487
+comparison,2022,mathematics,18,Czech Republic,487
+comparison,2022,mathematics,19,Slovenia,485
+comparison,2022,mathematics,20,Finland,484
+comparison,2022,mathematics,21,Latvia,483
+comparison,2022,mathematics,22,Sweden,482
+comparison,2022,mathematics,23,New Zealand,479
+comparison,2022,mathematics,24,Lithuania,475
+comparison,2022,mathematics,25,Germany,475
+comparison,2022,mathematics,26,France,474
+comparison,2022,mathematics,27,Spain,473
+comparison,2022,mathematics,28,Hungary,473
+comparison,2022,mathematics,29,Portugal,472
+comparison,2022,mathematics,30,Italy,471
+comparison,2022,mathematics,31,Vietnam,469
+comparison,2022,mathematics,32,Norway,468
+comparison,2022,mathematics,33,Malta,466
+comparison,2022,mathematics,34,United States,465
+comparison,2022,mathematics,35,Slovakia,464
+comparison,2022,mathematics,36,Croatia,463
+comparison,2022,mathematics,37,Iceland,459
+comparison,2022,mathematics,38,Israel,458
+comparison,2022,mathematics,39,Turkey,453
+comparison,2022,mathematics,40,Brunei,442
+comparison,2022,mathematics,41,Ukraine,441
+comparison,2022,mathematics,42,Serbia,440
+comparison,2022,mathematics,43,United Arab Emirates,431
+comparison,2022,mathematics,44,Greece,430
+comparison,2022,mathematics,45,Romania,428
+comparison,2022,mathematics,46,Kazakhstan,425
+comparison,2022,mathematics,47,Mongolia,425
+comparison,2022,mathematics,48,Cyprus,418
+comparison,2022,mathematics,49,Bulgaria,417
+comparison,2022,mathematics,50,Moldova,414
+comparison,2022,mathematics,51,Qatar,414
+comparison,2022,mathematics,52,Chile,412
+comparison,2022,mathematics,53,Uruguay,409
+comparison,2022,mathematics,54,Malaysia,409
+comparison,2022,mathematics,55,Montenegro,406
+comparison,2022,mathematics,56,Azerbaijan Baku,397
+comparison,2022,mathematics,57,Mexico,395
+comparison,2022,mathematics,58,Thailand,394
+comparison,2022,mathematics,59,Peru,391
+comparison,2022,mathematics,60,Georgia,390
+comparison,2022,mathematics,61,Saudi Arabia,389
+comparison,2022,mathematics,62,Macedonia,389
+comparison,2022,mathematics,63,Costa Rica,385
+comparison,2022,mathematics,64,Colombia,383
+comparison,2022,mathematics,65,Brazil,379
+comparison,2022,mathematics,66,Argentina,378
+comparison,2022,mathematics,67,Jamaica,377
+comparison,2022,mathematics,68,Albania,368
+comparison,2022,mathematics,69,Palestinian Authority,366
+comparison,2022,mathematics,70,Indonesia,366
+comparison,2022,mathematics,71,Morocco,365
+comparison,2022,mathematics,72,Uzbekistan,364
+comparison,2022,mathematics,73,Jordan,361
+comparison,2022,mathematics,74,Panama,357
+comparison,2022,mathematics,75,Kosovo,355
+comparison,2022,mathematics,76,Philippines,355
+comparison,2022,mathematics,77,Guatemala,344
+comparison,2022,mathematics,78,El Salvador,343
+comparison,2022,mathematics,79,Dominican Republic,339
+comparison,2022,mathematics,80,Paraguay,338
+comparison,2022,mathematics,81,Cambodia,336
+comparison,2022,mathematics,,OECD average,472
+summary,2025,mathematics,1,B-S-J-Z (China),612
+summary,2025,mathematics,2,Singapore,563
+summary,2025,mathematics,3,Macao (China),549
+summary,2025,mathematics,4,Taiwan,546
+summary,2025,mathematics,5,Japan,525
+summary,2025,mathematics,6,Hong Kong (China),522
+summary,2025,mathematics,7,South Korea,522
+summary,2025,mathematics,8,Estonia,508
+summary,2025,mathematics,9,Switzerland,499
+summary,2025,mathematics,10,United Kingdom,488
+summary,2025,mathematics,11,Canada,485
+summary,2025,mathematics,12,Poland,484
+summary,2025,mathematics,13,Netherlands,483
+summary,2025,mathematics,14,Belgium,480
+summary,2025,mathematics,15,Ireland,480
+summary,2025,mathematics,16,New Zealand,480
+summary,2025,mathematics,17,Australia,478
+summary,2025,mathematics,18,Austria,477
+summary,2025,mathematics,19,Czech Republic,477
+summary,2025,mathematics,20,Denmark,471
+summary,2025,mathematics,21,Lithuania,470
+summary,2025,mathematics,22,Finland,469
+summary,2025,mathematics,23,Slovakia,469
+summary,2025,mathematics,24,Italy,468
+summary,2025,mathematics,25,Germany,464
+summary,2025,mathematics,26,Sweden,464
+summary,2025,mathematics,27,United States,463
+summary,2025,mathematics,28,Türkiye,462
+summary,2025,mathematics,29,Latvia,460
+summary,2025,mathematics,30,Portugal,460
+summary,2025,mathematics,31,Slovenia,460
+summary,2025,mathematics,32,Hungary,459
+summary,2025,mathematics,33,France,458
+summary,2025,mathematics,34,Luxembourg,458
+summary,2025,mathematics,35,Spain,457
+summary,2025,mathematics,36,Croatia,455
+summary,2025,mathematics,37,United Arab Emirates,453
+summary,2025,mathematics,38,Norway,452
+summary,2025,mathematics,39,Iceland,450
+summary,2025,mathematics,40,Vietnam,443
+summary,2025,mathematics,41,Malta,439
+summary,2025,mathematics,42,Brunei Darussalam,435
+summary,2025,mathematics,43,Albania,433
+summary,2025,mathematics,44,Israel,433
+summary,2025,mathematics,45,Ukrainian regions (17 of 27),431
+summary,2025,mathematics,46,Greece,424
+summary,2025,mathematics,47,Azerbaijan,422
+summary,2025,mathematics,48,Mongolia,419
+summary,2025,mathematics,49,Romania,419
+summary,2025,mathematics,50,Serbia,417
+summary,2025,mathematics,51,Georgia,416
+summary,2025,mathematics,52,Qatar,416
+summary,2025,mathematics,53,Kazakhstan,414
+summary,2025,mathematics,54,Cyprus,412
+summary,2025,mathematics,55,Montenegro,411
+summary,2025,mathematics,56,Moldova,410
+summary,2025,mathematics,57,Mauritius,407
+summary,2025,mathematics,58,Thailand,407
+summary,2025,mathematics,59,Bulgaria,405
+summary,2025,mathematics,60,Uruguay,405
+summary,2025,mathematics,61,Chile,403
+summary,2025,mathematics,62,Malaysia,397
+summary,2025,mathematics,63,Saudi Arabia,390
+summary,2025,mathematics,64,Jordan,388
+summary,2025,mathematics,65,Mexico,388
+summary,2025,mathematics,66,Costa Rica,387
+summary,2025,mathematics,67,Dushanbe (Tajikistan),382
+summary,2025,mathematics,68,Peru,382
+summary,2025,mathematics,69,Colombia,381
+summary,2025,mathematics,70,North Macedonia,380
+summary,2025,mathematics,71,Brazil,377
+summary,2025,mathematics,72,Lebanon,377
+summary,2025,mathematics,73,Armenia,376
+summary,2025,mathematics,74,Philippines,371
+summary,2025,mathematics,75,Argentina,367
+summary,2025,mathematics,76,Cambodia,366
+summary,2025,mathematics,77,Ecuador,366
+summary,2025,mathematics,78,Indonesia,364
+summary,2025,mathematics,79,Kyrgyzstan,364
+summary,2025,mathematics,80,Morocco,355
+summary,2025,mathematics,81,Palestinian Authority,354
+summary,2025,mathematics,82,Kosovo,350
+summary,2025,mathematics,83,El Salvador,346
+summary,2025,mathematics,84,Dominican Republic,339
+summary,2025,mathematics,85,Kurdistan Region (Iraq),339
+summary,2025,mathematics,86,Guatemala,334
+summary,2025,mathematics,87,Paraguay,334
+summary,2025,mathematics,88,Kenya,326
+summary,2025,mathematics,89,Zambia,314
+summary,2025,mathematics,90,Rwanda,312
+summary,2025,mathematics,,OECD average,463
+comparison,2000,reading,1,Finland,546
+comparison,2000,reading,2,Canada,534
+comparison,2000,reading,3,New Zealand,529
+comparison,2000,reading,4,Australia,528
+comparison,2000,reading,5,Ireland,527
+comparison,2000,reading,6,Hong Kong,525
+comparison,2000,reading,7,South Korea,525
+comparison,2000,reading,8,United Kingdom,523
+comparison,2000,reading,9,Japan,522
+comparison,2000,reading,10,Sweden,516
+comparison,2000,reading,11,Belgium,507
+comparison,2000,reading,12,Iceland,507
+comparison,2000,reading,13,Norway,505
+comparison,2000,reading,14,France,505
+comparison,2000,reading,15,United States,504
+comparison,2000,reading,16,Denmark,497
+comparison,2000,reading,17,Switzerland,494
+comparison,2000,reading,18,Spain,493
+comparison,2000,reading,19,Austria,492
+comparison,2000,reading,20,Czech Republic,492
+comparison,2000,reading,21,Italy,487
+comparison,2000,reading,22,Germany,484
+comparison,2000,reading,23,Hungary,480
+comparison,2000,reading,24,Poland,479
+comparison,2000,reading,25,Greece,474
+comparison,2000,reading,26,Portugal,470
+comparison,2000,reading,27,Russia,462
+comparison,2000,reading,28,Latvia,458
+comparison,2000,reading,29,Israel,452
+comparison,2000,reading,30,Luxembourg,441
+comparison,2000,reading,31,Thailand,431
+comparison,2000,reading,32,Bulgaria,430
+comparison,2000,reading,33,Romania,428
+comparison,2000,reading,34,Mexico,422
+comparison,2000,reading,35,Chile,410
+comparison,2000,reading,36,Brazil,396
+comparison,2000,reading,37,Macedonia,373
+comparison,2000,reading,38,Indonesia,371
+comparison,2000,reading,39,Albania,349
+comparison,2000,reading,40,Peru,327
+comparison,2000,reading,,OECD average,493
+comparison,2003,reading,1,Finland,543
+comparison,2003,reading,2,South Korea,534
+comparison,2003,reading,3,Canada,528
+comparison,2003,reading,4,Australia,525
+comparison,2003,reading,5,New Zealand,522
+comparison,2003,reading,6,Ireland,515
+comparison,2003,reading,7,Sweden,514
+comparison,2003,reading,8,Netherlands,513
+comparison,2003,reading,9,Hong Kong,510
+comparison,2003,reading,10,United Kingdom,507
+comparison,2003,reading,11,Belgium,507
+comparison,2003,reading,12,Norway,500
+comparison,2003,reading,13,Switzerland,499
+comparison,2003,reading,14,Japan,498
+comparison,2003,reading,15,Macau,498
+comparison,2003,reading,16,Poland,497
+comparison,2003,reading,17,France,496
+comparison,2003,reading,18,United States,495
+comparison,2003,reading,19,Denmark,492
+comparison,2003,reading,20,Iceland,492
+comparison,2003,reading,21,Germany,491
+comparison,2003,reading,22,Austria,491
+comparison,2003,reading,23,Latvia,491
+comparison,2003,reading,24,Czech Republic,489
+comparison,2003,reading,25,Hungary,482
+comparison,2003,reading,26,Spain,481
+comparison,2003,reading,27,Luxembourg,479
+comparison,2003,reading,28,Portugal,478
+comparison,2003,reading,29,Italy,476
+comparison,2003,reading,30,Greece,472
+comparison,2003,reading,31,Slovakia,469
+comparison,2003,reading,32,Russia,442
+comparison,2003,reading,33,Turkey,441
+comparison,2003,reading,34,Uruguay,434
+comparison,2003,reading,35,Thailand,420
+comparison,2003,reading,36,Brazil,403
+comparison,2003,reading,37,Mexico,400
+comparison,2003,reading,38,Indonesia,382
+comparison,2003,reading,39,Tunisia,375
+comparison,2003,reading,,OECD average,494
+comparison,2006,reading,1,South Korea,556
+comparison,2006,reading,2,Finland,547
+comparison,2006,reading,3,Hong Kong,536
+comparison,2006,reading,4,Canada,527
+comparison,2006,reading,5,New Zealand,521
+comparison,2006,reading,6,Ireland,517
+comparison,2006,reading,7,Australia,513
+comparison,2006,reading,8,Poland,508
+comparison,2006,reading,9,Sweden,507
+comparison,2006,reading,10,Netherlands,507
+comparison,2006,reading,11,Belgium,501
+comparison,2006,reading,12,Estonia,501
+comparison,2006,reading,13,Switzerland,499
+comparison,2006,reading,14,Japan,498
+comparison,2006,reading,15,Taiwan,496
+comparison,2006,reading,16,United Kingdom,495
+comparison,2006,reading,17,Germany,495
+comparison,2006,reading,18,Denmark,494
+comparison,2006,reading,19,Slovenia,494
+comparison,2006,reading,20,Macau,492
+comparison,2006,reading,21,Austria,490
+comparison,2006,reading,22,France,488
+comparison,2006,reading,23,Iceland,484
+comparison,2006,reading,24,Norway,484
+comparison,2006,reading,25,Czech Republic,483
+comparison,2006,reading,26,Hungary,482
+comparison,2006,reading,27,Latvia,479
+comparison,2006,reading,28,Luxembourg,479
+comparison,2006,reading,29,Croatia,477
+comparison,2006,reading,30,Portugal,472
+comparison,2006,reading,31,Lithuania,470
+comparison,2006,reading,32,Italy,469
+comparison,2006,reading,33,Slovakia,466
+comparison,2006,reading,34,Spain,461
+comparison,2006,reading,35,Greece,460
+comparison,2006,reading,36,Turkey,447
+comparison,2006,reading,37,Chile,442
+comparison,2006,reading,38,Russia,440
+comparison,2006,reading,39,Israel,439
+comparison,2006,reading,40,Thailand,417
+comparison,2006,reading,41,Uruguay,413
+comparison,2006,reading,42,Mexico,410
+comparison,2006,reading,43,Bulgaria,402
+comparison,2006,reading,44,Jordan,401
+comparison,2006,reading,45,Romania,396
+comparison,2006,reading,46,Indonesia,393
+comparison,2006,reading,47,Brazil,393
+comparison,2006,reading,48,Montenegro,392
+comparison,2006,reading,49,Colombia,385
+comparison,2006,reading,50,Tunisia,380
+comparison,2006,reading,51,Qatar,312
+comparison,2006,reading,,OECD average,489
+comparison,2009,reading,1,South Korea,539
+comparison,2009,reading,2,Finland,536
+comparison,2009,reading,3,Hong Kong,533
+comparison,2009,reading,4,Singapore,526
+comparison,2009,reading,5,Canada,524
+comparison,2009,reading,6,New Zealand,521
+comparison,2009,reading,7,Japan,520
+comparison,2009,reading,8,Australia,515
+comparison,2009,reading,9,Netherlands,508
+comparison,2009,reading,10,Belgium,506
+comparison,2009,reading,11,Norway,503
+comparison,2009,reading,12,Estonia,501
+comparison,2009,reading,13,Switzerland,501
+comparison,2009,reading,14,Poland,500
+comparison,2009,reading,15,Iceland,500
+comparison,2009,reading,16,United States,500
+comparison,2009,reading,17,Sweden,497
+comparison,2009,reading,18,Germany,497
+comparison,2009,reading,19,Ireland,496
+comparison,2009,reading,20,France,496
+comparison,2009,reading,21,Taiwan,495
+comparison,2009,reading,22,Denmark,495
+comparison,2009,reading,23,United Kingdom,494
+comparison,2009,reading,24,Hungary,494
+comparison,2009,reading,25,Portugal,489
+comparison,2009,reading,26,Macau,487
+comparison,2009,reading,27,Italy,486
+comparison,2009,reading,28,Latvia,484
+comparison,2009,reading,29,Slovenia,483
+comparison,2009,reading,30,Greece,483
+comparison,2009,reading,31,Spain,481
+comparison,2009,reading,32,Czech Republic,478
+comparison,2009,reading,33,Slovakia,477
+comparison,2009,reading,34,Croatia,476
+comparison,2009,reading,35,Israel,474
+comparison,2009,reading,36,Luxembourg,472
+comparison,2009,reading,37,Austria,470
+comparison,2009,reading,38,Lithuania,468
+comparison,2009,reading,39,Turkey,464
+comparison,2009,reading,40,Russia,459
+comparison,2009,reading,41,Chile,449
+comparison,2009,reading,42,Bulgaria,429
+comparison,2009,reading,43,Uruguay,426
+comparison,2009,reading,44,Mexico,425
+comparison,2009,reading,45,Romania,424
+comparison,2009,reading,46,Thailand,421
+comparison,2009,reading,47,Trinidad and Tobago,416
+comparison,2009,reading,48,Colombia,413
+comparison,2009,reading,49,Brazil,412
+comparison,2009,reading,50,Montenegro,408
+comparison,2009,reading,51,Jordan,405
+comparison,2009,reading,52,Tunisia,404
+comparison,2009,reading,53,Indonesia,402
+comparison,2009,reading,54,Kazakhstan,390
+comparison,2009,reading,55,Albania,385
+comparison,2009,reading,56,Qatar,372
+comparison,2009,reading,57,Peru,370
+comparison,2009,reading,,OECD average,493
+comparison,2012,reading,1,China -Shanghai,570
+comparison,2012,reading,1,Hong Kong,545
+comparison,2012,reading,2,Singapore,542
+comparison,2012,reading,3,Japan,538
+comparison,2012,reading,4,South Korea,536
+comparison,2012,reading,5,Finland,524
+comparison,2012,reading,6,Ireland,523
+comparison,2012,reading,7,Canada,523
+comparison,2012,reading,8,Taiwan,523
+comparison,2012,reading,9,Poland,518
+comparison,2012,reading,10,Estonia,516
+comparison,2012,reading,11,New Zealand,512
+comparison,2012,reading,12,Australia,512
+comparison,2012,reading,13,Netherlands,511
+comparison,2012,reading,14,Switzerland,509
+comparison,2012,reading,15,Macau,509
+comparison,2012,reading,16,Belgium,509
+comparison,2012,reading,17,Vietnam,508
+comparison,2012,reading,18,Germany,508
+comparison,2012,reading,19,France,505
+comparison,2012,reading,20,Norway,504
+comparison,2012,reading,21,United Kingdom,499
+comparison,2012,reading,22,United States,498
+comparison,2012,reading,23,Denmark,496
+comparison,2012,reading,24,Czech Republic,493
+comparison,2012,reading,25,Italy,490
+comparison,2012,reading,26,Austria,490
+comparison,2012,reading,27,Latvia,489
+comparison,2012,reading,28,Hungary,488
+comparison,2012,reading,29,Spain,488
+comparison,2012,reading,30,Luxembourg,488
+comparison,2012,reading,31,Portugal,488
+comparison,2012,reading,32,Israel,486
+comparison,2012,reading,33,Croatia,485
+comparison,2012,reading,34,Sweden,483
+comparison,2012,reading,35,Iceland,483
+comparison,2012,reading,36,Slovenia,481
+comparison,2012,reading,37,Lithuania,477
+comparison,2012,reading,38,Greece,477
+comparison,2012,reading,39,Turkey,475
+comparison,2012,reading,40,Russia,475
+comparison,2012,reading,41,Slovakia,463
+comparison,2012,reading,42,United Arab Emirates,442
+comparison,2012,reading,43,Chile,441
+comparison,2012,reading,44,Thailand,441
+comparison,2012,reading,45,Costa Rica,441
+comparison,2012,reading,46,Romania,438
+comparison,2012,reading,47,Bulgaria,436
+comparison,2012,reading,48,Argentina CABA,429
+comparison,2012,reading,49,Mexico,424
+comparison,2012,reading,50,Montenegro,422
+comparison,2012,reading,51,Uruguay,411
+comparison,2012,reading,52,Brazil,407
+comparison,2012,reading,53,Tunisia,404
+comparison,2012,reading,54,Colombia,403
+comparison,2012,reading,55,Jordan,399
+comparison,2012,reading,56,Malaysia,398
+comparison,2012,reading,57,Indonesia,396
+comparison,2012,reading,58,Albania,394
+comparison,2012,reading,59,Kazakhstan,393
+comparison,2012,reading,60,Qatar,388
+comparison,2012,reading,61,Peru,384
+comparison,2012,reading,,OECD average,496
+comparison,2015,reading,1,Singapore,535
+comparison,2015,reading,2,Hong Kong,527
+comparison,2015,reading,3,Canada,527
+comparison,2015,reading,4,Finland,526
+comparison,2015,reading,5,Ireland,521
+comparison,2015,reading,6,Estonia,519
+comparison,2015,reading,7,South Korea,517
+comparison,2015,reading,8,Japan,516
+comparison,2015,reading,9,Norway,513
+comparison,2015,reading,10,New Zealand,509
+comparison,2015,reading,11,Germany,509
+comparison,2015,reading,12,Macau,509
+comparison,2015,reading,13,Poland,506
+comparison,2015,reading,14,Slovenia,505
+comparison,2015,reading,15,Netherlands,503
+comparison,2015,reading,16,Australia,503
+comparison,2015,reading,17,Sweden,500
+comparison,2015,reading,18,Denmark,500
+comparison,2015,reading,19,France,499
+comparison,2015,reading,20,Belgium,499
+comparison,2015,reading,21,Portugal,498
+comparison,2015,reading,22,United Kingdom,498
+comparison,2015,reading,23,Taiwan,497
+comparison,2015,reading,24,United States,497
+comparison,2015,reading,25,Spain,496
+comparison,2015,reading,26,Russia,495
+comparison,2015,reading,27,China B-S-J-G,494
+comparison,2015,reading,28,Switzerland,492
+comparison,2015,reading,29,Latvia,488
+comparison,2015,reading,30,Czech Republic,487
+comparison,2015,reading,31,Croatia,487
+comparison,2015,reading,32,Vietnam,487
+comparison,2015,reading,33,Austria,485
+comparison,2015,reading,34,Italy,485
+comparison,2015,reading,35,Iceland,482
+comparison,2015,reading,36,Luxembourg,481
+comparison,2015,reading,37,Israel,479
+comparison,2015,reading,38,Argentina CABA,475
+comparison,2015,reading,39,Lithuania,472
+comparison,2015,reading,40,Hungary,470
+comparison,2015,reading,41,Greece,467
+comparison,2015,reading,42,Chile,459
+comparison,2015,reading,43,Slovakia,453
+comparison,2015,reading,44,Malta,447
+comparison,2015,reading,45,Cyprus,443
+comparison,2015,reading,46,Uruguay,437
+comparison,2015,reading,47,Romania,434
+comparison,2015,reading,48,United Arab Emirates,434
+comparison,2015,reading,49,Bulgaria,432
+comparison,2015,reading,50,Malaysia,431
+comparison,2015,reading,51,Turkey,428
+comparison,2015,reading,52,Costa Rica,427
+comparison,2015,reading,53,Trinidad and Tobago,427
+comparison,2015,reading,54,Kazakhstan,427
+comparison,2015,reading,55,Montenegro,427
+comparison,2015,reading,56,Argentina,425
+comparison,2015,reading,57,Colombia,425
+comparison,2015,reading,58,Mexico,423
+comparison,2015,reading,59,Moldova,416
+comparison,2015,reading,60,Thailand,409
+comparison,2015,reading,61,Jordan,408
+comparison,2015,reading,62,Brazil,407
+comparison,2015,reading,63,Albania,405
+comparison,2015,reading,64,Qatar,402
+comparison,2015,reading,65,Georgia,401
+comparison,2015,reading,66,Peru,398
+comparison,2015,reading,67,Indonesia,397
+comparison,2015,reading,68,Tunisia,361
+comparison,2015,reading,69,Dominican Republic,358
+comparison,2015,reading,70,Macedonia,352
+comparison,2015,reading,71,Algeria,350
+comparison,2015,reading,72,Kosovo,347
+comparison,2015,reading,73,Lebanon,347
+comparison,2015,reading,,OECD average,493
+comparison,2018,reading,1,China B-S-J-Z,555
+comparison,2018,reading,2,Singapore,549
+comparison,2018,reading,3,Macau,525
+comparison,2018,reading,4,Hong Kong,524
+comparison,2018,reading,5,Estonia,523
+comparison,2018,reading,6,Canada,520
+comparison,2018,reading,7,Finland,520
+comparison,2018,reading,8,Ireland,518
+comparison,2018,reading,9,South Korea,514
+comparison,2018,reading,10,Poland,512
+comparison,2018,reading,11,Sweden,506
+comparison,2018,reading,12,New Zealand,506
+comparison,2018,reading,13,United States,505
+comparison,2018,reading,14,United Kingdom,504
+comparison,2018,reading,15,Japan,504
+comparison,2018,reading,16,Australia,503
+comparison,2018,reading,17,Taiwan,503
+comparison,2018,reading,18,Denmark,501
+comparison,2018,reading,19,Norway,499
+comparison,2018,reading,20,Germany,498
+comparison,2018,reading,21,Slovenia,495
+comparison,2018,reading,22,Belgium,493
+comparison,2018,reading,23,France,493
+comparison,2018,reading,24,Portugal,492
+comparison,2018,reading,25,Czech Republic,490
+comparison,2018,reading,26,Netherlands,485
+comparison,2018,reading,27,Austria,484
+comparison,2018,reading,28,Switzerland,484
+comparison,2018,reading,29,Croatia,479
+comparison,2018,reading,30,Latvia,479
+comparison,2018,reading,31,Russia,479
+comparison,2018,reading,32,Italy,476
+comparison,2018,reading,33,Hungary,476
+comparison,2018,reading,34,Lithuania,476
+comparison,2018,reading,35,Iceland,474
+comparison,2018,reading,36,Belarus,474
+comparison,2018,reading,37,Israel,470
+comparison,2018,reading,38,Luxembourg,470
+comparison,2018,reading,39,Ukraine,466
+comparison,2018,reading,40,Turkey,466
+comparison,2018,reading,41,Slovakia,458
+comparison,2018,reading,42,Greece,457
+comparison,2018,reading,43,Chile,452
+comparison,2018,reading,44,Malta,448
+comparison,2018,reading,45,Serbia,439
+comparison,2018,reading,46,United Arab Emirates,432
+comparison,2018,reading,47,Romania,428
+comparison,2018,reading,48,Uruguay,427
+comparison,2018,reading,49,Costa Rica,426
+comparison,2018,reading,50,Cyprus,424
+comparison,2018,reading,51,Moldova,424
+comparison,2018,reading,52,Montenegro,421
+comparison,2018,reading,53,Mexico,420
+comparison,2018,reading,54,Bulgaria,420
+comparison,2018,reading,55,Jordan,419
+comparison,2018,reading,56,Malaysia,415
+comparison,2018,reading,57,Brazil,413
+comparison,2018,reading,58,Colombia,412
+comparison,2018,reading,59,Brunei,408
+comparison,2018,reading,60,Qatar,407
+comparison,2018,reading,61,Albania,405
+comparison,2018,reading,62,Bosnia and Herzegovina,403
+comparison,2018,reading,63,Argentina,402
+comparison,2018,reading,64,Peru,401
+comparison,2018,reading,65,Saudi Arabia,399
+comparison,2018,reading,66,Thailand,393
+comparison,2018,reading,67,Macedonia,393
+comparison,2018,reading,68,Azerbaijan Baku,389
+comparison,2018,reading,69,Kazakhstan,387
+comparison,2018,reading,70,Georgia,380
+comparison,2018,reading,71,Panama,377
+comparison,2018,reading,72,Indonesia,371
+comparison,2018,reading,73,Morocco,359
+comparison,2018,reading,74,Lebanon,353
+comparison,2018,reading,75,Kosovo,353
+comparison,2018,reading,76,Dominican Republic,342
+comparison,2018,reading,77,Philippines,340
+comparison,2018,reading,,OECD average,487
+comparison,2022,reading,1,Singapore,543
+comparison,2022,reading,2,Ireland,516
+comparison,2022,reading,3,Japan,516
+comparison,2022,reading,4,South Korea,515
+comparison,2022,reading,5,Taiwan,515
+comparison,2022,reading,6,Estonia,511
+comparison,2022,reading,7,Macau,510
+comparison,2022,reading,8,Canada,507
+comparison,2022,reading,9,United States,504
+comparison,2022,reading,10,New Zealand,501
+comparison,2022,reading,11,Hong Kong,500
+comparison,2022,reading,12,Australia,498
+comparison,2022,reading,13,United Kingdom,494
+comparison,2022,reading,14,Finland,490
+comparison,2022,reading,15,Denmark,489
+comparison,2022,reading,16,Poland,489
+comparison,2022,reading,17,Czech Republic,489
+comparison,2022,reading,18,Sweden,487
+comparison,2022,reading,19,Switzerland,483
+comparison,2022,reading,20,Italy,482
+comparison,2022,reading,21,Austria,480
+comparison,2022,reading,22,Germany,480
+comparison,2022,reading,23,Belgium,479
+comparison,2022,reading,24,Portugal,477
+comparison,2022,reading,25,Norway,477
+comparison,2022,reading,26,Croatia,475
+comparison,2022,reading,27,Latvia,475
+comparison,2022,reading,28,Spain,474
+comparison,2022,reading,29,France,474
+comparison,2022,reading,30,Israel,474
+comparison,2022,reading,31,Hungary,473
+comparison,2022,reading,32,Lithuania,472
+comparison,2022,reading,33,Slovenia,469
+comparison,2022,reading,34,Vietnam,462
+comparison,2022,reading,35,Netherlands,459
+comparison,2022,reading,36,Turkey,456
+comparison,2022,reading,37,Chile,448
+comparison,2022,reading,38,Slovakia,447
+comparison,2022,reading,39,Malta,445
+comparison,2022,reading,40,Serbia,440
+comparison,2022,reading,41,Greece,438
+comparison,2022,reading,42,Iceland,436
+comparison,2022,reading,43,Uruguay,430
+comparison,2022,reading,44,Brunei,429
+comparison,2022,reading,45,Romania,428
+comparison,2022,reading,46,Ukraine,428
+comparison,2022,reading,47,Qatar,419
+comparison,2022,reading,48,United Arab Emirates,417
+comparison,2022,reading,49,Mexico,415
+comparison,2022,reading,50,Costa Rica,415
+comparison,2022,reading,51,Moldova,411
+comparison,2022,reading,52,Brazil,410
+comparison,2022,reading,53,Jamaica,410
+comparison,2022,reading,54,Colombia,409
+comparison,2022,reading,55,Peru,408
+comparison,2022,reading,56,Montenegro,405
+comparison,2022,reading,57,Bulgaria,404
+comparison,2022,reading,58,Argentina,401
+comparison,2022,reading,59,Panama,392
+comparison,2022,reading,60,Malaysia,388
+comparison,2022,reading,61,Kazakhstan,386
+comparison,2022,reading,62,Saudi Arabia,383
+comparison,2022,reading,63,Cyprus,381
+comparison,2022,reading,64,Thailand,379
+comparison,2022,reading,65,Mongolia,378
+comparison,2022,reading,66,Guatemala,374
+comparison,2022,reading,67,Georgia,374
+comparison,2022,reading,68,Paraguay,373
+comparison,2022,reading,69,Azerbaijan Baku,365
+comparison,2022,reading,70,El Salvador,365
+comparison,2022,reading,71,Indonesia,359
+comparison,2022,reading,72,Macedonia,359
+comparison,2022,reading,73,Albania,358
+comparison,2022,reading,74,Dominican Republic,351
+comparison,2022,reading,75,Palestinian Authority,349
+comparison,2022,reading,76,Philippines,347
+comparison,2022,reading,77,Kosovo,342
+comparison,2022,reading,78,Jordan,342
+comparison,2022,reading,79,Morocco,339
+comparison,2022,reading,80,Uzbekistan,336
+comparison,2022,reading,81,Cambodia,329
+comparison,2022,reading,,OECD average,476
+summary,2025,reading,1,Singapore,535
+summary,2025,reading,2,B-S-J-Z (China),527
+summary,2025,reading,3,Taiwan,508
+summary,2025,reading,4,Japan,503
+summary,2025,reading,5,South Korea,501
+summary,2025,reading,6,Macao (China),501
+summary,2025,reading,7,Ireland,500
+summary,2025,reading,8,Estonia,499
+summary,2025,reading,9,New Zealand,497
+summary,2025,reading,10,United Kingdom,494
+summary,2025,reading,11,Australia,491
+summary,2025,reading,12,Canada,490
+summary,2025,reading,13,United States,490
+summary,2025,reading,14,Poland,482
+summary,2025,reading,15,Hong Kong (China),480
+summary,2025,reading,16,Finland,474
+summary,2025,reading,17,Italy,474
+summary,2025,reading,18,Türkiye,472
+summary,2025,reading,19,Switzerland,470
+summary,2025,reading,20,Czech Republic,468
+summary,2025,reading,21,Austria,467
+summary,2025,reading,22,Belgium,466
+summary,2025,reading,23,Sweden,466
+summary,2025,reading,24,Germany,465
+summary,2025,reading,25,Lithuania,464
+summary,2025,reading,26,Portugal,462
+summary,2025,reading,27,Denmark,460
+summary,2025,reading,28,France,456
+summary,2025,reading,29,Croatia,453
+summary,2025,reading,30,Norway,453
+summary,2025,reading,31,Hungary,452
+summary,2025,reading,32,Spain,451
+summary,2025,reading,33,Slovakia,448
+summary,2025,reading,34,Slovenia,445
+summary,2025,reading,35,Luxembourg,443
+summary,2025,reading,36,Netherlands,441
+summary,2025,reading,37,Chile,436
+summary,2025,reading,38,Israel,436
+summary,2025,reading,39,United Arab Emirates,433
+summary,2025,reading,40,Latvia,430
+summary,2025,reading,41,Brunei Darussalam,426
+summary,2025,reading,42,Greece,423
+summary,2025,reading,43,Uruguay,423
+summary,2025,reading,44,Iceland,422
+summary,2025,reading,45,Montenegro,418
+summary,2025,reading,46,Qatar,418
+summary,2025,reading,47,Ukrainian regions (17 of 27),418
+summary,2025,reading,48,Costa Rica,416
+summary,2025,reading,49,Malta,415
+summary,2025,reading,50,Serbia,415
+summary,2025,reading,51,Romania,413
+summary,2025,reading,52,Albania,408
+summary,2025,reading,53,Brazil,408
+summary,2025,reading,54,Mexico,408
+summary,2025,reading,55,Mauritius,405
+summary,2025,reading,56,Moldova,404
+summary,2025,reading,57,Colombia,399
+summary,2025,reading,58,Malaysia,393
+summary,2025,reading,59,Thailand,392
+summary,2025,reading,60,Vietnam,392
+summary,2025,reading,61,Peru,390
+summary,2025,reading,62,Argentina,389
+summary,2025,reading,63,Bulgaria,387
+summary,2025,reading,64,Saudi Arabia,387
+summary,2025,reading,65,Ecuador,385
+summary,2025,reading,66,Kazakhstan,385
+summary,2025,reading,67,Georgia,384
+summary,2025,reading,68,Cyprus,379
+summary,2025,reading,69,Azerbaijan,374
+summary,2025,reading,70,Mongolia,374
+summary,2025,reading,71,Dushanbe (Tajikistan),368
+summary,2025,reading,72,Philippines,367
+summary,2025,reading,73,El Salvador,366
+summary,2025,reading,74,Indonesia,365
+summary,2025,reading,75,Jordan,363
+summary,2025,reading,76,North Macedonia,357
+summary,2025,reading,77,Paraguay,352
+summary,2025,reading,78,Palestinian Authority,350
+summary,2025,reading,79,Armenia,348
+summary,2025,reading,80,Cambodia,347
+summary,2025,reading,81,Dominican Republic,346
+summary,2025,reading,82,Kyrgyzstan,344
+summary,2025,reading,83,Kosovo,340
+summary,2025,reading,84,Guatemala,337
+summary,2025,reading,85,Lebanon,331
+summary,2025,reading,86,Zambia,325
+summary,2025,reading,87,Morocco,321
+summary,2025,reading,88,Kenya,320
+summary,2025,reading,89,Kurdistan Region (Iraq),312
+summary,2025,reading,90,Rwanda,301
+summary,2025,reading,,OECD average,461
+comparison,2006,science,1,Finland,563
+comparison,2006,science,2,Hong Kong,542
+comparison,2006,science,3,Canada,534
+comparison,2006,science,4,Taiwan,532
+comparison,2006,science,5,Estonia,531
+comparison,2006,science,6,Japan,531
+comparison,2006,science,7,New Zealand,530
+comparison,2006,science,8,Australia,527
+comparison,2006,science,9,Netherlands,525
+comparison,2006,science,10,South Korea,522
+comparison,2006,science,11,Slovenia,519
+comparison,2006,science,12,Germany,516
+comparison,2006,science,13,United Kingdom,515
+comparison,2006,science,14,Czech Republic,513
+comparison,2006,science,15,Switzerland,512
+comparison,2006,science,16,Macau,511
+comparison,2006,science,17,Austria,511
+comparison,2006,science,18,Belgium,510
+comparison,2006,science,19,Ireland,508
+comparison,2006,science,20,Hungary,504
+comparison,2006,science,21,Sweden,503
+comparison,2006,science,22,Poland,498
+comparison,2006,science,23,Denmark,496
+comparison,2006,science,24,France,495
+comparison,2006,science,25,Croatia,493
+comparison,2006,science,26,Iceland,491
+comparison,2006,science,27,Latvia,490
+comparison,2006,science,28,United States,489
+comparison,2006,science,29,Slovakia,488
+comparison,2006,science,30,Spain,488
+comparison,2006,science,31,Lithuania,488
+comparison,2006,science,32,Norway,487
+comparison,2006,science,33,Luxembourg,486
+comparison,2006,science,34,Russia,479
+comparison,2006,science,35,Italy,475
+comparison,2006,science,36,Portugal,474
+comparison,2006,science,37,Greece,473
+comparison,2006,science,38,Israel,454
+comparison,2006,science,39,Chile,438
+comparison,2006,science,40,Bulgaria,434
+comparison,2006,science,41,Uruguay,428
+comparison,2006,science,42,Turkey,424
+comparison,2006,science,43,Jordan,422
+comparison,2006,science,44,Thailand,421
+comparison,2006,science,45,Romania,418
+comparison,2006,science,46,Montenegro,412
+comparison,2006,science,47,Mexico,410
+comparison,2006,science,48,Indonesia,393
+comparison,2006,science,49,Brazil,390
+comparison,2006,science,50,Colombia,388
+comparison,2006,science,51,Tunisia,386
+comparison,2006,science,52,Qatar,349
+comparison,2006,science,,OECD average,498
+comparison,2009,science,1,Finland,554
+comparison,2009,science,2,Hong Kong,549
+comparison,2009,science,3,Singapore,542
+comparison,2009,science,4,Japan,539
+comparison,2009,science,5,South Korea,538
+comparison,2009,science,6,New Zealand,532
+comparison,2009,science,7,Canada,529
+comparison,2009,science,8,Estonia,528
+comparison,2009,science,9,Australia,527
+comparison,2009,science,10,Netherlands,522
+comparison,2009,science,11,Taiwan,520
+comparison,2009,science,12,Germany,520
+comparison,2009,science,13,Switzerland,517
+comparison,2009,science,14,United Kingdom,514
+comparison,2009,science,15,Slovenia,512
+comparison,2009,science,16,Macau,511
+comparison,2009,science,17,Poland,508
+comparison,2009,science,18,Ireland,508
+comparison,2009,science,19,Belgium,507
+comparison,2009,science,20,Hungary,503
+comparison,2009,science,21,United States,502
+comparison,2009,science,22,Czech Republic,500
+comparison,2009,science,23,Norway,500
+comparison,2009,science,24,Denmark,499
+comparison,2009,science,25,France,498
+comparison,2009,science,26,Iceland,496
+comparison,2009,science,27,Sweden,495
+comparison,2009,science,28,Austria,494
+comparison,2009,science,29,Latvia,494
+comparison,2009,science,30,Portugal,493
+comparison,2009,science,31,Lithuania,491
+comparison,2009,science,32,Slovakia,490
+comparison,2009,science,33,Italy,489
+comparison,2009,science,34,Spain,488
+comparison,2009,science,35,Croatia,486
+comparison,2009,science,36,Luxembourg,484
+comparison,2009,science,37,Russia,478
+comparison,2009,science,38,Greece,470
+comparison,2009,science,39,Israel,455
+comparison,2009,science,40,Turkey,454
+comparison,2009,science,41,Chile,447
+comparison,2009,science,42,Bulgaria,439
+comparison,2009,science,43,Romania,428
+comparison,2009,science,44,Uruguay,427
+comparison,2009,science,45,Thailand,425
+comparison,2009,science,46,Mexico,416
+comparison,2009,science,47,Jordan,415
+comparison,2009,science,48,Trinidad and Tobago,410
+comparison,2009,science,49,Brazil,405
+comparison,2009,science,50,Colombia,402
+comparison,2009,science,51,Montenegro,401
+comparison,2009,science,52,Tunisia,401
+comparison,2009,science,53,Kazakhstan,400
+comparison,2009,science,54,Albania,391
+comparison,2009,science,55,Indonesia,383
+comparison,2009,science,56,Qatar,379
+comparison,2009,science,57,Peru,369
+comparison,2009,science,,OECD average,501
+comparison,2012,science,1,China Shanghai,580
+comparison,2012,science,1,Hong Kong,555
+comparison,2012,science,2,Singapore,551
+comparison,2012,science,3,Japan,547
+comparison,2012,science,4,Finland,545
+comparison,2012,science,5,Estonia,541
+comparison,2012,science,6,South Korea,538
+comparison,2012,science,7,Vietnam,528
+comparison,2012,science,8,Poland,526
+comparison,2012,science,9,Canada,525
+comparison,2012,science,10,Germany,524
+comparison,2012,science,11,Taiwan,523
+comparison,2012,science,12,Netherlands,522
+comparison,2012,science,13,Ireland,522
+comparison,2012,science,14,Australia,521
+comparison,2012,science,15,Macau,521
+comparison,2012,science,16,New Zealand,516
+comparison,2012,science,17,Switzerland,515
+comparison,2012,science,18,Slovenia,514
+comparison,2012,science,19,United Kingdom,514
+comparison,2012,science,20,Czech Republic,508
+comparison,2012,science,21,Austria,506
+comparison,2012,science,22,Belgium,505
+comparison,2012,science,23,Latvia,502
+comparison,2012,science,24,France,499
+comparison,2012,science,25,Denmark,498
+comparison,2012,science,26,United States,497
+comparison,2012,science,27,Spain,496
+comparison,2012,science,28,Lithuania,496
+comparison,2012,science,29,Norway,495
+comparison,2012,science,30,Hungary,494
+comparison,2012,science,31,Italy,494
+comparison,2012,science,32,Croatia,491
+comparison,2012,science,33,Luxembourg,491
+comparison,2012,science,34,Portugal,489
+comparison,2012,science,35,Russia,486
+comparison,2012,science,36,Sweden,485
+comparison,2012,science,37,Iceland,478
+comparison,2012,science,38,Slovakia,471
+comparison,2012,science,39,Israel,470
+comparison,2012,science,40,Greece,467
+comparison,2012,science,41,Turkey,463
+comparison,2012,science,42,United Arab Emirates,448
+comparison,2012,science,43,Bulgaria,446
+comparison,2012,science,44,Chile,445
+comparison,2012,science,45,Thailand,444
+comparison,2012,science,46,Romania,439
+comparison,2012,science,47,Costa Rica,429
+comparison,2012,science,48,Kazakhstan,425
+comparison,2012,science,49,Argentina CABA,425
+comparison,2012,science,50,Malaysia,420
+comparison,2012,science,51,Uruguay,416
+comparison,2012,science,52,Mexico,415
+comparison,2012,science,53,Montenegro,410
+comparison,2012,science,54,Jordan,409
+comparison,2012,science,55,Brazil,402
+comparison,2012,science,56,Colombia,399
+comparison,2012,science,57,Tunisia,398
+comparison,2012,science,58,Albania,397
+comparison,2012,science,59,Qatar,384
+comparison,2012,science,60,Indonesia,382
+comparison,2012,science,61,Peru,373
+comparison,2012,science,,OECD average,501
+comparison,2015,science,1,Singapore,556
+comparison,2015,science,2,Japan,538
+comparison,2015,science,3,Estonia,534
+comparison,2015,science,4,Taiwan,532
+comparison,2015,science,5,Finland,531
+comparison,2015,science,6,Macau,529
+comparison,2015,science,7,Canada,528
+comparison,2015,science,8,Vietnam,525
+comparison,2015,science,9,Hong Kong,523
+comparison,2015,science,10,China B-S-J-G,518
+comparison,2015,science,11,South Korea,516
+comparison,2015,science,12,New Zealand,513
+comparison,2015,science,13,Slovenia,513
+comparison,2015,science,14,Australia,510
+comparison,2015,science,15,United Kingdom,509
+comparison,2015,science,16,Germany,509
+comparison,2015,science,17,Netherlands,509
+comparison,2015,science,18,Switzerland,506
+comparison,2015,science,19,Ireland,503
+comparison,2015,science,20,Belgium,502
+comparison,2015,science,21,Denmark,502
+comparison,2015,science,22,Poland,501
+comparison,2015,science,23,Portugal,501
+comparison,2015,science,24,Norway,498
+comparison,2015,science,25,United States,496
+comparison,2015,science,26,Austria,495
+comparison,2015,science,27,France,495
+comparison,2015,science,28,Sweden,493
+comparison,2015,science,29,Czech Republic,493
+comparison,2015,science,30,Spain,493
+comparison,2015,science,31,Latvia,490
+comparison,2015,science,32,Russia,487
+comparison,2015,science,33,Luxembourg,483
+comparison,2015,science,34,Italy,481
+comparison,2015,science,35,Hungary,477
+comparison,2015,science,36,Lithuania,475
+comparison,2015,science,37,Croatia,475
+comparison,2015,science,38,Argentina CABA,475
+comparison,2015,science,39,Iceland,473
+comparison,2015,science,40,Israel,467
+comparison,2015,science,41,Malta,465
+comparison,2015,science,42,Slovakia,461
+comparison,2015,science,43,Kazakhstan,456
+comparison,2015,science,44,Greece,455
+comparison,2015,science,45,Chile,447
+comparison,2015,science,46,Bulgaria,446
+comparison,2015,science,47,Malaysia,443
+comparison,2015,science,48,United Arab Emirates,437
+comparison,2015,science,49,Uruguay,435
+comparison,2015,science,50,Romania,435
+comparison,2015,science,51,Cyprus,433
+comparison,2015,science,52,Argentina,432
+comparison,2015,science,53,Moldova,428
+comparison,2015,science,54,Albania,427
+comparison,2015,science,55,Turkey,425
+comparison,2015,science,56,Trinidad and Tobago,425
+comparison,2015,science,57,Thailand,421
+comparison,2015,science,58,Costa Rica,420
+comparison,2015,science,59,Qatar,418
+comparison,2015,science,60,Colombia,416
+comparison,2015,science,61,Mexico,416
+comparison,2015,science,62,Montenegro,411
+comparison,2015,science,63,Georgia,411
+comparison,2015,science,64,Jordan,409
+comparison,2015,science,65,Indonesia,403
+comparison,2015,science,66,Brazil,401
+comparison,2015,science,67,Peru,397
+comparison,2015,science,68,Lebanon,386
+comparison,2015,science,69,Tunisia,386
+comparison,2015,science,70,Macedonia,384
+comparison,2015,science,71,Kosovo,378
+comparison,2015,science,72,Algeria,376
+comparison,2015,science,73,Dominican Republic,332
+comparison,2015,science,,OECD average,493
+comparison,2018,science,1,China B-S-J-Z,590
+comparison,2018,science,2,Singapore,551
+comparison,2018,science,3,Macau,544
+comparison,2018,science,4,Estonia,530
+comparison,2018,science,5,Japan,529
+comparison,2018,science,6,Finland,522
+comparison,2018,science,7,South Korea,519
+comparison,2018,science,8,Canada,518
+comparison,2018,science,9,Hong Kong,517
+comparison,2018,science,10,Taiwan,516
+comparison,2018,science,11,Poland,511
+comparison,2018,science,12,New Zealand,508
+comparison,2018,science,13,Slovenia,507
+comparison,2018,science,14,United Kingdom,505
+comparison,2018,science,15,Netherlands,503
+comparison,2018,science,16,Germany,503
+comparison,2018,science,17,Australia,503
+comparison,2018,science,18,United States,502
+comparison,2018,science,19,Sweden,499
+comparison,2018,science,20,Belgium,499
+comparison,2018,science,21,Czech Republic,497
+comparison,2018,science,22,Ireland,496
+comparison,2018,science,23,Switzerland,495
+comparison,2018,science,24,France,493
+comparison,2018,science,25,Denmark,493
+comparison,2018,science,26,Portugal,492
+comparison,2018,science,27,Norway,490
+comparison,2018,science,28,Austria,490
+comparison,2018,science,29,Latvia,487
+comparison,2018,science,30,Spain,483
+comparison,2018,science,31,Lithuania,482
+comparison,2018,science,32,Hungary,481
+comparison,2018,science,33,Russia,478
+comparison,2018,science,34,Luxembourg,477
+comparison,2018,science,35,Iceland,475
+comparison,2018,science,36,Croatia,472
+comparison,2018,science,37,Belarus,471
+comparison,2018,science,38,Ukraine,469
+comparison,2018,science,39,Turkey,468
+comparison,2018,science,40,Italy,468
+comparison,2018,science,41,Slovakia,464
+comparison,2018,science,42,Israel,462
+comparison,2018,science,43,Malta,457
+comparison,2018,science,44,Greece,452
+comparison,2018,science,45,Chile,444
+comparison,2018,science,46,Serbia,440
+comparison,2018,science,47,Cyprus,439
+comparison,2018,science,48,Malaysia,438
+comparison,2018,science,49,United Arab Emirates,434
+comparison,2018,science,50,Brunei,431
+comparison,2018,science,51,Jordan,429
+comparison,2018,science,52,Moldova,428
+comparison,2018,science,53,Thailand,426
+comparison,2018,science,54,Uruguay,426
+comparison,2018,science,55,Romania,426
+comparison,2018,science,56,Bulgaria,424
+comparison,2018,science,57,Mexico,419
+comparison,2018,science,58,Qatar,419
+comparison,2018,science,59,Albania,417
+comparison,2018,science,60,Costa Rica,416
+comparison,2018,science,61,Montenegro,415
+comparison,2018,science,62,Colombia,413
+comparison,2018,science,63,Macedonia,413
+comparison,2018,science,64,Peru,404
+comparison,2018,science,65,Argentina,404
+comparison,2018,science,66,Brazil,404
+comparison,2018,science,67,Bosnia and Herzegovina,398
+comparison,2018,science,68,Azerbaijan Baku,398
+comparison,2018,science,69,Kazakhstan,397
+comparison,2018,science,70,Indonesia,396
+comparison,2018,science,71,Saudi Arabia,386
+comparison,2018,science,72,Lebanon,384
+comparison,2018,science,73,Georgia,383
+comparison,2018,science,74,Morocco,377
+comparison,2018,science,75,Kosovo,365
+comparison,2018,science,76,Panama,365
+comparison,2018,science,77,Philippines,357
+comparison,2018,science,78,Dominican Republic,336
+comparison,2018,science,,OECD average,489
+comparison,2022,science,1,Singapore,561
+comparison,2022,science,2,Japan,547
+comparison,2022,science,3,Macau,543
+comparison,2022,science,4,Taiwan,537
+comparison,2022,science,5,South Korea,528
+comparison,2022,science,6,Estonia,526
+comparison,2022,science,7,Hong Kong,520
+comparison,2022,science,8,Canada,515
+comparison,2022,science,9,Finland,511
+comparison,2022,science,10,Australia,507
+comparison,2022,science,11,New Zealand,504
+comparison,2022,science,12,Ireland,504
+comparison,2022,science,13,Switzerland,503
+comparison,2022,science,14,Slovenia,500
+comparison,2022,science,15,United Kingdom,500
+comparison,2022,science,16,United States,499
+comparison,2022,science,17,Poland,499
+comparison,2022,science,18,Czech Republic,498
+comparison,2022,science,19,Latvia,494
+comparison,2022,science,20,Denmark,494
+comparison,2022,science,21,Sweden,494
+comparison,2022,science,22,Germany,492
+comparison,2022,science,23,Austria,491
+comparison,2022,science,24,Belgium,491
+comparison,2022,science,25,Netherlands,488
+comparison,2022,science,26,France,487
+comparison,2022,science,27,Hungary,486
+comparison,2022,science,28,Spain,485
+comparison,2022,science,29,Lithuania,484
+comparison,2022,science,30,Portugal,484
+comparison,2022,science,31,Croatia,483
+comparison,2022,science,32,Norway,478
+comparison,2022,science,33,Italy,477
+comparison,2022,science,34,Turkey,476
+comparison,2022,science,35,Vietnam,472
+comparison,2022,science,36,Malta,466
+comparison,2022,science,37,Israel,465
+comparison,2022,science,38,Slovakia,462
+comparison,2022,science,39,Ukraine,450
+comparison,2022,science,40,Serbia,447
+comparison,2022,science,41,Iceland,447
+comparison,2022,science,42,Brunei,446
+comparison,2022,science,43,Chile,444
+comparison,2022,science,44,Greece,441
+comparison,2022,science,45,Uruguay,435
+comparison,2022,science,46,Qatar,432
+comparison,2022,science,47,United Arab Emirates,432
+comparison,2022,science,48,Romania,428
+comparison,2022,science,49,Kazakhstan,423
+comparison,2022,science,50,Bulgaria,421
+comparison,2022,science,51,Moldova,417
+comparison,2022,science,52,Malaysia,416
+comparison,2022,science,53,Mongolia,412
+comparison,2022,science,54,Colombia,411
+comparison,2022,science,55,Costa Rica,411
+comparison,2022,science,56,Cyprus,411
+comparison,2022,science,57,Mexico,410
+comparison,2022,science,58,Thailand,409
+comparison,2022,science,59,Peru,408
+comparison,2022,science,60,Argentina,406
+comparison,2022,science,61,Montenegro,403
+comparison,2022,science,62,Brazil,403
+comparison,2022,science,63,Jamaica,403
+comparison,2022,science,64,Saudi Arabia,390
+comparison,2022,science,65,Panama,388
+comparison,2022,science,66,Georgia,384
+comparison,2022,science,67,Indonesia,383
+comparison,2022,science,68,Azerbaijan Baku,380
+comparison,2022,science,69,Macedonia,380
+comparison,2022,science,70,Albania,376
+comparison,2022,science,71,Jordan,375
+comparison,2022,science,72,El Salvador,373
+comparison,2022,science,73,Guatemala,373
+comparison,2022,science,74,Palestinian Authority,369
+comparison,2022,science,75,Paraguay,368
+comparison,2022,science,76,Morocco,365
+comparison,2022,science,77,Dominican Republic,360
+comparison,2022,science,78,Kosovo,357
+comparison,2022,science,79,Philippines,356
+comparison,2022,science,80,Uzbekistan,355
+comparison,2022,science,81,Cambodia,347
+comparison,2022,science,,OECD average,485
+summary,2025,science,1,B-S-J-Z (China),597
+summary,2025,science,2,Singapore,560
+summary,2025,science,3,Macao (China),541
+summary,2025,science,4,Taiwan,540
+summary,2025,science,5,Japan,538
+summary,2025,science,6,Estonia,527
+summary,2025,science,7,South Korea,526
+summary,2025,science,8,United Kingdom,511
+summary,2025,science,9,Canada,510
+summary,2025,science,10,Australia,509
+summary,2025,science,11,New Zealand,509
+summary,2025,science,12,Finland,504
+summary,2025,science,13,United States,502
+summary,2025,science,14,Switzerland,501
+summary,2025,science,15,Ireland,500
+summary,2025,science,16,Austria,497
+summary,2025,science,17,Hong Kong (China),496
+summary,2025,science,18,Poland,495
+summary,2025,science,19,Türkiye,494
+summary,2025,science,20,Belgium,490
+summary,2025,science,21,Czech Republic,490
+summary,2025,science,22,Lithuania,488
+summary,2025,science,23,Germany,486
+summary,2025,science,24,Netherlands,485
+summary,2025,science,25,Sweden,485
+summary,2025,science,26,Slovenia,484
+summary,2025,science,27,France,483
+summary,2025,science,28,Italy,483
+summary,2025,science,29,Portugal,482
+summary,2025,science,30,Hungary,480
+summary,2025,science,31,Denmark,478
+summary,2025,science,32,Spain,477
+summary,2025,science,33,Croatia,476
+summary,2025,science,34,Slovakia,475
+summary,2025,science,35,Luxembourg,474
+summary,2025,science,36,Norway,470
+summary,2025,science,37,Latvia,468
+summary,2025,science,38,United Arab Emirates,458
+summary,2025,science,39,Vietnam,457
+summary,2025,science,40,Malta,453
+summary,2025,science,41,Ukrainian regions (17 of 27),448
+summary,2025,science,42,Uruguay,445
+summary,2025,science,43,Chile,442
+summary,2025,science,44,Israel,442
+summary,2025,science,45,Iceland,441
+summary,2025,science,46,Brunei Darussalam,439
+summary,2025,science,47,Mauritius,438
+summary,2025,science,48,Uzbekistan,438
+summary,2025,science,49,Albania,435
+summary,2025,science,50,Montenegro,435
+summary,2025,science,51,Greece,434
+summary,2025,science,52,Qatar,434
+summary,2025,science,53,Thailand,432
+summary,2025,science,54,Serbia,429
+summary,2025,science,55,Romania,425
+summary,2025,science,56,Costa Rica,424
+summary,2025,science,57,Mongolia,424
+summary,2025,science,58,Georgia,422
+summary,2025,science,59,Moldova,422
+summary,2025,science,60,Bulgaria,421
+summary,2025,science,61,Kazakhstan,420
+summary,2025,science,62,Malaysia,419
+summary,2025,science,63,Colombia,414
+summary,2025,science,64,Mexico,414
+summary,2025,science,65,Saudi Arabia,413
+summary,2025,science,66,Cyprus,411
+summary,2025,science,67,Azerbaijan,409
+summary,2025,science,68,Brazil,409
+summary,2025,science,69,Jordan,407
+summary,2025,science,70,Peru,406
+summary,2025,science,71,Argentina,393
+summary,2025,science,72,Ecuador,393
+summary,2025,science,73,Indonesia,389
+summary,2025,science,74,El Salvador,385
+summary,2025,science,75,Cambodia,382
+summary,2025,science,76,North Macedonia,378
+summary,2025,science,77,Philippines,373
+summary,2025,science,78,Lebanon,372
+summary,2025,science,79,Armenia,369
+summary,2025,science,80,Kyrgyzstan,363
+summary,2025,science,81,Dominican Republic,361
+summary,2025,science,82,Palestinian Authority,359
+summary,2025,science,83,Morocco,358
+summary,2025,science,84,Kosovo,357
+summary,2025,science,85,Paraguay,355
+summary,2025,science,86,Kurdistan Region (Iraq),352
+summary,2025,science,87,Guatemala,351
+summary,2025,science,88,Zambia,337
+summary,2025,science,89,Kenya,335
+summary,2025,science,90,Dushanbe (Tajikistan),334
+summary,2025,science,91,Rwanda,317
+summary,2025,science,,OECD average,482
