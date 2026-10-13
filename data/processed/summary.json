@@ -430,6 +430,12 @@
         "studytime": {
           "test": "one-way ANOVA",
           "k_groups": 4,
+          "levels": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
           "stat": 1.73,
           "p": 0.161,
           "effect": 0.013,
@@ -442,6 +448,11 @@
         "absence_level": {
           "test": "one-way ANOVA",
           "k_groups": 3,
+          "levels": [
+            "high",
+            "low",
+            "medium"
+          ],
           "stat": 4.36,
           "p": 0.0134,
           "effect": 0.022,
@@ -453,14 +464,19 @@
         },
         "failures": {
           "test": "one-way ANOVA",
-          "k_groups": 4,
-          "stat": 20.78,
-          "p": 1.64e-12,
-          "effect": 0.138,
+          "k_groups": 3,
+          "levels": [
+            "0",
+            "1",
+            "2+"
+          ],
+          "stat": 31.17,
+          "p": 2.74e-13,
+          "effect": 0.137,
           "effect_name": "eta²",
-          "kruskal_H": 53.12,
-          "p_kruskal": 1.73e-11,
-          "p_holm": 1.15e-11,
+          "kruskal_H": 52.89,
+          "p_kruskal": 3.28e-12,
+          "p_holm": 1.92e-12,
           "significant": true
         }
       },
@@ -838,6 +854,12 @@
         "studytime": {
           "test": "one-way ANOVA",
           "k_groups": 4,
+          "levels": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
           "stat": 4.38,
           "p": 0.00482,
           "effect": 0.036,
@@ -850,6 +872,11 @@
         "absence_level": {
           "test": "one-way ANOVA",
           "k_groups": 3,
+          "levels": [
+            "high",
+            "low",
+            "medium"
+          ],
           "stat": 9.85,
           "p": 6.86e-05,
           "effect": 0.053,
@@ -861,14 +888,19 @@
         },
         "failures": {
           "test": "one-way ANOVA",
-          "k_groups": 4,
-          "stat": 11.49,
-          "p": 3.3e-07,
+          "k_groups": 3,
+          "levels": [
+            "0",
+            "1",
+            "2+"
+          ],
+          "stat": 17.19,
+          "p": 7.52e-08,
           "effect": 0.089,
           "effect_name": "eta²",
-          "kruskal_H": 34.17,
-          "p_kruskal": 1.82e-07,
-          "p_holm": 2.31e-06,
+          "kruskal_H": 33.85,
+          "p_kruskal": 4.47e-08,
+          "p_holm": 5.26e-07,
           "significant": true
         }
       },
@@ -1250,6 +1282,27 @@
       "corr_G2_G3_exclude_dropout": 0.934,
       "corr_absences_G3_exclude_dropout": -0.196,
       "corr_failures_G3_exclude_dropout": -0.388
+    }
+  },
+  "subject_paired": {
+    "por": {
+      "n_a": 395,
+      "n_b": 649,
+      "n_duplicate_keys_a": 8,
+      "n_duplicate_keys_b": 23,
+      "n_matched": 358,
+      "n_pairs": 324,
+      "mean_G3_a": 11.58,
+      "mean_G3_b": 12.84,
+      "diff": -1.26,
+      "ci95": [
+        -1.56,
+        -0.96
+      ],
+      "p_ttest": 2.65e-15,
+      "p_wilcoxon": 1.22e-14,
+      "significant": true,
+      "corr_G3": 0.589
     }
   },
   "regression": {

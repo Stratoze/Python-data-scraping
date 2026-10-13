@@ -55,7 +55,7 @@ bên trong vào `data/raw/`. File raw không bao giờ bị sửa sau đó.
 | `student-mat.csv` | 395 | 33 | Phân tích chính (môn Toán) |
 | `student-por.csv` | 649 | 33 | Đối chứng / so sánh (môn Bồ Đào Nha) |
 
-`data_processor.py` — `fetch_uci_raw` (lines 165–178)
+`data_processor.py` — `fetch_uci_raw` (lines 179–192)
 
 ```python
 def fetch_uci_raw(raw_dir: Path, url: str = UCI_ZIP_URL) -> list[Path]:
@@ -79,9 +79,19 @@ mô tả của UCI (395 / 649 học sinh, 33 thuộc tính).
 
 ### 3.2 Cào dữ liệu PISA từ Wikipedia
 
-**Đã làm gì:**
-1. `requests.get` tải HTML của [bài viết PISA](https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment) (không cần trình duyệt vì bảng nằm sẵn trong HTML).
-2. `BeautifulSoup` tìm mọi `table.wikitable` và giữ 2 loại bảng:
+**Bước 1 — Khảo sát trực tiếp trên trình duyệt bằng DevTools (Console, F12):**
+Trước khi viết mã nguồn cào tự động bằng Python, cấu trúc bảng trên Wikipedia đã được khảo sát trực tiếp trong trình duyệt Chrome/Edge:
+1. Mở bài viết Wikipedia PISA, bấm **F12 → chuyển sang tab Console**.
+2. Chạy đoạn mã JavaScript DOM để quét toàn bộ 12 bảng `table.wikitable` trên trang nhằm xác định chính xác vị trí các bảng cần lấy:
+   - Bảng index 1, 2, 3: Bảng xếp hạng PISA 2025 mới nhất (Khoa học, Toán, Đọc hiểu);
+   - Bảng index 5, 6, 7: Bảng so sánh lịch sử 2000–2022 qua các kỳ thi của 3 môn (dạng bảng ngang wide format).
+3. Chạy lệnh trích xuất thử nghiệm `copy(...)` để sao chép bảng Toán 2025 sang CSV và lưu vào `data/raw/pisa_manual_check.csv` (92 dòng) làm minh chứng đối chiếu thủ công.
+
+![Khảo sát bảng PISA qua DevTools Console](images/05_devtools_console.png)
+
+**Bước 2 — Chuyển sang pipeline Python tự động & tái lập được (`requests` + `BeautifulSoup`):**
+1. `requests.get` tải HTML của [bài viết PISA](https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment) (không cần mở trình duyệt khi chạy script vì bảng nằm sẵn trong mã nguồn HTML tĩnh).
+2. `BeautifulSoup` bóc tách DOM và giữ 2 loại bảng mục tiêu:
    - **summary**: bảng xếp hạng mới nhất (`Rank | Country/economy | Score`), mỗi môn 1 bảng con;
    - **comparison**: "Rankings comparison 2000–2022", mỗi nước 1 dòng với cặp `score, rank` theo từng năm (chuyển từ dạng rộng sang dạng dài).
 3. Kết quả (2342 dòng, giữ nguyên chuỗi gốc của trang) lưu vào `data/raw/pisa_reference.csv`.
@@ -93,8 +103,9 @@ mô tả của UCI (395 / 649 học sinh, 33 thuộc tính).
 | Thời điểm cào (UTC) | 2026-10-13T06:44:49+00:00 |
 | Số dòng thô | 2342 |
 | Giấy phép | CC BY-SA 4.0 (Wikipedia) |
-
-`data_processor.py` — `scrape_pisa_table` (lines 301–339)
+| User-Agent | `P1-edu-project/1.0 (https://github.com/Stratoze/Python-data-scraping; mailto:vohoangquocminh2k5@gmail.com) student coursework` |
+| File đối chiếu thủ công | `data/raw/pisa_manual_check.csv` (92 dòng qua DevTools) |
+`data_processor.py` — `scrape_pisa_table` (lines 315–353)
 
 ```python
 def scrape_pisa_table(url: str = PISA_URL, out_csv: Path | None = None,
@@ -138,7 +149,7 @@ def scrape_pisa_table(url: str = PISA_URL, out_csv: Path | None = None,
     return df
 ```
 
-`data_processor.py` — `_parse_pisa_html` (lines 189–243)
+`data_processor.py` — `_parse_pisa_html` (lines 203–257)
 
 ```python
 def _parse_pisa_html(html: str) -> pd.DataFrame:
@@ -206,7 +217,7 @@ không đạt thì bị loại và giữ nguyên cache cũ:
 - mọi điểm nằm trong [200, 700];
 - mỗi (nguồn, môn, năm) có ≥ 30 nước có điểm, hạng là số, không trùng nước và có đúng 1 dòng trung bình OECD.
 
-`data_processor.py` — `validate_pisa_raw` (lines 250–282)
+`data_processor.py` — `validate_pisa_raw` (lines 264–296)
 
 ```python
 def validate_pisa_raw(df: pd.DataFrame) -> None:
@@ -250,7 +261,7 @@ Bỏ chú thích (`[41]`) và dấu `*` cuối tên nước, `—` (không tham 
 sang số, "International Average (OECD)" đổi tên thành `OECD average`. Kết quả: 1662 dòng trong
 `data/processed/pisa_clean.csv`.
 
-`data_processor.py` — `clean_pisa` (lines 342–358)
+`data_processor.py` — `clean_pisa` (lines 356–372)
 
 ```python
 def clean_pisa(raw: pd.DataFrame) -> pd.DataFrame:
@@ -302,7 +313,7 @@ Nước có trong bảng OECD nhưng thiếu trong bảng Wikipedia: mathematics
 (suy ra từ cột mức thay đổi của OECD) khớp trong phạm vi làm tròn, trừ các dòng ghi ở cột không khớp, và các dòng đó không
 ảnh hưởng đến Bồ Đào Nha. Các kỳ cũ hơn (2000–2018) không có trong bảng OECD này nên vẫn chỉ dựa vào Wikipedia.
 
-`data_processor.py` — `cross_check_pisa` (lines 361–402)
+`data_processor.py` — `cross_check_pisa` (lines 375–416)
 
 ```python
 def cross_check_pisa(pisa: pd.DataFrame, oecd: pd.DataFrame) -> dict:
@@ -353,7 +364,7 @@ def cross_check_pisa(pisa: pd.DataFrame, oecd: pd.DataFrame) -> dict:
 
 Cấu hình (tuple, dict mapping, list of dicts) — code thật:
 
-`data_processor.py` (lines 27–101)
+`data_processor.py` (lines 28–108)
 
 ```python
 # Threshold config as tuples (immutable, per rubric)
@@ -374,6 +385,10 @@ PISA_MIN_COUNTRIES, PISA_SCORE_MIN, PISA_SCORE_MAX = PISA_CHECKS
 ALPHA = 0.05
 BINARY_TEST_COLS = ["internet", "famsup", "schoolsup", "paid"]
 MULTI_TEST_COLS = ["studytime", "absence_level", "failures"]
+# Sparse levels merged before ANOVA/Kruskal: failures 2 and 3 have ~12 students each -> one "2+" group
+TEST_LEVEL_CAP = {"failures": 2}
+# Chart 1 bars with fewer students are drawn hatched: their mean is not reliable
+MIN_RELIABLE_N = 10
 CORR_TEST_COLS = ["G1", "G2", "studytime", "failures", "absences", "famsup_bin"]
 
 # Columns identifying the same student in student-mat and student-por (student-merge.R)
@@ -404,6 +419,8 @@ VAR_DESCRIPTIONS = {
     "schoolsup": "Extra educational support from school (yes/no)",
     "famsup": "Family educational support (yes/no)",
     "paid": "Extra paid classes within the course subject (yes/no)",
+    "avg_grade": "Mean of G1, G2, G3 (descriptive only: contains target G3, DO NOT use as predictor)",
+    "avg_g1g2": "Mean of G1 and G2 (mid-year performance; safe for early prediction)",
 }
 
 # Valid value domain per numeric column (from data/raw/student.txt)
@@ -435,7 +452,7 @@ SAMPLE_STUDENTS = [
 
 Bốn hàm cơ bản:
 
-`data_processor.py` — `convert_yes_no` (lines 107–114)
+`data_processor.py` — `convert_yes_no` (lines 114–121)
 
 ```python
 def convert_yes_no(value) -> int | None:
@@ -448,7 +465,7 @@ def convert_yes_no(value) -> int | None:
     return None
 ```
 
-`data_processor.py` — `calc_pass_fail` (lines 117–119)
+`data_processor.py` — `calc_pass_fail` (lines 124–126)
 
 ```python
 def calc_pass_fail(g3: float, pass_mark: int = PASS_MARK) -> str:
@@ -456,7 +473,7 @@ def calc_pass_fail(g3: float, pass_mark: int = PASS_MARK) -> str:
     return "pass" if float(g3) >= pass_mark else "fail"
 ```
 
-`data_processor.py` — `classify_absences` (lines 122–129)
+`data_processor.py` — `classify_absences` (lines 129–136)
 
 ```python
 def classify_absences(n: int) -> str:
@@ -469,11 +486,15 @@ def classify_absences(n: int) -> str:
     return "high"
 ```
 
-`data_processor.py` — `calc_average_grade` (lines 132–134)
+`data_processor.py` — `calc_average_grade` (lines 139–145)
 
 ```python
 def calc_average_grade(g1: float, g2: float, g3: float) -> float:
-    """Mean of the three grade periods (descriptive only: contains G3)."""
+    """Mean of the three grade periods: (G1 + G2 + G3) / 3.
+
+    WARNING: Contains the target G3. Descriptive only; NEVER use as a predictor
+    for G3 to prevent target leakage. For early prediction, use avg_g1g2 instead.
+    """
     return (float(g1) + float(g2) + float(g3)) / 3.0
 ```
 
@@ -494,9 +515,8 @@ Số dòng vào: 1044 (cả 2 môn) → số dòng ra: 1044.
 | 4b. Xoá dòng thiếu cột bắt buộc | `dropna(subset=REQUIRED_COLS)` | 0 |
 
 Cột tạo thêm: `pass_fail` (G3 ≥ 10), `absence_level` (thấp 0–3 / trung bình 4–9 / cao ≥ 10),
-`avg_grade` (G1+G2+G3)/3 (chỉ để mô tả — có chứa G3), `avg_g1g2`, `risk_group`, và 6 cột cờ bất thường.
-
-`data_processor.py` — `StudentDataProcessor.load_data` (lines 617–628)
+`avg_grade` (G1+G2+G3)/3 (chỉ để mô tả: chứa biến mục tiêu G3 nên KHÔNG dùng làm biến dự báo để tránh rò rỉ dữ liệu / target leakage; dùng `avg_g1g2` khi dự báo sớm), `avg_g1g2`, `risk_group`, và 6 cột cờ bất thường.
+`data_processor.py` — `StudentDataProcessor.load_data` (lines 667–678)
 
 ```python
 def load_data(self) -> pd.DataFrame:
@@ -513,7 +533,7 @@ def load_data(self) -> pd.DataFrame:
     return self.df
 ```
 
-`data_processor.py` — `StudentDataProcessor.clean_data` (lines 631–694)
+`data_processor.py` — `StudentDataProcessor.clean_data` (lines 681–744)
 
 ```python
 def clean_data(self) -> pd.DataFrame:
@@ -643,9 +663,9 @@ Mẫu hình bỏ thi ở cả 2 môn: mat: 38/38 em nghi bỏ thi có absences =
 **Diễn giải:**
 - Ở mọi kịch bản đã bỏ các số 0, vắng học đều có quan hệ **âm và có ý nghĩa** với G3 ở cả 2 môn. Kết luận vẫn đúng dù giả định bỏ thi đúng hay sai, và dù absences = 0 là thật hay do không ghi nhận.
 - Chỉ kịch bản "toàn bộ học sinh" làm mờ hoặc che mất ảnh hưởng — đúng là sự méo mó do các dòng G3 = 0 gây ra.
-- Mẫu hình bỏ thi (G3 = 0 luôn đi kèm absences = 0) xuất hiện độc lập ở cả 2 môn, củng cố cách hiểu "không dự thi / nghỉ học" thay vì điểm thật.
+- Mẫu hình bỏ thi (G3 = 0 luôn đi kèm absences = 0) xuất hiện ở cả 2 môn, củng cố cách hiểu "không dự thi / nghỉ học" thay vì điểm thật.
 
-`data_processor.py` — `StudentDataProcessor._sensitivity` (lines 752–787)
+`data_processor.py` — `StudentDataProcessor._sensitivity` (lines 804–839)
 
 ```python
 def _sensitivity(self) -> dict:
@@ -716,6 +736,8 @@ Mỗi ô là *G3 trung bình ± độ lệch chuẩn (n học sinh)*. In đậm 
 | 2 | 6.24 ± 4.84 (n=17) | **8.83** ± 3.01 (n=12) |
 | 3 | 5.69 ± 4.19 (n=16) | **8.27** ± 1.68 (n=11) |
 
+Mức thay đổi G3 trung bình giữa 2 mức liền nhau (exclude_dropout): 0→1: -1.79, 1→2: -1.32, 2→3: -0.56. **Lần trượt đầu tiên** đi kèm mức tụt điểm lớn nhất; các lần sau vẫn tụt nhưng ít hơn. Lưu ý nhóm ít học sinh: 2 (n = 12), 3 (n = 11).
+
 **Theo internet ở nhà / hỗ trợ gia đình / hỗ trợ của trường / học thêm có trả phí**
 
 | Nhóm | all | exclude_dropout |
@@ -732,7 +754,7 @@ Mỗi ô là *G3 trung bình ± độ lệch chuẩn (n học sinh)*. In đậm 
 Lưu ý: học sinh `schoolsup = có` điểm thấp hơn vì trường *dành* hỗ trợ cho em học yếu (quan hệ nhân quả ngược) —
 đây không phải bằng chứng hỗ trợ làm giảm điểm.
 
-`data_processor.py` — `_grp` (lines 408–413)
+`data_processor.py` — `_grp` (lines 422–427)
 
 ```python
 def _grp(df: pd.DataFrame, col: str) -> dict:
@@ -743,7 +765,7 @@ def _grp(df: pd.DataFrame, col: str) -> dict:
             for k, v in g.iterrows()}
 ```
 
-`data_processor.py` — `_scope_stats` (lines 519–544)
+`data_processor.py` — `_scope_stats` (lines 569–594)
 
 ```python
 def _scope_stats(df: pd.DataFrame) -> dict:
@@ -783,7 +805,7 @@ có ý nghĩa thống kê khi p < α = 0.05.
 | Phương pháp | Dùng cho | Vì sao chọn |
 |---|---|---|
 | Welch t-test | biến có/không (internet, famsup, schoolsup, paid) | So 2 trung bình mà không giả định phương sai bằng nhau (cỡ nhóm chênh nhiều, vd 58 vs 299) |
-| ANOVA một chiều (F) | studytime (4 mức), mức vắng (3), số lần trượt (4) | So ≥ 3 trung bình trong một kiểm định |
+| ANOVA một chiều (F) | studytime (4 mức), mức vắng (3), số lần trượt (3: 0, 1, 2+) | So ≥ 3 trung bình trong một kiểm định. Mức trượt 2 và 3 mỗi mức chỉ khoảng chục học sinh nên được gộp thành một nhóm "2+" khi kiểm định (bảng mô tả ở mục 7 vẫn giữ đủ 4 mức) |
 | Kruskal–Wallis (H) | giống ANOVA | Kiểm tra lại dựa trên thứ hạng, không cần giả định điểm phân phối chuẩn |
 | Hiệu chỉnh Holm–Bonferroni | cả 7 kiểm định cùng lúc | Làm nhiều kiểm định thì dễ ra "có ý nghĩa" giả; Holm điều chỉnh p để cả nhóm kiểm định giữ sai số 5% |
 | Độ lớn hiệu ứng: Cohen's d / eta² | mọi kiểm định | p chỉ cho biết "thật hay không"; effect size cho biết "lớn cỡ nào". d: 0.2 nhỏ, 0.5 vừa, 0.8 lớn. eta² = tỉ lệ phương sai G3 được giải thích: 0.01 nhỏ, 0.06 vừa, 0.14 lớn |
@@ -797,9 +819,9 @@ có ý nghĩa thống kê khi p < α = 0.05.
 | `famsup` | Welch t-test | có 11.35 (n=219) vs không 11.8 (n=138) | t = -1.28 (df 296.4) | -0.45 [-1.13, 0.24] | 0.202 | 0.404 | Cohen's d = -0.14 | ❌ không |
 | `schoolsup` | Welch t-test | có 9.62 (n=50) vs không 11.83 (n=307) | t = -5.46 (df 76.9) | -2.21 [-3.02, -1.41] | < 0.001 | < 0.001 | Cohen's d = -0.71 | ✅ có |
 | `paid` | Welch t-test | có 11.43 (n=173) vs không 11.61 (n=184) | t = -0.55 (df 354.1) | -0.19 [-0.86, 0.48] | 0.585 | 0.585 | Cohen's d = -0.06 | ❌ không |
-| `studytime` | one-way ANOVA | 4 nhóm | F = 4.38 | Kruskal–Wallis H = 11.18, p 0.011 | 0.005 | 0.019 | eta² = 0.036 | ✅ có |
-| `absence_level` | one-way ANOVA | 3 nhóm | F = 9.85 | Kruskal–Wallis H = 19.1, p < 0.001 | < 0.001 | < 0.001 | eta² = 0.053 | ✅ có |
-| `failures` | one-way ANOVA | 4 nhóm | F = 11.49 | Kruskal–Wallis H = 34.17, p < 0.001 | < 0.001 | < 0.001 | eta² = 0.089 | ✅ có |
+| `studytime` | one-way ANOVA | 4 nhóm (1, 2, 3, 4) | F = 4.38 | Kruskal–Wallis H = 11.18, p 0.011 | 0.005 | 0.019 | eta² = 0.036 | ✅ có |
+| `absence_level` | one-way ANOVA | 3 nhóm (high, low, medium) | F = 9.85 | Kruskal–Wallis H = 19.1, p < 0.001 | < 0.001 | < 0.001 | eta² = 0.053 | ✅ có |
+| `failures` | one-way ANOVA | 3 nhóm (0, 1, 2+) | F = 17.19 | Kruskal–Wallis H = 33.85, p < 0.001 | < 0.001 | < 0.001 | eta² = 0.089 | ✅ có |
 
 **Tương quan Pearson với G3 (p-value và CI 95% của r):**
 
@@ -822,7 +844,7 @@ có ý nghĩa thống kê khi p < α = 0.05.
 **Vì sao tin được:** kiểm định dùng `scipy.stats` (cài đặt chuẩn), dùng biến thể không cần phương sai bằng nhau và
 phi tham số ở chỗ giả định đáng ngờ, và đã hiệu chỉnh cho nhiều kiểm định.
 
-`data_processor.py` — `_group_tests` (lines 433–473)
+`data_processor.py` — `_group_tests` (lines 447–491)
 
 ```python
 def _group_tests(df: pd.DataFrame) -> dict:
@@ -851,13 +873,17 @@ def _group_tests(df: pd.DataFrame) -> dict:
                       "p": _p(res.pvalue), "effect": round(float(diff / pooled_sd), 2),
                       "effect_name": "Cohen's d"}
     for col in MULTI_TEST_COLS:
-        groups = [g["G3"].astype(float).to_numpy() for _, g in df.groupby(col)]
+        cap = TEST_LEVEL_CAP.get(col)
+        levels = df[col].clip(upper=cap) if cap is not None else df[col]
+        by = df.groupby(levels)
+        groups = [g["G3"].astype(float).to_numpy() for _, g in by]
         anova = stats.f_oneway(*groups)
         kw = stats.kruskal(*groups)
         grand = df["G3"].mean()
         ss_between = sum(len(g) * (g.mean() - grand) ** 2 for g in groups)
         ss_total = float(((df["G3"] - grand) ** 2).sum())
         tests[col] = {"test": "one-way ANOVA", "k_groups": len(groups),
+                      "levels": [f"{k}+" if cap is not None and k == cap else str(k) for k in by.groups],
                       "stat": round(float(anova.statistic), 2), "p": _p(anova.pvalue),
                       "effect": round(float(ss_between / ss_total), 3), "effect_name": "eta²",
                       "kruskal_H": round(float(kw.statistic), 2), "p_kruskal": _p(kw.pvalue)}
@@ -868,7 +894,7 @@ def _group_tests(df: pd.DataFrame) -> dict:
     return tests
 ```
 
-`data_processor.py` — `_holm` (lines 424–430)
+`data_processor.py` — `_holm` (lines 438–444)
 
 ```python
 def _holm(pvals: dict[str, float]) -> dict[str, float]:
@@ -880,7 +906,7 @@ def _holm(pvals: dict[str, float]) -> dict[str, float]:
     return out
 ```
 
-`data_processor.py` — `_corr_tests` (lines 476–484)
+`data_processor.py` — `_corr_tests` (lines 494–502)
 
 ```python
 def _corr_tests(df: pd.DataFrame) -> dict:
@@ -942,9 +968,10 @@ R² = tỉ lệ biến động của G3 mà mô hình giải thích được (0 
 - Hỗ trợ gia đình (`famsup`): b = -0.52 (p 0.142) → không đo được tác động.
 - Các yếu tố nền chỉ giải thích R² = 0.234 (mat): phần lớn khác biệt giữa học sinh *không* được giải thích bởi các biến này.
 - Khi đã biết G1, G2 (mô hình B, R² = 0.937), chỉ còn absences (+1 buổi vắng) giữ tác động riêng có ý nghĩa ở mat: điểm giữa kỳ đã chứa gần như toàn bộ thông tin.
+- G1 và G2 tương quan rất mạnh với nhau (r = 0.902), nên mô hình B không tách được tác động riêng của từng điểm: chỉ đọc R² và tác động chung của 2 điểm giữa kỳ, không so sánh b(G1) với b(G2).
 - Hồi quy chỉ điều chỉnh cho các biến có trong dữ liệu; kết quả là quan hệ tương quan, không phải nhân quả.
 
-`data_processor.py` — `_ols` (lines 487–515)
+`data_processor.py` — `_ols` (lines 505–533)
 
 ```python
 def _ols(df: pd.DataFrame, cols: list[str]) -> dict:
@@ -978,7 +1005,7 @@ def _ols(df: pd.DataFrame, cols: list[str]) -> dict:
     }
 ```
 
-`data_processor.py` — `StudentDataProcessor._regression` (lines 739–750)
+`data_processor.py` — `StudentDataProcessor._regression` (lines 791–802)
 
 ```python
 def _regression(self) -> dict:
@@ -1015,16 +1042,17 @@ hợp của hai biến phân loại (mức thời gian tự học × có interne
 | Cột cam | Học sinh **có** internet ở nhà |
 | Thanh đen (error bar) | Khoảng tin cậy 95% của trung bình: mean ± 1.96·std/√n. Thanh càng dài thì trung bình càng kém chắc chắn |
 | Nhãn `n=` | Số học sinh trong cột đó |
+| Cột gạch chéo, nhạt màu | Dưới 10 học sinh: trung bình không đáng tin, không rút kết luận từ cột này |
 | Chú giải (legend) | Màu → nhóm internet |
 
 **Cách đọc:** so chiều cao cột *cùng với* thanh sai số; nếu 2 thanh chồng lên nhau nhiều thì chênh lệch không đáng tin.
-Các nhóm rất ít học sinh: studytime 4 & internet=không (n=3), studytime 3 & internet=không (n=5).
+Các cột gạch chéo (n < 10): studytime 4 & internet=không (n=3), studytime 3 & internet=không (n=5).
 
 **Kết luận:** có internet 11.68 vs không có 10.71, nhưng chênh lệch này
 **không có ý nghĩa** sau hiệu chỉnh Holm (mục 7.1); các thanh sai số chồng lên nhau trên biểu đồ cũng cho thấy điều đó.
 Thời gian tự học chỉ có xu hướng tăng nhẹ (r = 0.127).
 
-`data_processor.py` — `StudentDataProcessor._plot_bar` (lines 848–877)
+`data_processor.py` — `StudentDataProcessor._plot_bar` (lines 912–946)
 
 ```python
 def _plot_bar(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
@@ -1045,18 +1073,23 @@ def _plot_bar(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
         bars = ax.bar(xs, means, width, yerr=cis, capsize=4, label=net,
                       color=f"C{k}", edgecolor="black", linewidth=0.5)
         for b, n, ci in zip(bars, ns, cis):
+            if n < MIN_RELIABLE_N:
+                b.set_alpha(0.4)
+                b.set_hatch("//")
             ax.text(b.get_x() + b.get_width() / 2, b.get_height() + ci + 0.2,
                     f"n={n}", ha="center", va="bottom", fontsize=8)
     ax.set_xticks(range(len(levels)), ["<2h", "2-5h", "5-10h", ">10h"], rotation=0)
     ax.set_title(f"Mean final grade (G3) by weekly studytime and internet access\n"
-                 f"(excluding {n_drop} dropout suspects with G3 = 0; bars = 95% CI)")
+                 f"(excluding {n_drop} dropout suspects with G3 = 0; bars = 95% CI; hatched = n < {MIN_RELIABLE_N})")
     ax.set_xlabel("Weekly studytime")
     ax.set_ylabel("Mean G3 (0-20)")
     ax.set_ylim(0, 20)
-    ax.legend(title="Internet at home", loc="upper left")
+    handles, _ = ax.get_legend_handles_labels()
+    handles.append(Patch(facecolor="white", edgecolor="black", hatch="//",
+                         label=f"n < {MIN_RELIABLE_N}: unreliable"))
+    ax.legend(handles=handles, title="Internet at home", loc="upper left")
     fig.tight_layout()
-    fig.savefig(self.images_dir / "01_bar_studytime_internet.png", dpi=150)
-    plt.close(fig)
+    self._save_fig(fig, "01_bar_studytime_internet.png")
 ```
 
 ### 8.2 Biểu đồ 2 — Histogram điểm cuối kỳ (G3)
@@ -1080,7 +1113,7 @@ def _plot_bar(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
 khoảng trống ở 1–3 điểm (0 học sinh) — bằng chứng trực quan rằng điểm 0 là hiện tượng khác, không phải đuôi thấp
 của phân phối điểm.
 
-`data_processor.py` — `StudentDataProcessor._plot_hist` (lines 879–901)
+`data_processor.py` — `StudentDataProcessor._plot_hist` (lines 948–969)
 
 ```python
 def _plot_hist(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
@@ -1104,8 +1137,7 @@ def _plot_hist(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
     ax.set_ylabel("Students")
     ax.legend()
     fig.tight_layout()
-    fig.savefig(self.images_dir / "02_hist_g3.png", dpi=150)
-    plt.close(fig)
+    self._save_fig(fig, "02_hist_g3.png")
 ```
 
 ### 8.3 Biểu đồ 3 — Heatmap tương quan
@@ -1129,7 +1161,7 @@ Ghi chú: `famsup` là biến 0/1 nên r của nó là tương quan point-biseri
 
 **Kết luận — tương quan với G3, từ mạnh đến yếu:** G2 +0.966, G1 +0.892, failures -0.294, absences -0.213, studytime +0.127, famsup -0.067.
 
-`data_processor.py` — `StudentDataProcessor._plot_heatmap` (lines 903–922)
+`data_processor.py` — `StudentDataProcessor._plot_heatmap` (lines 971–989)
 
 ```python
 def _plot_heatmap(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
@@ -1150,8 +1182,7 @@ def _plot_heatmap(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
     ax.set_title(f"Pearson correlation (excluding {n_drop} dropout suspects, n={len(core)})")
     fig.colorbar(im, ax=ax, shrink=0.8)
     fig.tight_layout()
-    fig.savefig(self.images_dir / "03_heatmap_corr.png", dpi=150)
-    plt.close(fig)
+    self._save_fig(fig, "03_heatmap_corr.png")
 ```
 
 ## 9. Rule cảnh báo sớm nguy cơ trượt
@@ -1163,7 +1194,7 @@ không bao giờ dùng G3), nên có thể đánh giá trung thực với kết 
 - medium (trung bình): G1 < 10 hoặc số lần trượt ≥ 1 hoặc vắng ≥ 10
 - low (thấp): còn lại
 
-`data_processor.py` — `classify_risk` (lines 137–151)
+`data_processor.py` — `classify_risk` (lines 148–162)
 
 ```python
 def classify_risk(row: pd.Series) -> str:
@@ -1194,7 +1225,7 @@ def classify_risk(row: pd.Series) -> str:
 - **Precision** = TP / (TP + FP) = 122 / 149 = **81.9%** số em bị cảnh báo thực sự trượt (CI 95% 74.9%–87.2%).
 - Tỉ lệ trượt theo nhóm: low 1.2%, medium 7.8%, high 81.9%.
 
-`data_processor.py` — `_risk_eval` (lines 555–574)
+`data_processor.py` — `_risk_eval` (lines 605–624)
 
 ```python
 def _risk_eval(df: pd.DataFrame) -> dict:
@@ -1235,7 +1266,7 @@ nhận dạng (`MERGE_KEYS`, giống `student-merge.R`) không xuất hiện tro
 - **Precision giảm** (66.0% so với 81.9%): báo động nhầm nhiều hơn. Một phần vì môn Bồ Đào Nha ít em trượt hơn (tỉ lệ trượt 25.4% so với 32.9%); precision luôn giảm khi kết quả cần bắt hiếm hơn.
 - Kết luận: rule là công cụ *sàng lọc* tốt (ít bỏ sót em trượt), không phải dự đoán chính xác; con số trung thực nên trích dẫn là con số holdout.
 
-`data_processor.py` — `_wilson` (lines 547–552)
+`data_processor.py` — `_wilson` (lines 597–602)
 
 ```python
 def _wilson(k: int, n: int) -> list[float]:
@@ -1246,7 +1277,7 @@ def _wilson(k: int, n: int) -> list[float]:
     return [round(float(ci.low), 4), round(float(ci.high), 4)]
 ```
 
-`data_processor.py` — `StudentDataProcessor._risk_holdout` (lines 789–805)
+`data_processor.py` — `StudentDataProcessor._risk_holdout` (lines 841–857)
 
 ```python
 def _risk_holdout(self) -> dict:
@@ -1278,7 +1309,7 @@ và nhóm "medium" có thực sự rủi ro hơn "low" không (nguy cơ tương 
 
 Nhóm medium trượt nhiều gấp nhiều lần nhóm low, cả trên dữ liệu dùng để đặt rule lẫn trên học sinh chưa từng thấy (kiểm định Fisher có ý nghĩa ở cả 2), trong khi vẫn thấp xa nhóm high. Vì vậy 3 nhóm đều mang thông tin và ứng với 3 hành động: **high → can thiệp ngay**, **medium → theo dõi**, **low → không cần can thiệp**. Precision/recall chính dùng nhóm high làm cảnh báo.
 
-`data_processor.py` — `_tier_eval` (lines 577–593)
+`data_processor.py` — `_tier_eval` (lines 627–643)
 
 ```python
 def _tier_eval(df: pd.DataFrame, actual: pd.Series) -> dict:
@@ -1318,10 +1349,29 @@ hiện bằng khoảng tin cậy, và hiệu năng được kiểm chứng trên
 | corr_absences_G3_exclude_dropout | -0.213 | -0.196 |
 | corr_failures_G3_exclude_dropout | -0.294 | -0.388 |
 
-Chiều của các tương quan chính (G2, vắng học, số lần trượt với G3) **giống nhau** ở cả 2 môn,
-nên kết luận chính lặp lại được trên một file dữ liệu khác. Lưu ý: nhiều học sinh có mặt ở cả 2 môn.
+Chiều của các tương quan chính (G2, vắng học, số lần trượt với G3) **giống nhau** ở cả 2 môn.
 
-`data_processor.py` — `StudentDataProcessor._subject_comparison` (lines 807–821)
+**2 file không phải 2 mẫu độc lập.** Ghép học sinh theo 13 cột nhận dạng (`MERGE_KEYS`, giống
+`student-merge.R`) tìm được **358** em có mặt ở cả 2 môn (8 dòng mat và 23 dòng por
+có key bị lặp trong cùng file nên không ghép chắc chắn được và bị bỏ ra). Vì vậy bảng trên so 2 nhóm chồng lấn nhau:
+việc 2 môn cho kết quả giống nhau một phần là do cùng học sinh được đo 2 lần, **chưa phải** kiểm chứng độc lập.
+Kiểm chứng độc lập thật sự là bản holdout chặt ở mục 9 (chỉ học sinh por không có trong mat, n = 275).
+
+**So sánh ghép cặp (cùng học sinh, 2 môn):** t-test ghép cặp (`scipy.stats.ttest_rel`) và Wilcoxon (không cần
+giả định phân phối chuẩn), bỏ các cặp có G3 = 0 ở ít nhất một môn.
+
+| Chỉ số | Giá trị |
+|---|---|
+| Cặp học sinh khớp được | 358 |
+| Cặp dùng để so (G3 > 0 ở cả 2 môn) | 324 |
+| G3 trung bình mat / por | 11.58 / 12.84 |
+| Chênh lệch mat − por [CI 95%] | -1.26 [-1.56, -0.96] |
+| p (t-test ghép cặp) / p (Wilcoxon) | < 0.001 / < 0.001 |
+| r(G3 mat, G3 por) của cùng học sinh | 0.589 |
+
+Cùng một học sinh, điểm môn Toán thấp hơn môn Bồ Đào Nha trung bình 1.26 điểm, chênh lệch **có ý nghĩa thống kê**.
+
+`data_processor.py` — `StudentDataProcessor._subject_comparison` (lines 859–873)
 
 ```python
 def _subject_comparison(self) -> dict:
@@ -1339,6 +1389,41 @@ def _subject_comparison(self) -> dict:
             "corr_failures_G3_exclude_dropout": round(float(core["failures"].corr(core["G3"])), 3),
         }
     return out
+```
+
+`data_processor.py` — `_paired_subjects` (lines 537–566)
+
+```python
+def _paired_subjects(clean: pd.DataFrame, a: str, b: str) -> dict:
+    """Same pupils in courses a and b: compare their G3 pairwise instead of as two independent groups.
+
+    Pupils are matched on MERGE_KEYS (as in student-merge.R). Keys that repeat inside one
+    course cannot be matched safely, so those rows are left out. Pairs where either
+    course is a dropout suspect (G3 = 0) are excluded from the grade comparison.
+    """
+    def unique_rows(subj: str) -> tuple[pd.DataFrame, int]:
+        g = clean[clean["subject"] == subj]
+        dup = g.duplicated(MERGE_KEYS, keep=False)
+        return g[~dup], int(dup.sum())
+
+    ga, dup_a = unique_rows(a)
+    gb, dup_b = unique_rows(b)
+    pairs = ga.merge(gb, on=MERGE_KEYS, suffixes=(f"_{a}", f"_{b}"))
+    ok = pairs[~pairs[f"dropout_suspect_{a}"] & ~pairs[f"dropout_suspect_{b}"]]
+    x, y = ok[f"G3_{a}"].astype(float), ok[f"G3_{b}"].astype(float)
+    t = stats.ttest_rel(x, y)
+    ci = t.confidence_interval(1 - ALPHA)
+    return {
+        "n_a": int((clean["subject"] == a).sum()), "n_b": int((clean["subject"] == b).sum()),
+        "n_duplicate_keys_a": dup_a, "n_duplicate_keys_b": dup_b,
+        "n_matched": int(len(pairs)), "n_pairs": int(len(ok)),
+        "mean_G3_a": round(float(x.mean()), 2), "mean_G3_b": round(float(y.mean()), 2),
+        "diff": round(float((x - y).mean()), 2),
+        "ci95": [round(float(ci.low), 2), round(float(ci.high), 2)],
+        "p_ttest": _p(t.pvalue), "p_wilcoxon": _p(stats.wilcoxon(x, y).pvalue),
+        "significant": bool(t.pvalue < ALPHA),
+        "corr_G3": round(float(x.corr(y)), 3),
+    }
 ```
 
 ### 10.2 PISA: Bồ Đào Nha so với trung bình OECD
@@ -1376,7 +1461,7 @@ bối cảnh **cấp quốc gia**; không bao giờ ghép với từng dòng h�
 
 Môn Toán: Bồ Đào Nha 454 điểm năm 2000 → 460 điểm năm 2025 (OECD 463).
 
-`data_processor.py` — `StudentDataProcessor._pisa_context` (lines 823–838)
+`data_processor.py` — `StudentDataProcessor._pisa_context` (lines 875–890)
 
 ```python
 def _pisa_context(self) -> dict:
@@ -1421,7 +1506,7 @@ là môn chính). Dữ liệu: `pisa_clean.csv` (1662 dòng), đã đối chiế
 460 điểm (2025, OECD 463). Lần đầu bắt kịp trung bình OECD vào năm 2015 và từ đó đi cùng nhịp với OECD.
 Vào thời điểm dữ liệu UCI (dải cam, kỳ gần nhất là 2006), Bồ Đào Nha thấp hơn trung bình OECD ở cả 3 môn.
 
-`data_processor.py` — `StudentDataProcessor._plot_pisa` (lines 924–953)
+`data_processor.py` — `StudentDataProcessor._plot_pisa` (lines 991–1019)
 
 ```python
 def _plot_pisa(self) -> None:
@@ -1452,8 +1537,7 @@ def _plot_pisa(self) -> None:
     fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, fontsize=9)
     fig.suptitle("PISA mean score: Portugal vs OECD average (source: Wikipedia, cross-checked with OECD)")
     fig.tight_layout(rect=(0, 0.07, 1, 1))
-    fig.savefig(self.images_dir / "04_pisa_portugal_oecd.png", dpi=150)
-    plt.close(fig)
+    self._save_fig(fig, "04_pisa_portugal_oecd.png")
 ```
 
 ## 11. Pipeline (OOP) và đầu ra
@@ -1539,7 +1623,7 @@ if __name__ == "__main__":
     main()
 ```
 
-`data_processor.py` — `StudentDataProcessor.analyze` (lines 697–737)
+`data_processor.py` — `StudentDataProcessor.analyze` (lines 747–789)
 
 ```python
 def analyze(self) -> dict:
@@ -1563,6 +1647,8 @@ def analyze(self) -> dict:
         "risk_eval": {"all": _risk_eval(df), "exclude_dropout": _risk_eval(core),
                       **self._risk_holdout()},
         "subject_comparison": self._subject_comparison(),
+        "subject_paired": {subj: _paired_subjects(self.clean, self.primary_subject, subj)
+                           for subj in sorted(set(self.clean["subject"]) - {self.primary_subject})},
         "regression": self._regression(),
         "sensitivity": self._sensitivity(),
         "dropout_profile": {
@@ -1585,25 +1671,30 @@ def analyze(self) -> dict:
     return self.results
 ```
 
-`data_processor.py` — `StudentDataProcessor.export_results` (lines 956–972)
+`data_processor.py` — `StudentDataProcessor.export_results` (lines 1022–1043)
 
 ```python
 def export_results(self) -> tuple[Path, Path]:
     assert self.clean is not None and self.results, "run clean+analyze first"
     self.processed_dir.mkdir(parents=True, exist_ok=True)
     cleaned_csv = self.processed_dir / "cleaned_students.csv"
+    cleaned_mat_csv = self.processed_dir / "cleaned_students_mat.csv"
+    cleaned_por_csv = self.processed_dir / "cleaned_students_por.csv"
     summary_json = self.processed_dir / "summary.json"
+    pisa_csv = self.processed_dir / "pisa_clean.csv"
     try:
         self.clean.to_csv(cleaned_csv, index=False)
+        self.clean[self.clean["subject"] == "mat"].to_csv(cleaned_mat_csv, index=False)
+        self.clean[self.clean["subject"] == "por"].to_csv(cleaned_por_csv, index=False)
         if self.pisa_clean is not None:
-            self.pisa_clean.to_csv(self.processed_dir / "pisa_clean.csv", index=False)
+            self.pisa_clean.to_csv(pisa_csv, index=False)
+        with open(summary_json, "w", encoding="utf-8") as f:
+            json.dump(self.results, f, ensure_ascii=False, indent=2)
     except PermissionError as exc:
         raise PermissionError(
-            f"Không thể ghi vào '{self.processed_dir}' vì file đang được mở trong Excel/WPS. "
-            f"Hãy đóng file đó rồi chạy lại."
+            f"Cannot write output files in '{self.processed_dir}': file is locked by another program (Excel/WPS). "
+            f"Please close the file and retry (Đóng file trong Excel/WPS rồi chạy lại)."
         ) from exc
-    with open(summary_json, "w", encoding="utf-8") as f:
-        json.dump(self.results, f, ensure_ascii=False, indent=2)
     return cleaned_csv, summary_json
 ```
 

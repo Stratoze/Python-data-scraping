@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parent
 IMG = {"bar": "images/01_bar_studytime_internet.png",
        "hist": "images/02_hist_g3.png",
        "heat": "images/03_heatmap_corr.png",
-       "pisa": "images/04_pisa_portugal_oecd.png"}
+       "pisa": "images/04_pisa_portugal_oecd.png",
+       "devtools": "images/05_devtools_console.png"}
 STUDY_LABEL = {"1": "<2h", "2": "2-5h", "3": "5-10h", "4": ">10h"}
 SUBJECT_ORDER = ["mathematics", "reading", "science"]
 
@@ -93,7 +94,7 @@ def _facts(proc: dp.StudentDataProcessor) -> dict:
         "n_pisa_clean": len(proc.pisa_clean) if proc.pisa_clean is not None else 0,
         "abs_monotonic": ab["low"]["mean"] > ab["medium"]["mean"] > ab["high"]["mean"],
         "small_groups": sorted(((k, v["n"]) for k, v in E["by_studytime_internet"].items()
-                                if v["n"] < 10), key=lambda kv: kv[1]),
+                                if v["n"] < dp.MIN_RELIABLE_N), key=lambda kv: kv[1]),
         "gap_1_3": int(mat["G3"].between(1, 3).sum()),
         "mode_g3": int(core["G3"].mode().iloc[0]),
         "corr_g3_sorted": sorted(corr_g3.items(), key=lambda kv: -abs(kv[1])),
@@ -128,7 +129,85 @@ def _facts(proc: dp.StudentDataProcessor) -> dict:
                            if r["regression"][subj]["factors_plus_grades"]["coef"][c]["significant"]],
         "tier_ok": all(r["risk_eval"][k]["tiers"]["medium_vs_low"]["significant"]
                        for k in ("all", "holdout_por_only") if k in r["risk_eval"]),
+        "fail_steps": _fail_steps(E["by_failures"]),
+        "pair": r["subject_paired"].get("por"),
+        "ho_n": r["risk_eval"].get("holdout_por_only", {}).get("n"),
     }
+
+
+def _fail_steps(by_failures: dict) -> list[tuple[str, str, float, int]]:
+    """Change in mean G3 between consecutive failure counts: (from, to, diff, n of 'to' group)."""
+    keys = sorted(by_failures, key=int)
+    return [(a, b, round(by_failures[b]["mean"] - by_failures[a]["mean"], 2), by_failures[b]["n"])
+            for a, b in zip(keys, keys[1:])]
+
+
+def _fail_steps_text(steps: list, vi: bool) -> str:
+    parts = ", ".join(f"{a}→{b}: {d:+.2f}" for a, b, d, _ in steps)
+    first_biggest = bool(steps) and all(abs(steps[0][2]) > abs(d) for _, _, d, _ in steps[1:])
+    small = ", ".join(f"{b} (n = {n})" for _, b, _, n in steps if n < 20)
+    if vi:
+        head = f"Mức thay đổi G3 trung bình giữa 2 mức liền nhau (exclude_dropout): {parts}."
+        tail = (" **Lần trượt đầu tiên** đi kèm mức tụt điểm lớn nhất; các lần sau vẫn tụt nhưng ít hơn."
+                if first_biggest else " Mức tụt không lớn nhất ở lần trượt đầu tiên.")
+        note = f" Lưu ý nhóm ít học sinh: {small}." if small else ""
+    else:
+        head = f"Change in mean G3 between consecutive levels (exclude_dropout): {parts}."
+        tail = (" The **first failure** comes with the biggest drop; later failures still lower G3 but by less."
+                if first_biggest else " The biggest drop is not at the first failure.")
+        note = f" Small groups: {small}." if small else ""
+    return head + tail + note
+
+
+def _paired_text(f: dict, vi: bool) -> str:
+    """Section 10.1: why mat/por are not independent + paired G3 comparison of the same pupils."""
+    p = f["pair"]
+    sig = p["significant"]
+    if vi:
+        rows = [["Cặp học sinh khớp được", p["n_matched"]],
+                ["Cặp dùng để so (G3 > 0 ở cả 2 môn)", p["n_pairs"]],
+                ["G3 trung bình mat / por", f"{p['mean_G3_a']} / {p['mean_G3_b']}"],
+                ["Chênh lệch mat − por [CI 95%]", f"{p['diff']:+.2f} [{p['ci95'][0]}, {p['ci95'][1]}]"],
+                ["p (t-test ghép cặp) / p (Wilcoxon)", f"{_fmt_p(p['p_ttest'])} / {_fmt_p(p['p_wilcoxon'])}"],
+                ["r(G3 mat, G3 por) của cùng học sinh", p["corr_G3"]]]
+        verdict = (f"Cùng một học sinh, điểm môn Toán {'thấp' if p['diff'] < 0 else 'cao'} hơn môn Bồ Đào Nha "
+                   f"trung bình {abs(p['diff']):.2f} điểm, chênh lệch **có ý nghĩa thống kê**."
+                   if sig else "Cùng một học sinh, điểm 2 môn **không khác nhau có ý nghĩa thống kê**.")
+        return f"""**2 file không phải 2 mẫu độc lập.** Ghép học sinh theo 13 cột nhận dạng (`MERGE_KEYS`, giống
+`student-merge.R`) tìm được **{p['n_matched']}** em có mặt ở cả 2 môn ({p['n_duplicate_keys_a']} dòng mat và {p['n_duplicate_keys_b']} dòng por
+có key bị lặp trong cùng file nên không ghép chắc chắn được và bị bỏ ra). Vì vậy bảng trên so 2 nhóm chồng lấn nhau:
+việc 2 môn cho kết quả giống nhau một phần là do cùng học sinh được đo 2 lần, **chưa phải** kiểm chứng độc lập.
+Kiểm chứng độc lập thật sự là bản holdout chặt ở mục 9 (chỉ học sinh por không có trong mat, n = {f['ho_n']}).
+
+**So sánh ghép cặp (cùng học sinh, 2 môn):** t-test ghép cặp (`scipy.stats.ttest_rel`) và Wilcoxon (không cần
+giả định phân phối chuẩn), bỏ các cặp có G3 = 0 ở ít nhất một môn.
+
+{table(['Chỉ số', 'Giá trị'], rows)}
+
+{verdict}"""
+    rows = [["Pupils matched", p["n_matched"]],
+            ["Pairs compared (G3 > 0 in both courses)", p["n_pairs"]],
+            ["Mean G3 mat / por", f"{p['mean_G3_a']} / {p['mean_G3_b']}"],
+            ["Difference mat − por [95% CI]", f"{p['diff']:+.2f} [{p['ci95'][0]}, {p['ci95'][1]}]"],
+            ["p (paired t-test) / p (Wilcoxon)", f"{_fmt_p(p['p_ttest'])} / {_fmt_p(p['p_wilcoxon'])}"],
+            ["r(G3 mat, G3 por) of the same pupil", p["corr_G3"]]]
+    verdict = (f"The same pupil scores on average {abs(p['diff']):.2f} points {'lower' if p['diff'] < 0 else 'higher'} "
+               f"in mathematics than in Portuguese, and the difference is **significant**."
+               if sig else "The same pupil's grades in the two courses are **not significantly different**.")
+    return f"""**The two files are not independent samples.** Matching pupils on the 13 identifying columns
+(`MERGE_KEYS`, as in `student-merge.R`) finds **{p['n_matched']}** pupils who take both courses ({p['n_duplicate_keys_a']} mat and
+{p['n_duplicate_keys_b']} por rows have a key that repeats inside the same file, so they cannot be matched safely and are left out).
+The table above therefore compares two overlapping groups: part of the agreement between the courses is the same
+pupils measured twice, so it is **not** an independent replication. The truly independent check is the strict
+holdout in section 9 (only por pupils who are not in mat, n = {f['ho_n']}).
+
+**Paired comparison (same pupil, two courses):** paired t-test (`scipy.stats.ttest_rel`) and Wilcoxon signed-rank
+(no normality assumption); pairs with G3 = 0 in either course are left out.
+
+{table(['Metric', 'Value'], rows)}
+
+{verdict}"""
+
 
 
 def _portugal_check(proc: dp.StudentDataProcessor) -> list[list]:
@@ -265,7 +344,7 @@ def _test_rows(E: dict, vi: bool) -> list[list]:
             stat = f"t = {v['stat']} (df {v['df']})"
             extra = f"{v['diff']:+.2f} [{v['ci95'][0]}, {v['ci95'][1]}]"
         else:
-            compare = f"{v['k_groups']} {groups}"
+            compare = f"{v['k_groups']} {groups} ({', '.join(v['levels'])})"
             stat = f"F = {v['stat']}"
             extra = f"Kruskal–Wallis H = {v['kruskal_H']}, p {_fmt_p(v['p_kruskal'])}"
         rows.append([f"`{col}`", v["test"], compare, stat, extra, _fmt_p(v["p"]),
@@ -423,9 +502,19 @@ row/column counts match the UCI description (395 / 649 students, 33 attributes).
 
 ### 3.2 Wikipedia PISA (web scraping)
 
-**What was done:**
-1. `requests.get` downloads the HTML of the [PISA article]({ps.get('url', dp.PISA_URL)}) (no browser needed: the tables are plain HTML).
-2. `BeautifulSoup` finds every `table.wikitable` and keeps two families:
+**Step 1 — Browser inspection with DevTools (Console, F12):**
+Before writing automated Python scraper code, the Wikipedia page structure was inspected interactively via Chrome/Edge DevTools:
+1. Opened the target article and launched **F12 → Console**.
+2. Ran a JavaScript DOM snippet to list and inspect all 12 `table.wikitable` elements:
+   - Index 1, 2, 3: latest PISA 2025 summary rankings (Science, Mathematics, Reading);
+   - Index 5, 6, 7: historical rankings comparison 2000–2022 (wide layout).
+3. Copied the 2025 Mathematics table to clipboard via `copy(...)` and saved to `data/raw/pisa_manual_check.csv` (92 rows) for manual verification.
+
+![DevTools inspection of PISA tables]({IMG['devtools']})
+
+**Step 2 — Automated Python pipeline (`requests` + `BeautifulSoup`):**
+1. `requests.get` downloads the HTML of the [PISA article]({ps.get('url', dp.PISA_URL)}) (no headless browser needed at runtime: tables are static HTML).
+2. `BeautifulSoup` parses the DOM and extracts the two targeted table families:
    - **summary**: latest ranking (`Rank | Country/economy | Score`), one nested table per subject;
    - **comparison**: "Rankings comparison 2000–2022", one row per country with `score, rank` pairs per year (converted from wide to long).
 3. The result ({f['n_pisa_raw']} rows, page strings untouched) is saved to `data/raw/pisa_reference.csv`.
@@ -437,7 +526,8 @@ row/column counts match the UCI description (395 / 649 students, 33 attributes).
 | Scraped at (UTC) | {ps.get('scraped_at')} |
 | Raw rows | {ps.get('n_rows')} |
 | Licence | CC BY-SA 4.0 (Wikipedia) |
-
+| User-Agent | `{dp.HTTP_HEADERS['User-Agent']}` |
+| Manual check file | `data/raw/pisa_manual_check.csv` (92 rows via DevTools) |
 {codes['scrape_pisa_table']}
 
 {codes['_parse_pisa_html']}
@@ -509,7 +599,7 @@ Rows in: {f['log']['rows_in']} (both subjects) → rows out: {f['log']['rows_out
 {table(['Step', 'How', 'Rows/cells affected'], _clean_rows(f['log'], vi=False))}
 
 Derived columns: `pass_fail` (G3 ≥ {dp.PASS_MARK}), `absence_level` (low 0–{dp.ABS_MED - 1} / medium {dp.ABS_MED}–{dp.ABS_HIGH - 1} / high ≥ {dp.ABS_HIGH}),
-`avg_grade` (G1+G2+G3)/3 (descriptive only — contains G3), `avg_g1g2`, `risk_group`, and 6 anomaly flags.
+`avg_grade` (G1+G2+G3)/3 (descriptive only: contains target G3 so DO NOT use as predictor to prevent data leakage; use `avg_g1g2` for early prediction), `avg_g1g2`, `risk_group`, and 6 anomaly flags.
 
 {codes['load_data']}
 
@@ -564,7 +654,7 @@ Dropout pattern in both courses: {', '.join(f"{s}: {v['dropout_pattern']['n_drop
 **Interpretation:**
 - {'In every scenario that removes the zeros, absences have a **significant negative** relationship with G3 in both courses. The conclusion holds whether or not the dropout assumption is right and whether or not absences = 0 is real.' if f['abs_robust'] else 'At least one scenario without the zeros does not show a significant negative relationship; the absences conclusion depends on how the zeros are treated.'}
 - Only the "all students" scenario hides or weakens the effect — exactly the distortion caused by the G3 = 0 rows.
-- The dropout pattern (G3 = 0 always together with absences = 0) appears in both courses independently, which supports reading it as "not assessed / left school" rather than a real grade.
+- The dropout pattern (G3 = 0 always together with absences = 0) appears in both courses, which supports reading it as "not assessed / left school" rather than a real grade.
 
 {codes['_sensitivity']}
 
@@ -583,6 +673,8 @@ Cells show *mean G3 ± standard deviation (n students)*. Bold = headline scope.
 **By past failures**
 
 {table(['Failures', 'all', 'exclude_dropout'], grp_rows(A['by_failures'], E['by_failures']))}
+
+{_fail_steps_text(f['fail_steps'], vi=False)}
 
 **By internet at home / family support / school support / paid classes**
 
@@ -604,7 +696,7 @@ significant when p < α = {dp.ALPHA}.
 | Method | Used for | Why this one |
 |---|---|---|
 | Welch t-test | yes/no variables (internet, famsup, schoolsup, paid) | Compares 2 means without assuming equal variances (group sizes are very unequal, e.g. 58 vs 299) |
-| One-way ANOVA (F) | studytime (4 levels), absence level (3), failures (4) | Compares ≥ 3 means in one test |
+| One-way ANOVA (F) | studytime (4 levels), absence level (3), failures ({len(f['gt']['failures']['levels'])}: {', '.join(f['gt']['failures']['levels'])}) | Compares ≥ 3 means in one test. Failures 2 and 3 have only about a dozen students each, so they are merged into one "2+" group for the tests (the descriptive tables in section 7 keep all 4 levels) |
 | Kruskal–Wallis (H) | same as ANOVA | Rank-based check that does not assume normally distributed grades |
 | Holm–Bonferroni correction | all {len(f['gt'])} tests together | Running many tests raises the chance of a false "significant"; Holm adjusts the p-values so the whole family keeps a 5% error rate |
 | Effect size: Cohen's d / eta² | every test | p only says "real or not"; effect size says "how big". d: 0.2 small, 0.5 medium, 0.8 large. eta² = share of G3 variance explained: 0.01 small, 0.06 medium, 0.14 large |
@@ -663,6 +755,7 @@ R² = share of the variation in G3 explained by the model (0 = nothing, 1 = ever
 - Family support (`famsup`): b = {f['reg']['mat']['factors']['coef']['famsup_bin']['b']:+.2f} (p {_fmt_p(f['reg']['mat']['factors']['coef']['famsup_bin']['p'])}) → {'significant' if f['reg']['mat']['factors']['coef']['famsup_bin']['significant'] else 'no measurable effect'}.
 - Background factors explain only R² = {f['reg']['mat']['factors']['r2']} (mat): most of the differences between students are *not* explained by these variables.
 - Once G1 and G2 are known (Model B, R² = {f['reg']['mat']['factors_plus_grades']['r2']}), only {', '.join(_lbl(c, False) for c in f['reg_grades_sig']) or 'no background variable'} keep(s) a significant extra effect in mat: the intermediate grades already contain almost all the information.
+- G1 and G2 are strongly correlated with each other (r = {E['corr_G1_G2_G3']['G1_G2']}), so Model B cannot reliably split their effect: read only R² and the combined effect of the two grades, and do not compare b(G1) with b(G2).
 - Regression adjusts only for variables that are in the data; it shows associations, not causes.
 
 {codes['_ols']}
@@ -689,10 +782,11 @@ categorical variables (study-time bucket × internet at home). Data: {E['n']} st
 | Orange bar | Students **with** internet at home |
 | Black whisker (error bar) | 95% confidence interval of the mean: mean ± 1.96·std/√n. Wide whisker = uncertain mean |
 | `n=` label | Number of students in that bar |
+| Hatched, faded bar | Fewer than {dp.MIN_RELIABLE_N} students: the mean is not reliable, do not draw conclusions from it |
 | Legend | Colour → internet group |
 
 **How to read it:** compare bar heights *together with* their whiskers; if two whiskers overlap a lot, the
-difference is not reliable. Groups with very few students: {', '.join(f"studytime {k.split('|')[0]} & internet={k.split('|')[1]} (n={n})" for k, n in f['small_groups']) or 'none'}.
+difference is not reliable. Hatched bars (n < {dp.MIN_RELIABLE_N}): {', '.join(f"studytime {k.split('|')[0]} & internet={k.split('|')[1]} (n={n})" for k, n in f['small_groups']) or 'none'}.
 
 **Takeaway:** with internet {E['by_internet']['yes']['mean']} vs without {E['by_internet']['no']['mean']} overall, but this gap is
 {'significant' if f['gt']['internet']['significant'] else '**not significant** after Holm correction (section 7.1)'}; overlapping whiskers in the chart show the same thing.
@@ -803,10 +897,13 @@ confidence intervals, and performance is verified on students the rule was never
 
 {table(['Metric', 'mat', 'por'], [[k, f["sc"]['mat'][k], f["sc"]['por'][k]] for k in f["sc"]['mat']])}
 
-The direction of every key correlation (G2, absences, failures vs G3) is {'**the same**' if f['same_sign'] else '**not** the same'} in both courses,
-so the main findings replicate on an independent file. Caveat: many students appear in both courses.
+The direction of every key correlation (G2, absences, failures vs G3) is {'**the same**' if f['same_sign'] else '**not** the same'} in both courses.
+
+{_paired_text(f, vi=False)}
 
 {codes['_subject_comparison']}
+
+{codes['_paired_subjects']}
 
 ### 10.2 PISA: Portugal vs OECD average
 
@@ -973,9 +1070,19 @@ mô tả của UCI (395 / 649 học sinh, 33 thuộc tính).
 
 ### 3.2 Cào dữ liệu PISA từ Wikipedia
 
-**Đã làm gì:**
-1. `requests.get` tải HTML của [bài viết PISA]({ps.get('url', dp.PISA_URL)}) (không cần trình duyệt vì bảng nằm sẵn trong HTML).
-2. `BeautifulSoup` tìm mọi `table.wikitable` và giữ 2 loại bảng:
+**Bước 1 — Khảo sát trực tiếp trên trình duyệt bằng DevTools (Console, F12):**
+Trước khi viết mã nguồn cào tự động bằng Python, cấu trúc bảng trên Wikipedia đã được khảo sát trực tiếp trong trình duyệt Chrome/Edge:
+1. Mở bài viết Wikipedia PISA, bấm **F12 → chuyển sang tab Console**.
+2. Chạy đoạn mã JavaScript DOM để quét toàn bộ 12 bảng `table.wikitable` trên trang nhằm xác định chính xác vị trí các bảng cần lấy:
+   - Bảng index 1, 2, 3: Bảng xếp hạng PISA 2025 mới nhất (Khoa học, Toán, Đọc hiểu);
+   - Bảng index 5, 6, 7: Bảng so sánh lịch sử 2000–2022 qua các kỳ thi của 3 môn (dạng bảng ngang wide format).
+3. Chạy lệnh trích xuất thử nghiệm `copy(...)` để sao chép bảng Toán 2025 sang CSV và lưu vào `data/raw/pisa_manual_check.csv` (92 dòng) làm minh chứng đối chiếu thủ công.
+
+![Khảo sát bảng PISA qua DevTools Console]({IMG['devtools']})
+
+**Bước 2 — Chuyển sang pipeline Python tự động & tái lập được (`requests` + `BeautifulSoup`):**
+1. `requests.get` tải HTML của [bài viết PISA]({ps.get('url', dp.PISA_URL)}) (không cần mở trình duyệt khi chạy script vì bảng nằm sẵn trong mã nguồn HTML tĩnh).
+2. `BeautifulSoup` bóc tách DOM và giữ 2 loại bảng mục tiêu:
    - **summary**: bảng xếp hạng mới nhất (`Rank | Country/economy | Score`), mỗi môn 1 bảng con;
    - **comparison**: "Rankings comparison 2000–2022", mỗi nước 1 dòng với cặp `score, rank` theo từng năm (chuyển từ dạng rộng sang dạng dài).
 3. Kết quả ({f['n_pisa_raw']} dòng, giữ nguyên chuỗi gốc của trang) lưu vào `data/raw/pisa_reference.csv`.
@@ -987,7 +1094,8 @@ mô tả của UCI (395 / 649 học sinh, 33 thuộc tính).
 | Thời điểm cào (UTC) | {ps.get('scraped_at')} |
 | Số dòng thô | {ps.get('n_rows')} |
 | Giấy phép | CC BY-SA 4.0 (Wikipedia) |
-
+| User-Agent | `{dp.HTTP_HEADERS['User-Agent']}` |
+| File đối chiếu thủ công | `data/raw/pisa_manual_check.csv` (92 dòng qua DevTools) |
 {codes['scrape_pisa_table']}
 
 {codes['_parse_pisa_html']}
@@ -1058,8 +1166,7 @@ Số dòng vào: {f['log']['rows_in']} (cả 2 môn) → số dòng ra: {f['log'
 {table(['Bước', 'Cách làm', 'Số dòng/ô bị ảnh hưởng'], _clean_rows(f['log'], vi=True))}
 
 Cột tạo thêm: `pass_fail` (G3 ≥ {dp.PASS_MARK}), `absence_level` (thấp 0–{dp.ABS_MED - 1} / trung bình {dp.ABS_MED}–{dp.ABS_HIGH - 1} / cao ≥ {dp.ABS_HIGH}),
-`avg_grade` (G1+G2+G3)/3 (chỉ để mô tả — có chứa G3), `avg_g1g2`, `risk_group`, và 6 cột cờ bất thường.
-
+`avg_grade` (G1+G2+G3)/3 (chỉ để mô tả: chứa biến mục tiêu G3 nên KHÔNG dùng làm biến dự báo để tránh rò rỉ dữ liệu / target leakage; dùng `avg_g1g2` khi dự báo sớm), `avg_g1g2`, `risk_group`, và 6 cột cờ bất thường.
 {codes['load_data']}
 
 {codes['clean_data']}
@@ -1111,7 +1218,7 @@ Mẫu hình bỏ thi ở cả 2 môn: {', '.join(f"{s}: {v['dropout_pattern']['n
 **Diễn giải:**
 - {'Ở mọi kịch bản đã bỏ các số 0, vắng học đều có quan hệ **âm và có ý nghĩa** với G3 ở cả 2 môn. Kết luận vẫn đúng dù giả định bỏ thi đúng hay sai, và dù absences = 0 là thật hay do không ghi nhận.' if f['abs_robust'] else 'Có ít nhất một kịch bản đã bỏ số 0 mà quan hệ âm không có ý nghĩa; kết luận về vắng học phụ thuộc vào cách xử lý số 0.'}
 - Chỉ kịch bản "toàn bộ học sinh" làm mờ hoặc che mất ảnh hưởng — đúng là sự méo mó do các dòng G3 = 0 gây ra.
-- Mẫu hình bỏ thi (G3 = 0 luôn đi kèm absences = 0) xuất hiện độc lập ở cả 2 môn, củng cố cách hiểu "không dự thi / nghỉ học" thay vì điểm thật.
+- Mẫu hình bỏ thi (G3 = 0 luôn đi kèm absences = 0) xuất hiện ở cả 2 môn, củng cố cách hiểu "không dự thi / nghỉ học" thay vì điểm thật.
 
 {codes['_sensitivity']}
 
@@ -1130,6 +1237,8 @@ Mỗi ô là *G3 trung bình ± độ lệch chuẩn (n học sinh)*. In đậm 
 **Theo số lần trượt trước đây**
 
 {table(['Số lần trượt', 'all', 'exclude_dropout'], grp_rows(A['by_failures'], E['by_failures']))}
+
+{_fail_steps_text(f['fail_steps'], vi=True)}
 
 **Theo internet ở nhà / hỗ trợ gia đình / hỗ trợ của trường / học thêm có trả phí**
 
@@ -1151,7 +1260,7 @@ có ý nghĩa thống kê khi p < α = {dp.ALPHA}.
 | Phương pháp | Dùng cho | Vì sao chọn |
 |---|---|---|
 | Welch t-test | biến có/không (internet, famsup, schoolsup, paid) | So 2 trung bình mà không giả định phương sai bằng nhau (cỡ nhóm chênh nhiều, vd 58 vs 299) |
-| ANOVA một chiều (F) | studytime (4 mức), mức vắng (3), số lần trượt (4) | So ≥ 3 trung bình trong một kiểm định |
+| ANOVA một chiều (F) | studytime (4 mức), mức vắng (3), số lần trượt ({len(f['gt']['failures']['levels'])}: {', '.join(f['gt']['failures']['levels'])}) | So ≥ 3 trung bình trong một kiểm định. Mức trượt 2 và 3 mỗi mức chỉ khoảng chục học sinh nên được gộp thành một nhóm "2+" khi kiểm định (bảng mô tả ở mục 7 vẫn giữ đủ 4 mức) |
 | Kruskal–Wallis (H) | giống ANOVA | Kiểm tra lại dựa trên thứ hạng, không cần giả định điểm phân phối chuẩn |
 | Hiệu chỉnh Holm–Bonferroni | cả {len(f['gt'])} kiểm định cùng lúc | Làm nhiều kiểm định thì dễ ra "có ý nghĩa" giả; Holm điều chỉnh p để cả nhóm kiểm định giữ sai số 5% |
 | Độ lớn hiệu ứng: Cohen's d / eta² | mọi kiểm định | p chỉ cho biết "thật hay không"; effect size cho biết "lớn cỡ nào". d: 0.2 nhỏ, 0.5 vừa, 0.8 lớn. eta² = tỉ lệ phương sai G3 được giải thích: 0.01 nhỏ, 0.06 vừa, 0.14 lớn |
@@ -1209,6 +1318,7 @@ R² = tỉ lệ biến động của G3 mà mô hình giải thích được (0 
 - Hỗ trợ gia đình (`famsup`): b = {f['reg']['mat']['factors']['coef']['famsup_bin']['b']:+.2f} (p {_fmt_p(f['reg']['mat']['factors']['coef']['famsup_bin']['p'])}) → {'có ý nghĩa' if f['reg']['mat']['factors']['coef']['famsup_bin']['significant'] else 'không đo được tác động'}.
 - Các yếu tố nền chỉ giải thích R² = {f['reg']['mat']['factors']['r2']} (mat): phần lớn khác biệt giữa học sinh *không* được giải thích bởi các biến này.
 - Khi đã biết G1, G2 (mô hình B, R² = {f['reg']['mat']['factors_plus_grades']['r2']}), chỉ còn {', '.join(_lbl(c, True) for c in f['reg_grades_sig']) or 'không biến nền nào'} giữ tác động riêng có ý nghĩa ở mat: điểm giữa kỳ đã chứa gần như toàn bộ thông tin.
+- G1 và G2 tương quan rất mạnh với nhau (r = {E['corr_G1_G2_G3']['G1_G2']}), nên mô hình B không tách được tác động riêng của từng điểm: chỉ đọc R² và tác động chung của 2 điểm giữa kỳ, không so sánh b(G1) với b(G2).
 - Hồi quy chỉ điều chỉnh cho các biến có trong dữ liệu; kết quả là quan hệ tương quan, không phải nhân quả.
 
 {codes['_ols']}
@@ -1235,10 +1345,11 @@ hợp của hai biến phân loại (mức thời gian tự học × có interne
 | Cột cam | Học sinh **có** internet ở nhà |
 | Thanh đen (error bar) | Khoảng tin cậy 95% của trung bình: mean ± 1.96·std/√n. Thanh càng dài thì trung bình càng kém chắc chắn |
 | Nhãn `n=` | Số học sinh trong cột đó |
+| Cột gạch chéo, nhạt màu | Dưới {dp.MIN_RELIABLE_N} học sinh: trung bình không đáng tin, không rút kết luận từ cột này |
 | Chú giải (legend) | Màu → nhóm internet |
 
 **Cách đọc:** so chiều cao cột *cùng với* thanh sai số; nếu 2 thanh chồng lên nhau nhiều thì chênh lệch không đáng tin.
-Các nhóm rất ít học sinh: {', '.join(f"studytime {k.split('|')[0]} & internet={yn[k.split('|')[1]]} (n={n})" for k, n in f['small_groups']) or 'không có'}.
+Các cột gạch chéo (n < {dp.MIN_RELIABLE_N}): {', '.join(f"studytime {k.split('|')[0]} & internet={yn[k.split('|')[1]]} (n={n})" for k, n in f['small_groups']) or 'không có'}.
 
 **Kết luận:** có internet {E['by_internet']['yes']['mean']} vs không có {E['by_internet']['no']['mean']}, nhưng chênh lệch này
 {'có ý nghĩa thống kê' if f['gt']['internet']['significant'] else '**không có ý nghĩa** sau hiệu chỉnh Holm (mục 7.1)'}; các thanh sai số chồng lên nhau trên biểu đồ cũng cho thấy điều đó.
@@ -1347,10 +1458,13 @@ hiện bằng khoảng tin cậy, và hiệu năng được kiểm chứng trên
 
 {table(['Chỉ số', 'mat', 'por'], [[k, f["sc"]['mat'][k], f["sc"]['por'][k]] for k in f["sc"]['mat']])}
 
-Chiều của các tương quan chính (G2, vắng học, số lần trượt với G3) {'**giống nhau**' if f['same_sign'] else '**không** giống nhau'} ở cả 2 môn,
-nên kết luận chính lặp lại được trên một file dữ liệu khác. Lưu ý: nhiều học sinh có mặt ở cả 2 môn.
+Chiều của các tương quan chính (G2, vắng học, số lần trượt với G3) {'**giống nhau**' if f['same_sign'] else '**không** giống nhau'} ở cả 2 môn.
+
+{_paired_text(f, vi=True)}
 
 {codes['_subject_comparison']}
+
+{codes['_paired_subjects']}
 
 ### 10.2 PISA: Bồ Đào Nha so với trung bình OECD
 
@@ -1452,7 +1566,8 @@ def _codes() -> dict:
              P.load_data, P.clean_data, P.analyze, P.export_results, P._subject_comparison,
              P._pisa_context, P._plot_bar, P._plot_hist, P._plot_heatmap,
              dp._group_tests, dp._holm, dp._corr_tests, dp._wilson, P._risk_holdout,
-             dp.cross_check_pisa, P._plot_pisa, dp._ols, P._regression, P._sensitivity, dp._tier_eval]
+             dp.cross_check_pisa, P._plot_pisa, dp._ols, P._regression, P._sensitivity, dp._tier_eval,
+             dp._paired_subjects]
     codes = {fn.__name__: code(fn) for fn in funcs}
     dp_path = Path(dp.__file__)
     codes["config"] = code_region(dp_path, "# Threshold config", "# 4 basic functions")
@@ -1465,6 +1580,11 @@ def _codes() -> dict:
 def build_reports(proc: dp.StudentDataProcessor, out_dir: Path = ROOT) -> list[Path]:
     """Write report.md (EN) and report_vi.md (VI) from a processor that has run analyze()."""
     assert proc.results, "run analyze() first"
+    missing = [what for what, key in (("PISA reference data (data/raw/pisa_reference.csv)", "pisa_context"),
+                                      ("OECD cross-check (data/raw/oecd_pisa2025_table_I1.csv)", "pisa_oecd_check"))
+               if not proc.results.get(key)]
+    if missing:
+        raise ValueError("cannot build reports, missing: " + "; ".join(missing))
     facts, codes = _facts(proc), _codes()
     out = []
     for name, render in (("report.md", render_en), ("report_vi.md", render_vi)):

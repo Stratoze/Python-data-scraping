@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -261,3 +263,70 @@ def test_holdout_excludes_students_shared_with_primary_subject(tmp_path, student
     out = proc._risk_holdout()
     assert out["holdout_por"]["n"] == 4
     assert out["holdout_por_only"]["n"] == 3
+
+
+def test_paired_subjects_matches_same_pupils_and_skips_ambiguous_keys(tmp_path, student_rows):
+    mat = student_rows.copy()
+    mat["G3"] = ["10", "11", "12", "13", "0", "15"]   # row 4: dropout suspect in mat -> pair not compared
+    por = student_rows.copy()
+    por["G3"] = ["12", "12", "15", "14", "10", "16"]
+    twin = por.iloc[[5]].assign(G1="3")                # same key as row 5 inside por -> cannot be matched
+    proc = _processor(tmp_path, mat, pd.concat([por, twin], ignore_index=True))
+    res = dp._paired_subjects(proc.clean_data(), "mat", "por")
+    assert res["n_duplicate_keys_b"] == 2
+    assert res["n_matched"] == 5 and res["n_pairs"] == 4
+    assert res["diff"] == pytest.approx(-1.75)        # (10-12 + 11-12 + 12-15 + 13-14) / 4
+
+
+def test_group_tests_merge_sparse_failure_levels():
+    rng = np.random.default_rng(1)
+    n = 80
+    df = pd.DataFrame({
+        "G3": rng.integers(5, 20, n), "failures": [0] * 50 + [1] * 20 + [2] * 6 + [3] * 4,
+        "studytime": rng.integers(1, 5, n), "absence_level": rng.choice(["low", "medium", "high"], n),
+        **{c: rng.choice(["yes", "no"], n) for c in dp.BINARY_TEST_COLS}})
+    res = dp._group_tests(df)["failures"]
+    assert res["levels"] == ["0", "1", "2+"] and res["k_groups"] == 3
+
+
+def test_user_agent_conforms_to_wikimedia_policy():
+    ua = dp.HTTP_HEADERS.get("User-Agent", "")
+    assert "P1-edu-project" in ua
+    assert "mailto:" in ua or "@" in ua
+    assert "github.com" in ua or "http" in ua
+
+
+def test_devtools_manual_check_csv_exists_and_matches_schema():
+    path = Path(__file__).resolve().parents[1] / "data" / "raw" / "pisa_manual_check.csv"
+    assert path.exists(), "pisa_manual_check.csv missing"
+    df = pd.read_csv(path)
+    assert list(df.columns) == ["Rank", "Country/economy", "Score"]
+    assert len(df) >= 80
+    assert "Portugal" in df["Country/economy"].to_numpy()
+
+
+def test_export_results_writes_combined_and_separate_subject_csvs(tmp_path, student_rows):
+    mat = student_rows.iloc[:4].copy()
+    por = student_rows.iloc[2:6].copy()
+    proc = _processor(tmp_path, mat, por)
+    proc.clean_data()
+    proc.results = {"test": 123}
+    proc.export_results()
+    out_dir = tmp_path / "out"
+    combined = pd.read_csv(out_dir / "cleaned_students.csv")
+    mat_csv = pd.read_csv(out_dir / "cleaned_students_mat.csv")
+    por_csv = pd.read_csv(out_dir / "cleaned_students_por.csv")
+
+    assert len(combined) == len(mat_csv) + len(por_csv)
+    assert set(mat_csv["subject"]) == {"mat"}
+    assert set(por_csv["subject"]) == {"por"}
+    assert (out_dir / "summary.json").exists()
+
+
+def test_calc_average_grade_warns_against_prediction_leakage():
+    val = dp.calc_average_grade(10, 12, 14)
+    assert val == pytest.approx(12.0)
+    doc = dp.calc_average_grade.__doc__ or ""
+    assert "leakage" in doc.lower()
+    assert "avg_grade" in dp.VAR_DESCRIPTIONS
+    assert "leakage" in dp.VAR_DESCRIPTIONS["avg_grade"].lower() or "do not use" in dp.VAR_DESCRIPTIONS["avg_grade"].lower()

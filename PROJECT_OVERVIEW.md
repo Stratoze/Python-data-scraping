@@ -102,18 +102,18 @@ Dữ liệu gốc từ UCI có **33 cột (thuộc tính)**, được phân thà
 
 ---
 
-# 4. Ý nghĩa của 4 ảnh biểu đồ trong dự án
+# 4. Ý nghĩa của 5 ảnh biểu đồ & minh chứng trong dự án
 
-Cả 4 ảnh được sinh tự động bởi `matplotlib` khi chạy `python main.py` và lưu tại thư mục `images/`. Ảnh 1–3 là 3 biểu đồ đề yêu cầu; ảnh 4 là biểu đồ bối cảnh cho dữ liệu PISA cào về:
+Các ảnh được lưu tại thư mục `images/`. Ảnh 1–3 là 3 biểu đồ đề yêu cầu; ảnh 4 là biểu đồ bối cảnh PISA; ảnh 5 là ảnh minh chứng khảo sát trực tiếp cấu trúc bảng trên trình duyệt qua DevTools Console:
 
 ```
 images/
 ├── 01_bar_studytime_internet.png
 ├── 02_hist_g3.png
 ├── 03_heatmap_corr.png
-└── 04_pisa_portugal_oecd.png
+├── 04_pisa_portugal_oecd.png
+└── 05_devtools_console.png
 ```
-
 ---
 
 ### 📊 Ảnh 1: `01_bar_studytime_internet.png` (Biểu đồ cột nhóm)
@@ -177,6 +177,15 @@ images/
   3. Từ 2018 đến 2025, cả Bồ Đào Nha lẫn OECD cùng đi xuống; năm 2025 Bồ Đào Nha ngang mức OECD (Toán 460 so với 463).
   4. Đây chỉ là bối cảnh **cấp quốc gia**, không ghép với từng học sinh trong dữ liệu UCI.
 
+
+### 🖥️ Ảnh 5: `05_devtools_console.png` (Minh chứng khảo sát DevTools Console F12)
+- **Thành phần ảnh:**
+  - Chụp giao diện Chrome DevTools Console (F12) trên bài viết Wikipedia PISA.
+  - **Lệnh 1:** Quét và in bảng `console.table()` liệt kê toàn bộ 12 thẻ `table.wikitable` trên DOM, định vị chính xác:
+    - Bảng index 1, 2, 3: Bảng xếp hạng PISA 2025 (Khoa học, Toán, Đọc hiểu);
+    - Bảng index 5, 6, 7: Bảng so sánh lịch sử 2000–2022.
+  - **Lệnh 2:** Dùng hàm `copy(...)` của DevTools trích xuất bảng Toán 2025 sang clipboard dạng CSV, lưu thành file đối chiếu độc lập `data/raw/pisa_manual_check.csv` (92 dòng).
+- **Ý nghĩa:** Minh chứng rõ ràng rằng việc cào dữ liệu được thực hiện bài bản qua 2 bước: khảo sát cấu trúc thực tế trên trình duyệt bằng DevTools trước, sau đó mới viết script Python tự động hoá.
 ---
 
 ## 5. Các thư viện cài đặt & Vai trò thực tế trong dự án
@@ -216,8 +225,7 @@ Dự án được quản lý qua `requirements.txt` và cài đặt trong môi t
 ### 5. `requests` (>= 2.31)
 - **Nhiệm vụ:** Giao tiếp mạng (HTTP Client).
   - Tự động tải file zip chứa dữ liệu gốc `student+performance.zip` từ kho lưu trữ của UCI khi máy chưa có dữ liệu.
-  - Gửi HTTP GET request kèm định danh `User-Agent` lên Wikipedia để cào mã nguồn HTML bài viết PISA.
-
+  - Gửi HTTP GET request lên Wikipedia để cào mã nguồn HTML bài viết PISA, kèm tiêu đề định danh `User-Agent` tuân thủ nghiêm ngặt chính sách của Wikimedia (chứa tên công cụ, đường dẫn GitHub repo và email liên hệ `mailto:vohoangquocminh2k5@gmail.com`).
 ### 6. `beautifulsoup4` (`bs4.BeautifulSoup` >= 4.12)
 - **Nhiệm vụ:** Bóc tách dữ liệu từ trang web (HTML Parser).
   - Phân tích cây cấu trúc DOM của trang Wikipedia PISA, tìm các thẻ bảng `table.wikitable`.
@@ -225,7 +233,7 @@ Dự án được quản lý qua `requirements.txt` và cài đặt trong môi t
 
 ### 7. `pytest` (>= 8.0)
 - **Nhiệm vụ:** Bộ công cụ kiểm thử phần mềm tự động (Unit Test).
-  - Chạy 44 ca kiểm thử tự động trong thư mục `tests/` để đảm bảo code hoạt động chính xác: kiểm tra điểm biên đỗ/trượt, tính độc lập của rule rủi ro với G3, độ chính xác của cào dữ liệu PISA, kiểm thử hồi quy OLS và đối chứng holdout.
+  - Chạy 51 ca kiểm thử tự động trong thư mục `tests/` để đảm bảo code hoạt động chính xác: kiểm tra điểm biên đỗ/trượt, tính độc lập của rule rủi ro với G3, độ chính xác của cào dữ liệu PISA, kiểm thử hồi quy OLS, đối chứng holdout, ghép cặp 2 môn, chuẩn User-Agent Wikimedia, file đối chiếu DevTools, xuất file theo môn, chống rò rỉ biến mục tiêu và bắt lỗi thiếu file OECD.
 
 ### 8. `notebook` / `jupyter` / `IPython`
 - **Nhiệm vụ:** Môi trường thực thi file sổ tay tương tác `analysis.ipynb`.
@@ -250,73 +258,74 @@ Dưới đây là chi tiết từng file, từng hàm và các đoạn code cụ
 
 File này gồm 5 khối chức năng lớn:
 
-#### 🔹 Khối 1: Cấu hình ngưỡng & Miền giá trị (Dòng 26–103)
-- **Dòng 30–31 (`THRESHOLDS`):** Tuple bất biến chứa các ngưỡng cơ bản: điểm đỗ `PASS_MARK = 10`, cảnh báo trượt `G_WARN = 10`, vắng trung bình `ABS_MED = 4`, vắng cao `ABS_HIGH = 10`, số lần trượt cao `FAIL_HIGH = 2`.
-- **Dòng 34–35 (`ANOMALY_THRESHOLDS`):** Ngưỡng phát hiện dị biệt: hệ số `IQR_K = 1.5`, tụt điểm `G1_DROP = 8`, `G2_DROP = 6`, tuổi lưu ban `AGE_OUTLIER = 20`.
-- **Dòng 38–45 (`PISA_CHECKS`, `ALPHA` & các biến kiểm định):** Ngưỡng kiểm định bảng PISA (tối thiểu 30 nước/kỳ, điểm từ 200–700), mức ý nghĩa $\alpha = 0.05$, danh sách biến đưa vào t-test/ANOVA/tương quan.
-- **Dòng 48–55 (`MERGE_KEYS` & `REG_FACTORS`):** 13 thuộc tính định danh học sinh trùng giữa 2 môn và danh sách 13 biến số đưa vào mô hình hồi quy đa biến OLS.
-- **Dòng 60–62 (`OECD_NAME_ALIASES`):** Ánh xạ 5 tên nước khác nhau giữa báo cáo OECD và Wikipedia.
-- **Dòng 64–101 (`VAR_DESCRIPTIONS`, `VALID_RANGES`, `REQUIRED_COLS`, `YES_NO_COLS`, `FLAG_COLS`, `SAMPLE_STUDENTS`):** Dict mô tả biến, miền giá trị hợp lệ của 16 cột số (theo `student.txt`), các cột bắt buộc, cột yes/no, tên 6 cờ bất thường và list of dicts học sinh mẫu.
+#### 🔹 Khối 1: Cấu hình ngưỡng & Miền giá trị (Dòng 27–110)
+- **Dòng 31–32 (`THRESHOLDS`):** Tuple bất biến chứa các ngưỡng cơ bản: điểm đỗ `PASS_MARK = 10`, cảnh báo trượt `G_WARN = 10`, vắng trung bình `ABS_MED = 4`, vắng cao `ABS_HIGH = 10`, số lần trượt cao `FAIL_HIGH = 2`.
+- **Dòng 35–36 (`ANOMALY_THRESHOLDS`):** Ngưỡng phát hiện dị biệt: hệ số `IQR_K = 1.5`, tụt điểm `G1_DROP = 8`, `G2_DROP = 6`, tuổi lưu ban `AGE_OUTLIER = 20`.
+- **Dòng 39–50 (`PISA_CHECKS`, `ALPHA` & các biến kiểm định):** Ngưỡng kiểm định bảng PISA (tối thiểu 30 nước/kỳ, điểm từ 200–700), mức ý nghĩa $\alpha = 0.05$, danh sách biến đưa vào t-test/ANOVA/tương quan, `TEST_LEVEL_CAP` (gộp mức trượt 2 và 3 thành "2+" khi kiểm định) và `MIN_RELIABLE_N = 10` (cột ít hơn 10 học sinh trên biểu đồ 1 bị gạch chéo).
+- **Dòng 53–60 (`MERGE_KEYS` & `REG_FACTORS`):** 13 thuộc tính định danh học sinh trùng giữa 2 môn và danh sách 13 biến số đưa vào mô hình hồi quy đa biến OLS.
+- **Dòng 65–67 (`OECD_NAME_ALIASES`):** Ánh xạ 5 tên nước khác nhau giữa báo cáo OECD và Wikipedia.
+- **Dòng 69–106 (`VAR_DESCRIPTIONS`, `VALID_RANGES`, `REQUIRED_COLS`, `YES_NO_COLS`, `FLAG_COLS`, `SAMPLE_STUDENTS`):** Dict mô tả biến, miền giá trị hợp lệ của 16 cột số (theo `student.txt`), các cột bắt buộc, cột yes/no, tên 6 cờ bất thường và list of dicts học sinh mẫu.
 
-#### 🔹 Khối 2: 4 hàm cơ bản & Rule phân loại rủi ro (Dòng 107–151)
-- **Dòng 107–114 (`convert_yes_no`):** Mã hoá chuỗi `"yes"` $\rightarrow 1$, `"no"` $\rightarrow 0$, chuỗi lạ/trống $\rightarrow None$.
-- **Dòng 117–119 (`calc_pass_fail`):** Điểm cuối kỳ $G3 \ge 10 \rightarrow$ `"pass"`, ngược lại $\rightarrow$ `"fail"`.
-- **Dòng 122–129 (`classify_absences`):** Phân loại số buổi vắng thành 3 mức: `"low"` (0–3), `"medium"` (4–9), `"high"` ($\ge 10$).
-- **Dòng 132–134 (`calc_average_grade`):** Tính trung bình cộng 3 kỳ $(G1 + G2 + G3) / 3$ (chỉ dùng mô tả, không dùng dự báo vì dính G3).
-- **Dòng 137–151 (`classify_risk`):** **Quy tắc cảnh báo sớm rủi ro trượt môn** (hoàn toàn không dùng G3 để tránh rò rỉ dữ liệu):
+#### 🔹 Khối 2: 4 hàm cơ bản & Rule phân loại rủi ro (Dòng 112–156)
+- **Dòng 112–119 (`convert_yes_no`):** Mã hoá chuỗi `"yes"` $\rightarrow 1$, `"no"` $\rightarrow 0$, chuỗi lạ/trống $\rightarrow None$.
+- **Dòng 122–124 (`calc_pass_fail`):** Điểm cuối kỳ $G3 \ge 10 \rightarrow$ `"pass"`, ngược lại $\rightarrow$ `"fail"`.
+- **Dòng 127–134 (`classify_absences`):** Phân loại số buổi vắng thành 3 mức: `"low"` (0–3), `"medium"` (4–9), `"high"` ($\ge 10$).
+- **Dòng 137–139 (`calc_average_grade`):** Tính trung bình cộng 3 kỳ $(G1 + G2 + G3) / 3$ (chỉ dùng mô tả, không dùng dự báo vì dính G3).
+- **Dòng 142–156 (`classify_risk`):** **Quy tắc cảnh báo sớm rủi ro trượt môn** (hoàn toàn không dùng G3 để tránh rò rỉ dữ liệu):
   - `"high"`: nếu $G2 < 10$ hoặc từng trượt $\ge 2$ môn.
   - `"medium"`: nếu $G1 < 10$ hoặc từng trượt 1 môn hoặc vắng học mức cao.
   - `"low"`: các trường hợp còn lại.
 
-#### 🔹 Khối 3: Thu thập, Cào & Kiểm định dữ liệu Web (Dòng 157–402)
-- **Dòng 165–178 (`fetch_uci_raw`):** Tải file nén `student+performance.zip` từ UCI qua `requests` và giải nén lấy các file CSV.
-- **Dòng 189–243 (`_parse_pisa_html`):** Dùng `BeautifulSoup` bóc tách cây DOM của Wikipedia: lấy bảng tóm tắt xếp hạng 2025 và chuyển bảng so sánh lịch sử 2000–2022 từ dạng ngang nhiều năm sang dạng dọc (wide-to-long).
-- **Dòng 250–282 (`validate_pisa_raw`):** Thuật toán kiểm tra tính toàn vẹn của bảng PISA: đảm bảo đủ 3 môn, năm thi từ 2000 trở đi, điểm từ 200–700, có dòng trung bình OECD, không trùng lặp nước. Bảng lỗi sẽ bị từ chối ngay.
-- **Dòng 301–339 (`scrape_pisa_table`):** Cơ chế **Cache-first**: ưu tiên đọc file raw đã lưu `pisa_reference.csv`; nếu mất mạng hoặc cào lỗi thì tự động fallback về cache cũ mà không làm sập chương trình.
-- **Dòng 342–358 (`clean_pisa`):** Làm sạch bảng PISA: bỏ ký tự trích dẫn `[41]`, bỏ dấu sao `*` sau tên nước, ép kiểu số, chuẩn hoá tên `OECD average`.
-- **Dòng 361–402 (`cross_check_pisa`):** Đối chiếu dữ liệu Wikipedia với bảng chính thức Table I.1 của OECD: so khớp điểm năm 2025 và suy diễn điểm 2022 qua mức thay đổi (cho phép sai số làm tròn $\pm 1$).
+#### 🔹 Khối 3: Thu thập, Cào & Kiểm định dữ liệu Web (Dòng 165–416)
+- **Dòng 172–175 (`HTTP_HEADERS`):** Định danh `User-Agent` tuân thủ Wikimedia policy, khai báo repo GitHub và email tác giả.
+- **Dòng 179–192 (`fetch_uci_raw`):** Tải file nén `student+performance.zip` từ UCI qua `requests` và giải nén lấy các file CSV.
+- **Dòng 203–257 (`_parse_pisa_html`):** Dùng `BeautifulSoup` bóc tách cây DOM của Wikipedia: lấy bảng tóm tắt xếp hạng 2025 và chuyển bảng so sánh lịch sử 2000–2022 từ dạng ngang nhiều năm sang dạng dọc (wide-to-long).
+- **Dòng 264–296 (`validate_pisa_raw`):** Thuật toán kiểm tra tính toàn vẹn của bảng PISA: đảm bảo đủ 3 môn, năm thi từ 2000 trở đi, điểm từ 200–700, có dòng trung bình OECD, không trùng lặp nước. Bảng lỗi sẽ bị từ chối ngay.
+- **Dòng 315–353 (`scrape_pisa_table`):** Cơ chế **Cache-first**: ưu tiên đọc file raw đã lưu `pisa_reference.csv`; nếu mất mạng hoặc cào lỗi thì tự động fallback về cache cũ mà không làm sập chương trình.
+- **Dòng 356–372 (`clean_pisa`):** Làm sạch bảng PISA: bỏ ký tự trích dẫn `[41]`, bỏ dấu sao `*` sau tên nước, ép kiểu số, chuẩn hoá tên `OECD average`.
+- **Dòng 375–416 (`cross_check_pisa`):** Đối chiếu dữ liệu Wikipedia với bảng chính thức Table I.1 của OECD: so khớp điểm năm 2025 và suy diễn điểm 2022 qua mức thay đổi (cho phép sai số làm tròn $\pm 1$).
 
-#### 🔹 Khối 4: Thuật toán thống kê, OLS & Đánh giá rủi ro (Dòng 408–593)
-- **Dòng 408–413 (`_grp`):** Tiện ích gom nhóm tính `mean`, `std`, `count`.
-- **Dòng 424–430 (`_holm`):** Thuật toán hiệu chỉnh đa kiểm định Holm-Bonferroni: kiểm soát tỷ lệ sai số loại I cho cả họ giả thuyết ở mức $\alpha = 0.05$.
-- **Dòng 433–473 (`_group_tests`):** Chạy kiểm định Welch t-test (kèm khoảng tin cậy 95% và Cohen's d) cho biến nhị phân; chạy ANOVA một chiều (kèm $\eta^2$) và Kruskal-Wallis cho biến nhiều mức.
-- **Dòng 476–484 (`_corr_tests`):** Tính tương quan Pearson với G3 kèm khoảng tin cậy 95% và p-value.
-- **Dòng 487–515 (`_ols`):** Thuật toán hồi quy OLS ma trận tự code: tính hệ số $\beta = (X^T X)^{-1} X^T y$, đòn bẩy $H$, ma trận hiệp phương sai sai số vững **HC3**, tra phân phối Student-t ra p-value và khoảng tin cậy 95% của từng hệ số.
-- **Dòng 519–544 (`_scope_stats`):** Gom toàn bộ thống kê của một tập dữ liệu (tỉ lệ đỗ, các bảng groupby, ma trận tương quan, kết quả kiểm định) vào một dict.
-- **Dòng 547–552 (`_wilson`):** Tính khoảng tin cậy Wilson 95% cho các tỷ lệ nhị thức.
-- **Dòng 555–574 (`_risk_eval`):** Lập bảng ma trận nhầm lẫn (Confusion Matrix) tính độ nhạy Recall và độ chuẩn xác Precision kèm khoảng tin cậy Wilson.
-- **Dòng 577–593 (`_tier_eval`):** Đo lường tỷ lệ trượt của từng phân tầng rủi ro và chạy kiểm định chính xác Fisher kiểm tra xem nhóm Medium có thực sự rủi ro hơn Low không.
+#### 🔹 Khối 4: Thuật toán thống kê, OLS & Đánh giá rủi ro (Dòng 422–643)
+- **Dòng 422–427 (`_grp`):** Tiện ích gom nhóm tính `mean`, `std`, `count`.
+- **Dòng 438–444 (`_holm`):** Thuật toán hiệu chỉnh đa kiểm định Holm-Bonferroni: kiểm soát tỷ lệ sai số loại I cho cả họ giả thuyết ở mức $\alpha = 0.05$.
+- **Dòng 447–491 (`_group_tests`):** Chạy kiểm định Welch t-test (kèm khoảng tin cậy 95% và Cohen's d) cho biến nhị phân; chạy ANOVA một chiều (kèm $\eta^2$) và Kruskal-Wallis cho biến nhiều mức (số lần trượt 2 và 3 được gộp thành "2+" vì mỗi mức chỉ khoảng chục học sinh).
+- **Dòng 494–502 (`_corr_tests`):** Tính tương quan Pearson với G3 kèm khoảng tin cậy 95% và p-value.
+- **Dòng 505–533 (`_ols`):** Thuật toán hồi quy OLS ma trận tự code: tính hệ số $\beta = (X^T X)^{-1} X^T y$, đòn bẩy $H$, ma trận hiệp phương sai sai số vững **HC3**, tra phân phối Student-t ra p-value và khoảng tin cậy 95% của từng hệ số.
+- **Dòng 537–566 (`_paired_subjects`):** Ghép cùng một học sinh ở 2 môn theo `MERGE_KEYS` (bỏ các key bị lặp trong cùng file), rồi so G3 bằng t-test ghép cặp và Wilcoxon, vì 2 file Toán và Bồ Đào Nha không phải 2 mẫu độc lập.
+- **Dòng 569–594 (`_scope_stats`):** Gom toàn bộ thống kê của một tập dữ liệu (tỉ lệ đỗ, các bảng groupby, ma trận tương quan, kết quả kiểm định) vào một dict.
+- **Dòng 597–602 (`_wilson`):** Tính khoảng tin cậy Wilson 95% cho các tỷ lệ nhị thức.
+- **Dòng 605–624 (`_risk_eval`):** Lập bảng ma trận nhầm lẫn (Confusion Matrix) tính độ nhạy Recall và độ chuẩn xác Precision kèm khoảng tin cậy Wilson.
+- **Dòng 627–643 (`_tier_eval`):** Đo lường tỷ lệ trượt của từng phân tầng rủi ro và chạy kiểm định chính xác Fisher kiểm tra xem nhóm Medium có thực sự rủi ro hơn Low không.
 
-#### 🔹 Khối 5: Class hướng đối tượng `StudentDataProcessor` (Dòng 596–972)
-- **Dòng 617–628 (`load_data`):** Đọc cả 2 file `student-mat.csv` và `student-por.csv`, gắn cột `subject`, nạp file PISA và file OECD.
-- **Dòng 631–694 (`clean_data`):** Quy trình làm sạch 6 bước triệt để:
+#### 🔹 Khối 5: Class hướng đối tượng `StudentDataProcessor` (Dòng 646–1043)
+- **Dòng 667–678 (`load_data`):** Đọc cả 2 file `student-mat.csv` và `student-por.csv`, gắn cột `subject`, nạp file PISA và file OECD.
+- **Dòng 681–744 (`clean_data`):** Quy trình làm sạch 6 bước triệt để:
   1. Cắt khoảng trắng các cột chuỗi (`strip`).
   2. Ép kiểu số và soi theo `VALID_RANGES`.
   3. Mã hoá nhị phân `convert_yes_no`.
   4. Xóa dòng trùng (`drop_duplicates`) và xóa dòng thiếu điểm bắt buộc (`dropna`).
-  5. Tạo cột dẫn xuất (`pass_fail`, `absence_level`, `avg_grade`, `avg_g1g2`, `risk_group`).
+  5. Tạo cột dẫn xuất (`pass_fail`, `absence_level`, `avg_grade`, `avg_g1g2`, `risk_group`). Cột `avg_grade` được gắn cờ chỉ dùng mô tả vì dính target G3 (tránh rò rỉ dữ liệu).
   6. Gắn 6 nhãn cờ dữ liệu bất thường (tính ngưỡng vắng học IQR theo từng môn). Ghi log toàn bộ vào `cleaning_log`.
-- **Dòng 697–737 (`analyze`):** Điều phối phân tích thống kê trên 2 tập `all` và `exclude_dropout`, gọi hồi quy, độ nhạy, holdout và vẽ biểu đồ.
-- **Dòng 739–750 (`_regression`):** Chạy 2 mô hình OLS: Mô hình A (13 yếu tố nền) và Mô hình B (thêm G1, G2) cho cả 2 môn.
-- **Dòng 752–787 (`_sensitivity`):** Phân tích độ nhạy của biến vắng học trên 3 kịch bản xử lý điểm 0 và vắng 0.
-- **Dòng 789–805 (`_risk_holdout`):** Thử nghiệm rule rủi ro ngoài mẫu (Out-of-sample) trên môn Bồ Đào Nha (cả tập đầy đủ và tập holdout chặt không trùng học sinh).
-- **Dòng 807–838 (`_subject_comparison`, `_pisa_context`):** So sánh 2 môn (tỉ lệ đỗ, tương quan chính) và trích điểm PISA của Bồ Đào Nha so với trung bình OECD theo từng năm.
-- **Dòng 840–953 (Các hàm vẽ biểu đồ, `_plot_charts` gọi lần lượt):**
-  - `_plot_bar` (Dòng 848–877): Vẽ Biểu đồ 1 (cột nhóm studytime $\times$ internet, 95% CI error bar).
-  - `_plot_hist` (Dòng 879–901): Vẽ Biểu đồ 2 (histogram G3, tô đỏ cột điểm 0, vạch đứt mốc 10).
-  - `_plot_heatmap` (Dòng 903–922): Vẽ Biểu đồ 3 (ma trận nhiệt tương quan RdBu_r che nửa trên).
-  - `_plot_pisa` (Dòng 924–953): Vẽ Biểu đồ 4 (đường xu hướng 3 môn Bồ Đào Nha vs OECD từ 2000–2025).
-- **Dòng 956–972 (`export_results`):** Xuất file `cleaned_students.csv`, `pisa_clean.csv` và `summary.json`. Bắt lỗi `PermissionError` nhắc đóng file nếu đang bị mở bên Excel/WPS.
-
----
-
+- **Dòng 747–789 (`analyze`):** Điều phối phân tích thống kê trên 2 tập `all` và `exclude_dropout`, gọi hồi quy, độ nhạy, holdout, so sánh ghép cặp 2 môn và vẽ biểu đồ.
+- **Dòng 791–802 (`_regression`):** Chạy 2 mô hình OLS: Mô hình A (13 yếu tố nền) và Mô hình B (thêm G1, G2) cho cả 2 môn.
+- **Dòng 804–839 (`_sensitivity`):** Phân tích độ nhạy của biến vắng học trên 3 kịch bản xử lý điểm 0 và vắng 0.
+- **Dòng 841–857 (`_risk_holdout`):** Thử nghiệm rule rủi ro ngoài mẫu (Out-of-sample) trên môn Bồ Đào Nha (cả tập đầy đủ và tập holdout chặt không trùng học sinh).
+- **Dòng 859–890 (`_subject_comparison`, `_pisa_context`):** So sánh 2 môn (tỉ lệ đỗ, tương quan chính) và trích điểm PISA của Bồ Đào Nha so với trung bình OECD theo từng năm.
+- **Dòng 892–1019 (Các hàm vẽ biểu đồ, `_plot_charts` gọi lần lượt):**
+  - `_save_fig` (Dòng 900–910): Tiện ích lưu ảnh chuẩn, tự động bắt lỗi `PermissionError` nếu file PNG đang bị trình xem ảnh khoá.
+  - `_plot_bar` (Dòng 912–946): Vẽ Biểu đồ 1 (cột nhóm studytime $\times$ internet, 95% CI error bar; cột dưới 10 học sinh bị gạch chéo, làm mờ).
+  - `_plot_hist` (Dòng 948–969): Vẽ Biểu đồ 2 (histogram G3, tô đỏ cột điểm 0, vạch đứt mốc 10).
+  - `_plot_heatmap` (Dòng 971–989): Vẽ Biểu đồ 3 (ma trận nhiệt tương quan RdBu_r che nửa trên).
+  - `_plot_pisa` (Dòng 991–1019): Vẽ Biểu đồ 4 (đường xu hướng 3 môn Bồ Đào Nha vs OECD từ 2000–2025).
+- **Dòng 1022–1043 (`export_results`):** Xuất song song 3 file CSV: `cleaned_students.csv` (1044 dòng hợp nhất), `cleaned_students_mat.csv` (395 dòng môn Toán) và `cleaned_students_por.csv` (649 dòng môn Văn), cùng `pisa_clean.csv` và `summary.json`. Bắt lỗi `PermissionError` trên toàn bộ file nếu đang bị mở bên Excel/WPS.
 ### 6.3 `report_builder.py` — Bộ sinh báo cáo Markdown tự động
-- **Dòng 29–47 (`code` & `code_region`):** Dùng thư viện `inspect` đọc trực tiếp mã nguồn thật từ file `.py` kèm số dòng thực tế để nhúng vào báo cáo, đảm bảo báo cáo không bao giờ bị lệch code so với thực tế.
-- **Dòng 71–132 (`_facts`):** Trích xuất toàn bộ chỉ số thống kê, kết quả kiểm định, mô hình OLS, tỷ lệ holdout và độ nhạy từ `proc.results` thành một từ điển sự thật duy nhất (single source of truth).
-- **Dòng 134–350:** Các hàm dựng bảng Markdown: `_portugal_check`, `_reg_rows` (hệ số hồi quy), `_sens_rows` (độ nhạy), `_tier_rows` (3 nhóm rủi ro), `_oecd_rows` (đối chiếu OECD), `_pisa_rows`, `_test_rows` (kiểm định), `_corr_rows`, `_holdout_rows`, `_clean_rows`, `_flag_rows`.
-- **Dòng 353–902 (`render_en`):** Sinh toàn bộ nội dung báo cáo tiếng Anh `report.md`.
-- **Dòng 904–1445 (`render_vi`):** Sinh toàn bộ nội dung báo cáo tiếng Việt `report_vi.md`.
-- **Dòng 1447–1475 (`_codes`, `build_reports`):** Gom các đoạn code cần nhúng và ghi đè 2 file báo cáo ra thư mục gốc sau mỗi lần chạy pipeline.
+
+- **Dòng 30–47 (`code` & `code_region`):** Dùng thư viện `inspect` đọc trực tiếp mã nguồn thật từ file `.py` kèm số dòng thực tế để nhúng vào báo cáo, đảm bảo báo cáo không bao giờ bị lệch code so với thực tế.
+- **Dòng 72–135 (`_facts`):** Trích xuất toàn bộ chỉ số thống kê, kết quả kiểm định, mô hình OLS, tỷ lệ holdout và độ nhạy từ `proc.results` thành một từ điển sự thật duy nhất (single source of truth).
+- **Dòng 138–426:** Các hàm dựng câu chữ và bảng Markdown: `_fail_steps`/`_fail_steps_text` (mức tụt điểm theo số lần trượt), `_paired_text` (mục 10.1: 2 môn không độc lập + so sánh ghép cặp), `_portugal_check`, `_reg_rows` (hệ số hồi quy), `_sens_rows` (độ nhạy), `_tier_rows` (3 nhóm rủi ro), `_oecd_rows` (đối chiếu OECD), `_pisa_rows`, `_test_rows` (kiểm định), `_corr_rows`, `_holdout_rows`, `_clean_rows`, `_flag_rows`.
+- **Dòng 432–995 (`render_en`):** Sinh toàn bộ nội dung báo cáo tiếng Anh `report.md`.
+- **Dòng 1001–1556 (`render_vi`):** Sinh toàn bộ nội dung báo cáo tiếng Việt `report_vi.md`.
+- **Dòng 1562–1596 (`_codes`, `build_reports`):** Gom các đoạn code cần nhúng, kiểm tra đủ dữ liệu PISA và file OECD (thiếu thì báo lỗi rõ tên file, không ghi report), rồi ghi đè 2 file báo cáo ra thư mục gốc sau mỗi lần chạy pipeline.
 
 ---
 
@@ -327,14 +336,19 @@ File này gồm 5 khối chức năng lớn:
 - **Dòng 70–87 (`find_browser`, `html_to_pdf`):** Tự động phát hiện trình duyệt Chrome/Edge trên máy và chạy ở chế độ ngầm (`--headless=new`, `--print-to-pdf`) để xuất ra 2 file PDF chất lượng cao: `report.pdf` và `report_vi.pdf`.
 
 ---
-
-### 6.5 Thư mục `tests/` — Hệ thống 44 ca kiểm thử tự động (Unit Tests)
+### 6.5 Thư mục `tests/` — Hệ thống 51 ca kiểm thử tự động (Unit Tests)
 - **`conftest.py`:** Khởi tạo dữ liệu mẫu: lấy 6 dòng dữ liệu thật từ `student-mat.csv` làm phôi thử nghiệm và tạo hàm `valid_pisa_raw()` dựng bảng PISA nhỏ nhất đạt chuẩn.
-- **`test_data_processor.py` (44 ca test):**
-  - **Test hàm cơ bản:** Điểm biên đỗ/trượt (9.0, 9.99, 10.0), biên buổi vắng (3, 4, 9, 10), xử lý dữ liệu yes/no bất thường.
+- **`test_report_builder.py` (1 ca test):** Thiếu file OECD thì `build_reports` báo lỗi ghi rõ tên file và không ghi report nào.
+- **`test_data_processor.py` (50 ca test):**
   - **Test tính độc lập của Rule rủi ro:** Đảm bảo hàm `classify_risk` chỉ nhìn G1, G2, số lần trượt, số buổi vắng mà không đổi kết quả khi thay đổi G3.
   - **Test thống kê:** Kiểm tra thuật toán Holm đảm bảo tính đơn điệu và chặn trên 1.0; kiểm tra khoảng tin cậy Wilson.
   - **Test cào PISA:** Kiểm tra parser đọc đúng HTML mẫu, hàm validation bắt trúng 6 dạng lỗi cấu trúc bảng, cơ chế cache-first không gọi mạng khi đã có file.
   - **Test làm sạch dữ liệu:** Kiểm thử trên 6 dòng cố ý cấy lỗi (tuổi 30, yes/no lạ, dòng trùng, thừa khoảng trắng) xem code có đếm và xử lý chính xác không.
   - **Test mô hình OLS:** Chạy thử nghiệm trên dữ liệu giả lập có biến nhiễu để đảm bảo thuật toán OLS tự viết ước lượng chính xác hệ số thật.
   - **Test kiểm chứng Holdout:** Đảm bảo tập holdout chặt loại bỏ đúng các học sinh học chung cả 2 môn Toán và Bồ Đào Nha.
+  - **Test ghép cặp 2 môn:** Đảm bảo `_paired_subjects` chỉ ghép đúng cùng một học sinh, bỏ các key bị lặp và các cặp có G3 = 0.
+  - **Test gộp nhóm nhỏ:** Đảm bảo khi kiểm định, mức trượt 2 và 3 được gộp thành "2+".
+  - **Test User-Agent Wikimedia:** Kiểm tra User-Agent chứa link repo và email liên hệ theo đúng chính sách Wikimedia.
+  - **Test đối chiếu DevTools:** Kiểm tra file `data/raw/pisa_manual_check.csv` tồn tại và đúng cấu trúc bảng Toán 2025.
+  - **Test xuất file tách môn:** Đảm bảo `export_results` xuất song song cả file hợp nhất và 2 file riêng cho từng môn `mat` và `por`.
+  - **Test cảnh báo rò rỉ biến mục tiêu:** Kiểm tra hàm `calc_average_grade` và mô tả biến luôn có cảnh báo chống target leakage đối với G3.

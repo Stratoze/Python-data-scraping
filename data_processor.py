@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 import numpy as np
 import pandas as pd
 import requests
@@ -42,6 +43,10 @@ PISA_MIN_COUNTRIES, PISA_SCORE_MIN, PISA_SCORE_MAX = PISA_CHECKS
 ALPHA = 0.05
 BINARY_TEST_COLS = ["internet", "famsup", "schoolsup", "paid"]
 MULTI_TEST_COLS = ["studytime", "absence_level", "failures"]
+# Sparse levels merged before ANOVA/Kruskal: failures 2 and 3 have ~12 students each -> one "2+" group
+TEST_LEVEL_CAP = {"failures": 2}
+# Chart 1 bars with fewer students are drawn hatched: their mean is not reliable
+MIN_RELIABLE_N = 10
 CORR_TEST_COLS = ["G1", "G2", "studytime", "failures", "absences", "famsup_bin"]
 
 # Columns identifying the same student in student-mat and student-por (student-merge.R)
@@ -72,6 +77,8 @@ VAR_DESCRIPTIONS = {
     "schoolsup": "Extra educational support from school (yes/no)",
     "famsup": "Family educational support (yes/no)",
     "paid": "Extra paid classes within the course subject (yes/no)",
+    "avg_grade": "Mean of G1, G2, G3 (descriptive only: contains target G3, DO NOT use as predictor)",
+    "avg_g1g2": "Mean of G1 and G2 (mid-year performance; safe for early prediction)",
 }
 
 # Valid value domain per numeric column (from data/raw/student.txt)
@@ -130,7 +137,11 @@ def classify_absences(n: int) -> str:
 
 
 def calc_average_grade(g1: float, g2: float, g3: float) -> float:
-    """Mean of the three grade periods (descriptive only: contains G3)."""
+    """Mean of the three grade periods: (G1 + G2 + G3) / 3.
+
+    WARNING: Contains the target G3. Descriptive only; NEVER use as a predictor
+    for G3 to prevent target leakage. For early prediction, use avg_g1g2 instead.
+    """
     return (float(g1) + float(g2) + float(g3)) / 3.0
 
 
@@ -158,7 +169,10 @@ UCI_ZIP_URL = "https://archive.ics.uci.edu/static/public/320/student+performance
 UCI_FILES = ("student-mat.csv", "student-por.csv", "student-merge.R", "student.txt")
 PISA_URL = ("https://en.wikipedia.org/wiki/"
             "Programme_for_International_Student_Assessment")
-HTTP_HEADERS = {"User-Agent": "P1-edu-project/1.0 (student data-science coursework)"}
+HTTP_HEADERS = {
+    "User-Agent": "P1-edu-project/1.0 (https://github.com/Stratoze/Python-data-scraping; "
+                  "mailto:vohoangquocminh2k5@gmail.com) student coursework"
+}
 PISA_SUBJECTS = {"mathematics": "mathematics", "science": "science", "reading": "reading"}
 
 
@@ -456,13 +470,17 @@ def _group_tests(df: pd.DataFrame) -> dict:
                       "p": _p(res.pvalue), "effect": round(float(diff / pooled_sd), 2),
                       "effect_name": "Cohen's d"}
     for col in MULTI_TEST_COLS:
-        groups = [g["G3"].astype(float).to_numpy() for _, g in df.groupby(col)]
+        cap = TEST_LEVEL_CAP.get(col)
+        levels = df[col].clip(upper=cap) if cap is not None else df[col]
+        by = df.groupby(levels)
+        groups = [g["G3"].astype(float).to_numpy() for _, g in by]
         anova = stats.f_oneway(*groups)
         kw = stats.kruskal(*groups)
         grand = df["G3"].mean()
         ss_between = sum(len(g) * (g.mean() - grand) ** 2 for g in groups)
         ss_total = float(((df["G3"] - grand) ** 2).sum())
         tests[col] = {"test": "one-way ANOVA", "k_groups": len(groups),
+                      "levels": [f"{k}+" if cap is not None and k == cap else str(k) for k in by.groups],
                       "stat": round(float(anova.statistic), 2), "p": _p(anova.pvalue),
                       "effect": round(float(ss_between / ss_total), 3), "effect_name": "eta²",
                       "kruskal_H": round(float(kw.statistic), 2), "p_kruskal": _p(kw.pvalue)}
@@ -514,6 +532,38 @@ def _ols(df: pd.DataFrame, cols: list[str]) -> dict:
                  for name, b, s, pv in zip(["intercept"] + cols, beta, se, p)},
     }
 
+
+
+def _paired_subjects(clean: pd.DataFrame, a: str, b: str) -> dict:
+    """Same pupils in courses a and b: compare their G3 pairwise instead of as two independent groups.
+
+    Pupils are matched on MERGE_KEYS (as in student-merge.R). Keys that repeat inside one
+    course cannot be matched safely, so those rows are left out. Pairs where either
+    course is a dropout suspect (G3 = 0) are excluded from the grade comparison.
+    """
+    def unique_rows(subj: str) -> tuple[pd.DataFrame, int]:
+        g = clean[clean["subject"] == subj]
+        dup = g.duplicated(MERGE_KEYS, keep=False)
+        return g[~dup], int(dup.sum())
+
+    ga, dup_a = unique_rows(a)
+    gb, dup_b = unique_rows(b)
+    pairs = ga.merge(gb, on=MERGE_KEYS, suffixes=(f"_{a}", f"_{b}"))
+    ok = pairs[~pairs[f"dropout_suspect_{a}"] & ~pairs[f"dropout_suspect_{b}"]]
+    x, y = ok[f"G3_{a}"].astype(float), ok[f"G3_{b}"].astype(float)
+    t = stats.ttest_rel(x, y)
+    ci = t.confidence_interval(1 - ALPHA)
+    return {
+        "n_a": int((clean["subject"] == a).sum()), "n_b": int((clean["subject"] == b).sum()),
+        "n_duplicate_keys_a": dup_a, "n_duplicate_keys_b": dup_b,
+        "n_matched": int(len(pairs)), "n_pairs": int(len(ok)),
+        "mean_G3_a": round(float(x.mean()), 2), "mean_G3_b": round(float(y.mean()), 2),
+        "diff": round(float((x - y).mean()), 2),
+        "ci95": [round(float(ci.low), 2), round(float(ci.high), 2)],
+        "p_ttest": _p(t.pvalue), "p_wilcoxon": _p(stats.wilcoxon(x, y).pvalue),
+        "significant": bool(t.pvalue < ALPHA),
+        "corr_G3": round(float(x.corr(y)), 3),
+    }
 
 
 def _scope_stats(df: pd.DataFrame) -> dict:
@@ -715,6 +765,8 @@ class StudentDataProcessor:
             "risk_eval": {"all": _risk_eval(df), "exclude_dropout": _risk_eval(core),
                           **self._risk_holdout()},
             "subject_comparison": self._subject_comparison(),
+            "subject_paired": {subj: _paired_subjects(self.clean, self.primary_subject, subj)
+                               for subj in sorted(set(self.clean["subject"]) - {self.primary_subject})},
             "regression": self._regression(),
             "sensitivity": self._sensitivity(),
             "dropout_profile": {
@@ -844,6 +896,18 @@ class StudentDataProcessor:
         self._plot_heatmap(df, core)
         if self.pisa_clean is not None:
             self._plot_pisa()
+    def _save_fig(self, fig, filename: str) -> None:
+        target = self.images_dir / filename
+        try:
+            fig.savefig(target, dpi=150)
+        except PermissionError as exc:
+            raise PermissionError(
+                f"Cannot save chart '{filename}': file is locked by an image viewer. "
+                f"Please close the viewer and retry (Đóng file ảnh đang mở rồi chạy lại)."
+            ) from exc
+        finally:
+            plt.close(fig)
+
 
     def _plot_bar(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
         """Chart 1: grouped bar - mean G3 by studytime x internet, 95% CI + n."""
@@ -863,18 +927,23 @@ class StudentDataProcessor:
             bars = ax.bar(xs, means, width, yerr=cis, capsize=4, label=net,
                           color=f"C{k}", edgecolor="black", linewidth=0.5)
             for b, n, ci in zip(bars, ns, cis):
+                if n < MIN_RELIABLE_N:
+                    b.set_alpha(0.4)
+                    b.set_hatch("//")
                 ax.text(b.get_x() + b.get_width() / 2, b.get_height() + ci + 0.2,
                         f"n={n}", ha="center", va="bottom", fontsize=8)
         ax.set_xticks(range(len(levels)), ["<2h", "2-5h", "5-10h", ">10h"], rotation=0)
         ax.set_title(f"Mean final grade (G3) by weekly studytime and internet access\n"
-                     f"(excluding {n_drop} dropout suspects with G3 = 0; bars = 95% CI)")
+                     f"(excluding {n_drop} dropout suspects with G3 = 0; bars = 95% CI; hatched = n < {MIN_RELIABLE_N})")
         ax.set_xlabel("Weekly studytime")
         ax.set_ylabel("Mean G3 (0-20)")
         ax.set_ylim(0, 20)
-        ax.legend(title="Internet at home", loc="upper left")
+        handles, _ = ax.get_legend_handles_labels()
+        handles.append(Patch(facecolor="white", edgecolor="black", hatch="//",
+                             label=f"n < {MIN_RELIABLE_N}: unreliable"))
+        ax.legend(handles=handles, title="Internet at home", loc="upper left")
         fig.tight_layout()
-        fig.savefig(self.images_dir / "01_bar_studytime_internet.png", dpi=150)
-        plt.close(fig)
+        self._save_fig(fig, "01_bar_studytime_internet.png")
 
     def _plot_hist(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
         """Chart 2: histogram - G3 distribution, one bin per integer grade."""
@@ -897,8 +966,7 @@ class StudentDataProcessor:
         ax.set_ylabel("Students")
         ax.legend()
         fig.tight_layout()
-        fig.savefig(self.images_dir / "02_hist_g3.png", dpi=150)
-        plt.close(fig)
+        self._save_fig(fig, "02_hist_g3.png")
 
     def _plot_heatmap(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
         """Chart 3: heatmap - Pearson correlation (excluding dropout), diverging colormap."""
@@ -918,8 +986,7 @@ class StudentDataProcessor:
         ax.set_title(f"Pearson correlation (excluding {n_drop} dropout suspects, n={len(core)})")
         fig.colorbar(im, ax=ax, shrink=0.8)
         fig.tight_layout()
-        fig.savefig(self.images_dir / "03_heatmap_corr.png", dpi=150)
-        plt.close(fig)
+        self._save_fig(fig, "03_heatmap_corr.png")
 
     def _plot_pisa(self) -> None:
         """Chart 4 (context): Portugal vs OECD average PISA score per subject over time."""
@@ -949,24 +1016,28 @@ class StudentDataProcessor:
         fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, fontsize=9)
         fig.suptitle("PISA mean score: Portugal vs OECD average (source: Wikipedia, cross-checked with OECD)")
         fig.tight_layout(rect=(0, 0.07, 1, 1))
-        fig.savefig(self.images_dir / "04_pisa_portugal_oecd.png", dpi=150)
-        plt.close(fig)
+        self._save_fig(fig, "04_pisa_portugal_oecd.png")
 
     # -- step 4: export --------------------------------------------------
     def export_results(self) -> tuple[Path, Path]:
         assert self.clean is not None and self.results, "run clean+analyze first"
         self.processed_dir.mkdir(parents=True, exist_ok=True)
         cleaned_csv = self.processed_dir / "cleaned_students.csv"
+        cleaned_mat_csv = self.processed_dir / "cleaned_students_mat.csv"
+        cleaned_por_csv = self.processed_dir / "cleaned_students_por.csv"
         summary_json = self.processed_dir / "summary.json"
+        pisa_csv = self.processed_dir / "pisa_clean.csv"
         try:
             self.clean.to_csv(cleaned_csv, index=False)
+            self.clean[self.clean["subject"] == "mat"].to_csv(cleaned_mat_csv, index=False)
+            self.clean[self.clean["subject"] == "por"].to_csv(cleaned_por_csv, index=False)
             if self.pisa_clean is not None:
-                self.pisa_clean.to_csv(self.processed_dir / "pisa_clean.csv", index=False)
+                self.pisa_clean.to_csv(pisa_csv, index=False)
+            with open(summary_json, "w", encoding="utf-8") as f:
+                json.dump(self.results, f, ensure_ascii=False, indent=2)
         except PermissionError as exc:
             raise PermissionError(
-                f"Không thể ghi vào '{self.processed_dir}' vì file đang được mở trong Excel/WPS. "
-                f"Hãy đóng file đó rồi chạy lại."
+                f"Cannot write output files in '{self.processed_dir}': file is locked by another program (Excel/WPS). "
+                f"Please close the file and retry (Đóng file trong Excel/WPS rồi chạy lại)."
             ) from exc
-        with open(summary_json, "w", encoding="utf-8") as f:
-            json.dump(self.results, f, ensure_ascii=False, indent=2)
         return cleaned_csv, summary_json

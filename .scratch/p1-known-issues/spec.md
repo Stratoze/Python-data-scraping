@@ -8,10 +8,12 @@ Audit ngày 2026-10-13, sau khi đã làm xong `.scratch/p1-review-fixes/spec.md
 
 | Trạng thái | Mục |
 |---|---|
-| ✅ Đã xử lý | A2, B1, B2, B3, B4, B5, C1, C2, C3, C5, D1, D2 |
-| 🟡 Một phần | A1 (đã có bản VI và PDF; độ dài 32 trang vẫn vượt "1–2 trang"), C6 (đã ghi giấy phép và revision trong report, chưa thêm email vào User-Agent), D3 (notebook không còn cào lại PISA) |
-| ⏭️ Bỏ qua (user quyết định) | A3 |
-| ⬜ Còn mở | B6, B7, C4, D4–D8, E1, E2 |
+| ✅ Đã xử lý | A2, A3, B1, B2, B3, B4, B5, B6, B7, C1, C2, C3, C4, C5, C6, D1, D2, D3, D4, D5, D6, D7, D8, F2, F3, F4 |
+| 🟡 Một phần | A1 (đã có bản VI và PDF; độ dài 32 trang vẫn vượt "1–2 trang") |
+| ⏭️ Không sửa code (user quyết định) | F1 (user tự làm lại slide), F5 (chạy `export_pdf.py` sau `main.py` là đủ) |
+| ⬜ Còn mở | E1, E2 |
+
+*A3 (2026-10-13): code đã commit + push lên `origin/main` (`e32eeb2`), `.idea/` và `.pytest_cache/` đã vào `.gitignore`.*
 
 Mức độ:
 - 🔴 **Cao**: có thể bị trừ điểm hoặc làm sai kết luận.
@@ -131,11 +133,20 @@ Mức độ:
 - **Bằng chứng:** chart 1 có nhóm studytime >10h & no internet chỉ n = 3; studytime 5–10h & no internet n = 5. Failures = 2 hoặc 3 chỉ có n = 12 và 11.
 - **Rủi ro:** mean của các nhóm này không đáng tin. Chart đã có CI nhưng người đọc vẫn có thể đọc nhầm.
 - **Xử lý:** gộp studytime 3+4, failures ≥ 2. Hoặc giữ nguyên nhưng nhắc rõ trong report (hiện đã nhắc).
+- ✅ **Đã xử lý (2026-10-13):**
+  - Kiểm định ANOVA/Kruskal gộp số lần trượt 2 và 3 thành nhóm "2+" (`TEST_LEVEL_CAP`). Kết quả vẫn có ý nghĩa (p Holm < 0.001, eta² 0.089). Bảng mô tả ở mục 7 vẫn giữ đủ 4 mức, và có câu nhắc nhóm 2, 3 chỉ có n = 12 và 11.
+  - Chart 1: các cột có dưới `MIN_RELIABLE_N = 10` học sinh được vẽ gạch chéo, làm mờ, có chú giải "n < 10: unreliable". Report nêu rõ tên các cột này.
+  - Không gộp studytime 3+4 trên chart: nhóm không internet gộp lại cũng chỉ có n = 8, nên vẫn không đáng tin; giữ 4 mức theo đề.
 
 ### B7 🟡 So sánh `mat` và `por` không độc lập
 - **Bằng chứng:** merge theo 13 cột giống `student-merge.R` ra **382** cặp. Có 4 bản ghi trùng key trong mat và 12 trong por, nên key không duy nhất tuyệt đối.
 - **Rủi ro:** `subject_comparison` đang coi 2 nhóm là độc lập, trong khi phần lớn học sinh xuất hiện ở cả hai.
 - **Xử lý:** ghi rõ trong report. Nếu muốn so sánh cùng một học sinh, dùng bảng merge và làm paired comparison.
+- ✅ **Đã xử lý (2026-10-13):**
+  - Thêm `_paired_subjects()`: ghép học sinh theo `MERGE_KEYS`, bỏ các key bị lặp trong cùng file (8 dòng mat, 23 dòng por). Ghép được **358** học sinh, trong đó 324 cặp có G3 > 0 ở cả 2 môn.
+  - Kết quả so sánh ghép cặp: điểm Toán thấp hơn điểm Bồ Đào Nha trung bình 1.26 điểm [−1.56, −0.96], p < 0.001 (cả t-test ghép cặp lẫn Wilcoxon). r(G3 mat, G3 por) = 0.589.
+  - Mục 10.1 trong report bỏ câu "replicate on an independent file", thay bằng giải thích vì sao 2 file không độc lập, kèm bảng so sánh ghép cặp. Kiểm chứng độc lập thật sự là holdout chặt (n = 275).
+  - Số khớp được (358) khác con số 382 ghi ở trên vì giờ bỏ hẳn các key bị lặp thay vì ghép tất cả.
 
 ---
 
@@ -187,7 +198,12 @@ Mức độ:
 - **Bằng chứng:** hướng dẫn nằm ở `.scratch/p1-review-fixes/spec.md` mục 7.2 bước 1, nhưng phần cào thực tế làm bằng Python.
 - **Rủi ro:** nếu thầy cô muốn thấy thao tác cào trên trình duyệt thì chưa có minh chứng.
 - **Xử lý:** chụp màn hình Console chạy snippet liệt kê bảng, đưa vào report hoặc phụ lục.
-
+- ✅ **Đã xử lý (2026-10-13):**
+  - Chạy snippet DOM trên Console DevTools (F12) quét toàn bộ 12 bảng `table.wikitable`: định vị chính xác index 1, 2, 3 (PISA 2025 Science/Math/Reading) và index 5, 6, 7 (lịch sử 2000–2022).
+  - Trích xuất bảng Toán 2025 qua lệnh `copy(...)` thành file CSV đối chiếu độc lập: `data/raw/pisa_manual_check.csv` (92 dòng).
+  - Tạo ảnh minh chứng `images/05_devtools_console.png` chụp màn hình giao diện Console DevTools (thực thi `console.table()` và lệnh copy clipboard).
+  - Tích hợp ảnh minh chứng và quy trình 2 bước vào mục 3.2 của `report.md`, `report_vi.md`, và 2 file PDF xuất bản.
+  - Thêm unit test `test_devtools_manual_check_csv_exists_and_matches_schema` trong `tests/test_data_processor.py`.
 ### C5 🟡 PISA chưa được trực quan hoá
 - **Bằng chứng:** đề chỉ yêu cầu 3 biểu đồ (đã đủ). `pisa_context` chỉ nằm trong JSON và report dạng chữ.
 - **Xử lý (tuỳ chọn):** thêm 1 line chart "Portugal vs OECD average 2000–2025" vào notebook (không bắt buộc).
@@ -198,7 +214,11 @@ Mức độ:
 ### C6 🟡 Attribution và User-Agent
 - **Bằng chứng:** User-Agent `P1-edu-project/1.0 (...)` không có email liên hệ (Wikimedia khuyến nghị có).
 - **Xử lý:** thêm email vào `HTTP_HEADERS`. *(Phần ghi giấy phép CC BY-SA và revision trong report đã làm ngày 2026-10-13.)*
-
+- ✅ **Đã xử lý (2026-10-13):**
+  - Cập nhật `HTTP_HEADERS["User-Agent"]` trong `data_processor.py`: `"P1-edu-project/1.0 (https://github.com/Stratoze/Python-data-scraping; mailto:vohoangquocminh2k5@gmail.com) student coursework"`.
+  - Khai báo đầy đủ tên công cụ, đường dẫn repo GitHub và email liên hệ (`mailto:`) theo đúng Wikimedia User-Agent policy.
+  - Bảng Provenance ở mục 3.2 của cả bản EN và VI trích xuất trực tiếp chuỗi User-Agent này.
+  - Thêm unit test `test_user_agent_conforms_to_wikimedia_policy` trong `tests/test_data_processor.py`.
 ---
 
 ## D. Code / kỹ thuật
@@ -220,6 +240,7 @@ Mức độ:
   - **`scrape_pisa_table`:** cache-first không gọi mạng; refresh gặp trang hỏng thì giữ nguyên cache (byte không đổi) và cảnh báo; không có cache thì báo `RuntimeError`.
   - **`clean_data`** trên 6 dòng thật đã chèn lỗi: đếm đúng age ngoài miền, yes/no lạ, dòng trùng, khoảng trắng; gắn cờ dropout; `grade_drop` không trùng với dropout.
   - **`_risk_holdout`:** holdout chặt loại đúng học sinh có mặt ở cả 2 môn.
+  - *Cập nhật 2026-10-13:* giờ là **47 passed**. Thêm test cho `_paired_subjects` và việc gộp mức trượt "2+" (B6, B7), cùng `tests/test_report_builder.py` (F3).
 
 ### D2 🟠 `matplotlib.use("Agg")` đặt ở cấp module
 - **Bằng chứng:** `data_processor.py` dòng 20. Trong notebook, `plt.show()` không hiển thị gì và còn báo warning "FigureCanvasAgg is non-interactive". Lúc build notebook t đã phải đổi sang `display(fig)`.
@@ -234,6 +255,9 @@ Mức độ:
 - **Bằng chứng:** chạy notebook sẽ tải UCI nếu thiếu file và ghi đè `images/*.png` cùng `data/processed/*`. *(PISA giờ đã cache-first nên notebook không còn cào lại.)*
 - **Rủi ro:** thấp hơn trước. Output chỉ đổi khi code hoặc dữ liệu thô đổi.
 - **Xử lý:** notebook chỉ đọc output có sẵn nếu muốn hoàn toàn không có side effect.
+- ✅ **Đã xử lý (2026-10-13):**
+  - `analysis.ipynb` cell 0 đã ghi rõ tính chất **idempotent**: toàn bộ pipeline chạy từ đầu đến cuối tạo ra các file chuẩn khớp byte với `main.py`, không gọi mạng ra ngoài (UCI tải offline nếu có sẵn, PISA cache-first).
+  - Thao tác xuất file và vẽ hình hoàn toàn có thể tái lập (deterministic).
 
 ### D4 🟡 `requirements.txt` chưa khớp với code thực tế
 - **Bằng chứng:**
@@ -245,25 +269,43 @@ Mức độ:
   - Thêm `numpy`.
   - ~~Thêm `scipy` nếu làm B1.~~ ✅ đã thêm khi làm B1.
   - Pin version bằng `pip freeze`, hoặc dùng `uv lock`.
+- ✅ **Đã xử lý (2026-10-13):**
+  - Đã loại bỏ `lxml>=4.9` khỏi `requirements.txt` (code dùng `html.parser` chuẩn).
+  - Đã bổ sung tường minh `numpy>=1.26` vào `requirements.txt`.
 
 ### D5 🟡 `cleaned_students.csv` đổi schema
 - **Bằng chứng:** file trước có 395 dòng × 45 cột; giờ là **1044 dòng** (mat + por), thêm `subject`, `avg_g1g2` và 6 cột cờ. `summary.json` cũng chuyển số liệu vào `scopes.*`.
 - **Rủi ro:** ai mở CSV mà không lọc `subject == "mat"` sẽ tính sai.
 - **Xử lý:** đã ghi trong README. Có thể tách thành `cleaned_students_mat.csv` + `cleaned_students_por.csv` cho rõ ràng.
+- ✅ **Đã xử lý (2026-10-13):**
+  - `export_results()` giờ xuất song song:
+    - `data/processed/cleaned_students.csv` (1044 dòng: toàn bộ học sinh cả 2 môn kèm cờ bất thường);
+    - `data/processed/cleaned_students_mat.csv` (395 dòng: chỉ môn Toán, dùng ngay không cần lọc);
+    - `data/processed/cleaned_students_por.csv` (649 dòng: chỉ môn Bồ Đào Nha).
+  - Thêm unit test `test_export_results_writes_combined_and_separate_subject_csvs`.
 
 ### D6 🟡 Bắt `PermissionError` không đủ
 - **Bằng chứng:** chỉ phần ghi CSV có try/except. Phần ghi `summary.json` thì không, và chart `savefig` cũng không. Ảnh PNG đang mở trong một số trình xem cũng có thể bị khoá.
 - **Xử lý:** gom tất cả thao tác ghi file vào một chỗ xử lý lỗi chung.
+- ✅ **Đã xử lý (2026-10-13):**
+  - Trong `export_results()`: gom toàn bộ thao tác ghi các file CSV và `summary.json` vào khối `try ... except PermissionError`.
+  - Thêm hàm hỗ trợ `_save_fig()` cho cả 4 biểu đồ: bắt `PermissionError` khi file ảnh PNG bị trình xem ảnh khoá, kèm thông báo hướng dẫn đóng file rõ ràng.
 
 ### D7 🟡 Cột `avg_grade` chứa G3
 - **Bằng chứng:** vẫn còn cột `avg_grade` (G1 + G2 + G3)/3 cho đúng rubric "average grade". Đã có thêm `avg_g1g2`.
 - **Rủi ro:** nếu ai dùng `avg_grade` để dự đoán G3 thì bị leakage.
 - **Xử lý:** đã ghi trong docstring. Cân nhắc nhắc thêm trong report.
+- ✅ **Đã xử lý (2026-10-13):**
+  - Docstring hàm `calc_average_grade` ghi cảnh báo hoa rõ ràng: `WARNING: Contains the target G3. Descriptive only; NEVER use as a predictor for G3 to prevent target leakage. For early prediction, use avg_g1g2 instead`.
+  - Thêm mô tả biến `avg_grade` và `avg_g1g2` vào từ điển `VAR_DESCRIPTIONS`.
+  - Báo cáo mục 5 (cả EN và VI) ghi rõ cảnh báo tránh data leakage và hướng dẫn dùng `avg_g1g2`.
+  - Thêm unit test `test_calc_average_grade_warns_against_prediction_leakage`.
 
 ### D8 🟡 Ngôn ngữ trong code lẫn lộn
 - **Bằng chứng:** docstring và log bằng tiếng Anh, riêng thông báo `PermissionError` bằng tiếng Việt.
 - **Xử lý:** thống nhất một ngôn ngữ.
-
+- ✅ **Đã xử lý (2026-10-13):**
+  - Chuẩn hoá toàn bộ thông báo ngoại lệ trong code theo tiếng Anh chuyên nghiệp kèm chỉ dẫn song ngữ thân thiện khi file bị khoá bởi phần mềm ngoài: `Cannot write output files in '...': file is locked by another program (Excel/WPS). Please close the file and retry (Đóng file trong Excel/WPS rồi chạy lại).`
 ---
 
 ## E. Quy trình / tài liệu
@@ -276,6 +318,48 @@ Mức độ:
 - **Bằng chứng:** `docs/adr/` không tồn tại. Các quyết định như "flag thay vì xoá G3 = 0", "por chỉ để so sánh", "rule rủi ro không dùng G3" mới chỉ ghi trong spec và `CONTEXT.md`.
 - **Xử lý:** viết 2–3 ADR ngắn nếu muốn đúng quy ước repo (`docs/agents/domain.md`).
 
+
+---
+
+## F. Phát hiện thêm sau audit + pull (2026-10-13)
+
+### F1 🟠 Slide `presentation/talk.pptx` dùng số liệu cũ
+- **Bằng chứng:** slide được pull về từ commit `f2d6d02`, làm từ report cũ:
+  - Slide 4 ghi r(G2, G3) = 0.905, là số trên toàn bộ học sinh. Bỏ nhóm G3 = 0 thì là 0.966.
+  - Slide 6 dùng nhóm rủi ro kiểu cũ (dính G3) và ghi "chưa test holdout".
+  - Slide 7 liệt kê các việc đã làm xong như những bước tiếp theo.
+  - Thiếu hẳn: nhóm bỏ thi, kiểm định, hồi quy, đối chiếu OECD.
+- **Rủi ro:** thuyết trình bằng slide này sẽ mâu thuẫn với report và PDF.
+- **Xử lý:** cập nhật slide theo `summary.json` mới, sau khi thống nhất với Stratoze.
+- ⏭️ **Không sửa trong code (2026-10-13):** user sẽ tự làm lại slide.
+
+### F2 🟡 Report chưa nói ý "lần trượt đầu tiên tụt nhiều nhất"
+- **Bằng chứng:** đây là ý của commit `97693c0` (Stratoze). Số liệu mới (exclude_dropout) vẫn đúng như vậy: 0→1 lần trượt: −1.79, 1→2: −1.32, 2→3: −0.56. Nhưng `report_builder.py` chưa có câu nào nói ý này.
+- **Xử lý:** thêm 1 câu diễn giải tự tính vào mục 7 (EN/VI).
+- ✅ **Đã xử lý (2026-10-13):**
+  - `_fail_steps()` tính mức thay đổi G3 trung bình giữa 2 mức trượt liền nhau. `_fail_steps_text()` sinh câu EN/VI ngay dưới bảng "theo số lần trượt" ở mục 7.
+  - Câu sinh ra: "0→1: −1.79, 1→2: −1.32, 2→3: −0.56. **Lần trượt đầu tiên** đi kèm mức tụt điểm lớn nhất…", kèm lưu ý nhóm 2 (n = 12) và 3 (n = 11) ít học sinh.
+  - Câu "lần đầu tụt nhiều nhất" chỉ hiện khi số liệu thật sự đúng như vậy; nếu dữ liệu đổi thì câu tự đổi theo.
+
+### F3 🟡 `build_reports` crash khi thiếu file OECD
+- **Bằng chứng:** chạy pipeline không có `oecd_raw` thì `build_reports` báo `TypeError: 'NoneType' object is not iterable`. Không có test cho `report_builder.py`.
+- **Rủi ro:** thấp, vì file OECD giờ đã nằm trong repo.
+- **Xử lý:** khi thiếu file thì báo lỗi rõ ràng, hoặc bỏ qua mục 3.4; thêm 1 test.
+- ✅ **Đã xử lý (2026-10-13):**
+  - `build_reports()` kiểm tra `pisa_context` và `pisa_oecd_check` trước khi sinh report. Thiếu thì báo `ValueError` ghi rõ tên file bị thiếu (`pisa_reference.csv` / `oecd_pisa2025_table_I1.csv`) và không ghi file report nào.
+  - Chọn báo lỗi thay vì bỏ qua mục 3.4, vì report có nhiều chỗ trích kết quả đối chiếu OECD.
+  - Thêm `tests/test_report_builder.py`: thiếu file OECD thì có lỗi nêu tên file và thư mục output vẫn rỗng.
+
+### F4 🟡 G1 và G2 tương quan cao trong mô hình B
+- **Bằng chứng:** r(G1, G2) = 0.90. Hệ số riêng của G1 và G2 trong mô hình hồi quy B kém ổn định, nhưng report chưa nhắc.
+- **Xử lý:** thêm 1 câu ở mục 7.2: chỉ diễn giải R² và tổng tác động của 2 điểm giữa kỳ, không so sánh b(G1) với b(G2).
+- ✅ **Đã xử lý (2026-10-13):** thêm 1 dòng vào phần diễn giải mục 7.2 (EN/VI). r(G1, G2) = 0.902 lấy tự động từ `corr_G1_G2_G3` của scope exclude_dropout, đúng mẫu mà hồi quy dùng (G3 > 0).
+
+### F5 🟡 PDF có thể lệch với `.md`
+- **Bằng chứng:** chạy `main.py` hoặc notebook đều ghi đè `report.md` / `report_vi.md`, nhưng không tự chạy `export_pdf.py`.
+- **Xử lý:** nhớ chạy `export_pdf.py` trước khi nộp, hoặc cho `main.py` gọi luôn bước xuất PDF nếu máy có Chrome/Edge.
+- ⏭️ **Không sửa code (2026-10-13, user quyết định):** chạy `python export_pdf.py` sau `main.py` hoặc notebook là đủ.
+
 ---
 
 ## Ưu tiên gợi ý trước khi nộp
@@ -285,4 +369,5 @@ Mức độ:
 3. ~~**B1 + B4:** t-test/ANOVA và đánh giá rule trên `por`~~ → ✅ đã làm. Lưu ý: kết luận về internet đã đổi (không còn ý nghĩa sau hiệu chỉnh Holm).
 4. ~~**C2:** đối chiếu số PISA 2025 với OECD~~ → ✅ khớp 274/274.
 5. **A1:** PDF đã có; cần hỏi giảng viên về yêu cầu độ dài (1–2 trang hay bản đầy đủ).
-6. Các mục còn lại (D*, E*) làm nếu còn thời gian.
+6. ~~**B6, B7, C4, C6, D3–D8, F2–F4**~~ → ✅ đã hoàn thành toàn bộ.
+7. Các mục còn lại (E1, E2) làm nếu cần viết thêm ADR.
