@@ -190,7 +190,7 @@ df["inconsistent_grade"] = (df["G3"] > 0) & (df["G2"] == 0)
 
 Trang: <https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment>
 
-**Bước 1: khảo sát trong trình duyệt (DevTools)**
+**Bước 1: khảo sát trong trình duyệt (DevTools)** — *không làm (user quyết định 2026-10-13, xem `.scratch/p1-known-issues/spec.md` mục C4). Phần cào chỉ làm bằng Python (bước 2).*
 
 1. Mở trang, bấm **F12 → Console**.
 2. Liệt kê các bảng:
@@ -281,7 +281,7 @@ pisa.to_csv("data/raw/pisa_rankings_long.csv", index=False)
 
 - Absences–G3 corr (exclude_dropout) ≈ −0.21 có trong `summary.json` và report.
 - Không còn G3 trong `classify_risk`. Có precision/recall của rule.
-- `pisa_reference.csv`: không còn dòng lệch cột, không còn `*`, Rank/Score là số.
+- `pisa_reference.csv` (raw) giữ nguyên chuỗi gốc của trang (có thể có `*`, `—`), nhưng không còn dòng lệch cột. Bản sạch `data/processed/pisa_clean.csv`: không còn `*`, Rank/Score/Year là số. *(Sửa 2026-10-13 cho khớp thiết kế raw/clean.)*
 - 3 biểu đồ được vẽ lại: bar có n + error bar, histogram bins nguyên + đánh dấu G3 = 0, heatmap dùng colormap phân kỳ.
 - Notebook có output ở mọi cell code.
 

@@ -170,8 +170,8 @@ UCI_FILES = ("student-mat.csv", "student-por.csv", "student-merge.R", "student.t
 PISA_URL = ("https://en.wikipedia.org/wiki/"
             "Programme_for_International_Student_Assessment")
 HTTP_HEADERS = {
-    "User-Agent": "P1-edu-project/1.0 (https://github.com/Stratoze/Python-data-scraping; "
-                  "mailto:vohoangquocminh2k5@gmail.com) student coursework"
+    "User-Agent": ("P1-edu-project/1.0 (+https://github.com/Stratoze/Python-data-scraping) "
+                   "student coursework"),
 }
 PISA_SUBJECTS = {"mathematics": "mathematics", "science": "science", "reading": "reading"}
 
@@ -903,7 +903,7 @@ class StudentDataProcessor:
         except PermissionError as exc:
             raise PermissionError(
                 f"Cannot save chart '{filename}': file is locked by an image viewer. "
-                f"Please close the viewer and retry (Đóng file ảnh đang mở rồi chạy lại)."
+                "Please close the viewer and retry."
             ) from exc
         finally:
             plt.close(fig)
@@ -1038,6 +1038,6 @@ class StudentDataProcessor:
         except PermissionError as exc:
             raise PermissionError(
                 f"Cannot write output files in '{self.processed_dir}': file is locked by another program (Excel/WPS). "
-                f"Please close the file and retry (Đóng file trong Excel/WPS rồi chạy lại)."
+                "Please close the file and retry."
             ) from exc
         return cleaned_csv, summary_json

@@ -18,8 +18,7 @@ ROOT = Path(__file__).resolve().parent
 IMG = {"bar": "images/01_bar_studytime_internet.png",
        "hist": "images/02_hist_g3.png",
        "heat": "images/03_heatmap_corr.png",
-       "pisa": "images/04_pisa_portugal_oecd.png",
-       "devtools": "images/05_devtools_console.png"}
+       "pisa": "images/04_pisa_portugal_oecd.png"}
 STUDY_LABEL = {"1": "<2h", "2": "2-5h", "3": "5-10h", "4": ">10h"}
 SUBJECT_ORDER = ["mathematics", "reading", "science"]
 
@@ -502,19 +501,9 @@ row/column counts match the UCI description (395 / 649 students, 33 attributes).
 
 ### 3.2 Wikipedia PISA (web scraping)
 
-**Step 1 — Browser inspection with DevTools (Console, F12):**
-Before writing automated Python scraper code, the Wikipedia page structure was inspected interactively via Chrome/Edge DevTools:
-1. Opened the target article and launched **F12 → Console**.
-2. Ran a JavaScript DOM snippet to list and inspect all 12 `table.wikitable` elements:
-   - Index 1, 2, 3: latest PISA 2025 summary rankings (Science, Mathematics, Reading);
-   - Index 5, 6, 7: historical rankings comparison 2000–2022 (wide layout).
-3. Copied the 2025 Mathematics table to clipboard via `copy(...)` and saved to `data/raw/pisa_manual_check.csv` (92 rows) for manual verification.
-
-![DevTools inspection of PISA tables]({IMG['devtools']})
-
-**Step 2 — Automated Python pipeline (`requests` + `BeautifulSoup`):**
-1. `requests.get` downloads the HTML of the [PISA article]({ps.get('url', dp.PISA_URL)}) (no headless browser needed at runtime: tables are static HTML).
-2. `BeautifulSoup` parses the DOM and extracts the two targeted table families:
+**What was done:**
+1. `requests.get` downloads the HTML of the [PISA article]({ps.get('url', dp.PISA_URL)}) (no browser needed: the tables are plain HTML).
+2. `BeautifulSoup` finds every `table.wikitable` and keeps two families:
    - **summary**: latest ranking (`Rank | Country/economy | Score`), one nested table per subject;
    - **comparison**: "Rankings comparison 2000–2022", one row per country with `score, rank` pairs per year (converted from wide to long).
 3. The result ({f['n_pisa_raw']} rows, page strings untouched) is saved to `data/raw/pisa_reference.csv`.
@@ -527,7 +516,7 @@ Before writing automated Python scraper code, the Wikipedia page structure was i
 | Raw rows | {ps.get('n_rows')} |
 | Licence | CC BY-SA 4.0 (Wikipedia) |
 | User-Agent | `{dp.HTTP_HEADERS['User-Agent']}` |
-| Manual check file | `data/raw/pisa_manual_check.csv` (92 rows via DevTools) |
+
 {codes['scrape_pisa_table']}
 
 {codes['_parse_pisa_html']}
@@ -956,6 +945,7 @@ first the main domain). Data: `pisa_clean.csv` ({f['n_pisa_clean']} rows), cross
 | Output | Content |
 |---|---|
 | `data/processed/cleaned_students.csv` | {f['log']['rows_out']} rows (both subjects, column `subject`), encoded columns, derived columns, 6 anomaly flags |
+| `data/processed/cleaned_students_mat.csv`, `cleaned_students_por.csv` | same columns, one file per subject ({f['n_raw'].get('mat')} / {f['n_raw'].get('por')} rows), no `subject` filter needed |
 | `data/processed/pisa_clean.csv` | {f['n_pisa_clean']} clean PISA rows |
 | `data/processed/summary.json` | all statistics in this report |
 | `images/*.png` | 3 required charts + 1 PISA context chart |
@@ -1070,19 +1060,9 @@ mô tả của UCI (395 / 649 học sinh, 33 thuộc tính).
 
 ### 3.2 Cào dữ liệu PISA từ Wikipedia
 
-**Bước 1 — Khảo sát trực tiếp trên trình duyệt bằng DevTools (Console, F12):**
-Trước khi viết mã nguồn cào tự động bằng Python, cấu trúc bảng trên Wikipedia đã được khảo sát trực tiếp trong trình duyệt Chrome/Edge:
-1. Mở bài viết Wikipedia PISA, bấm **F12 → chuyển sang tab Console**.
-2. Chạy đoạn mã JavaScript DOM để quét toàn bộ 12 bảng `table.wikitable` trên trang nhằm xác định chính xác vị trí các bảng cần lấy:
-   - Bảng index 1, 2, 3: Bảng xếp hạng PISA 2025 mới nhất (Khoa học, Toán, Đọc hiểu);
-   - Bảng index 5, 6, 7: Bảng so sánh lịch sử 2000–2022 qua các kỳ thi của 3 môn (dạng bảng ngang wide format).
-3. Chạy lệnh trích xuất thử nghiệm `copy(...)` để sao chép bảng Toán 2025 sang CSV và lưu vào `data/raw/pisa_manual_check.csv` (92 dòng) làm minh chứng đối chiếu thủ công.
-
-![Khảo sát bảng PISA qua DevTools Console]({IMG['devtools']})
-
-**Bước 2 — Chuyển sang pipeline Python tự động & tái lập được (`requests` + `BeautifulSoup`):**
-1. `requests.get` tải HTML của [bài viết PISA]({ps.get('url', dp.PISA_URL)}) (không cần mở trình duyệt khi chạy script vì bảng nằm sẵn trong mã nguồn HTML tĩnh).
-2. `BeautifulSoup` bóc tách DOM và giữ 2 loại bảng mục tiêu:
+**Đã làm gì:**
+1. `requests.get` tải HTML của [bài viết PISA]({ps.get('url', dp.PISA_URL)}) (không cần trình duyệt vì bảng nằm sẵn trong HTML).
+2. `BeautifulSoup` tìm mọi `table.wikitable` và giữ 2 loại bảng:
    - **summary**: bảng xếp hạng mới nhất (`Rank | Country/economy | Score`), mỗi môn 1 bảng con;
    - **comparison**: "Rankings comparison 2000–2022", mỗi nước 1 dòng với cặp `score, rank` theo từng năm (chuyển từ dạng rộng sang dạng dài).
 3. Kết quả ({f['n_pisa_raw']} dòng, giữ nguyên chuỗi gốc của trang) lưu vào `data/raw/pisa_reference.csv`.
@@ -1095,7 +1075,7 @@ Trước khi viết mã nguồn cào tự động bằng Python, cấu trúc b�
 | Số dòng thô | {ps.get('n_rows')} |
 | Giấy phép | CC BY-SA 4.0 (Wikipedia) |
 | User-Agent | `{dp.HTTP_HEADERS['User-Agent']}` |
-| File đối chiếu thủ công | `data/raw/pisa_manual_check.csv` (92 dòng qua DevTools) |
+
 {codes['scrape_pisa_table']}
 
 {codes['_parse_pisa_html']}
@@ -1517,6 +1497,7 @@ là môn chính). Dữ liệu: `pisa_clean.csv` ({f['n_pisa_clean']} dòng), đ�
 | Đầu ra | Nội dung |
 |---|---|
 | `data/processed/cleaned_students.csv` | {f['log']['rows_out']} dòng (cả 2 môn, cột `subject`), cột đã encode, cột tạo thêm, 6 cờ bất thường |
+| `data/processed/cleaned_students_mat.csv`, `cleaned_students_por.csv` | cùng các cột, mỗi môn 1 file ({f['n_raw'].get('mat')} / {f['n_raw'].get('por')} dòng), không cần lọc `subject` |
 | `data/processed/pisa_clean.csv` | {f['n_pisa_clean']} dòng PISA đã làm sạch |
 | `data/processed/summary.json` | toàn bộ thống kê trong báo cáo này |
 | `images/*.png` | 3 biểu đồ theo đề + 1 biểu đồ bối cảnh PISA |
@@ -1577,8 +1558,20 @@ def _codes() -> dict:
     return codes
 
 
+def _summary(text: str, full_pdf: str, vi: bool) -> str:
+    """Short version for a 1–2 page hand-in: title, main question, section 1 and the limitations,
+    cut from the full generated report so the numbers are identical."""
+    head = text.split("\n## 2.", 1)[0]
+    limits = text.split("\n## 13.", 1)[1]
+    title, rest = head.split("\n", 1)
+    rest = re.sub(r"\n>.*(?:\n>.*)*", "", rest, count=1)  # generation note of the full report
+    note = (f"*Bản tóm tắt. Báo cáo đầy đủ (dữ liệu, code, biểu đồ, kiểm định): `{full_pdf}`.*" if vi
+            else f"*Summary version. Full report (data, code, charts, tests): `{full_pdf}`.*")
+    return f"{title}\n\n{note}\n\n{rest.strip()}\n\n## 2.{limits}"
+
+
 def build_reports(proc: dp.StudentDataProcessor, out_dir: Path = ROOT) -> list[Path]:
-    """Write report.md (EN) and report_vi.md (VI) from a processor that has run analyze()."""
+    """Write report.md / report_vi.md (full) and report_summary.md / report_summary_vi.md (1–2 pages)."""
     assert proc.results, "run analyze() first"
     missing = [what for what, key in (("PISA reference data (data/raw/pisa_reference.csv)", "pisa_context"),
                                       ("OECD cross-check (data/raw/oecd_pisa2025_table_I1.csv)", "pisa_oecd_check"))
@@ -1587,9 +1580,12 @@ def build_reports(proc: dp.StudentDataProcessor, out_dir: Path = ROOT) -> list[P
         raise ValueError("cannot build reports, missing: " + "; ".join(missing))
     facts, codes = _facts(proc), _codes()
     out = []
-    for name, render in (("report.md", render_en), ("report_vi.md", render_vi)):
+    for name, summary_name, full_pdf, render, vi in (
+            ("report.md", "report_summary.md", "report.pdf", render_en, False),
+            ("report_vi.md", "report_summary_vi.md", "report_vi.pdf", render_vi, True)):
         text = re.sub(r"\n{3,}", "\n\n", render(facts, codes))
-        path = Path(out_dir) / name
-        path.write_text(text, encoding="utf-8")
-        out.append(path)
+        for file_name, content in ((name, text), (summary_name, _summary(text, full_pdf, vi))):
+            path = Path(out_dir) / file_name
+            path.write_text(content, encoding="utf-8")
+            out.append(path)
     return out

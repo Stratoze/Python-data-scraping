@@ -80,19 +80,9 @@ row/column counts match the UCI description (395 / 649 students, 33 attributes).
 
 ### 3.2 Wikipedia PISA (web scraping)
 
-**Step 1 — Browser inspection with DevTools (Console, F12):**
-Before writing automated Python scraper code, the Wikipedia page structure was inspected interactively via Chrome/Edge DevTools:
-1. Opened the target article and launched **F12 → Console**.
-2. Ran a JavaScript DOM snippet to list and inspect all 12 `table.wikitable` elements:
-   - Index 1, 2, 3: latest PISA 2025 summary rankings (Science, Mathematics, Reading);
-   - Index 5, 6, 7: historical rankings comparison 2000–2022 (wide layout).
-3. Copied the 2025 Mathematics table to clipboard via `copy(...)` and saved to `data/raw/pisa_manual_check.csv` (92 rows) for manual verification.
-
-![DevTools inspection of PISA tables](images/05_devtools_console.png)
-
-**Step 2 — Automated Python pipeline (`requests` + `BeautifulSoup`):**
-1. `requests.get` downloads the HTML of the [PISA article](https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment) (no headless browser needed at runtime: tables are static HTML).
-2. `BeautifulSoup` parses the DOM and extracts the two targeted table families:
+**What was done:**
+1. `requests.get` downloads the HTML of the [PISA article](https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment) (no browser needed: the tables are plain HTML).
+2. `BeautifulSoup` finds every `table.wikitable` and keeps two families:
    - **summary**: latest ranking (`Rank | Country/economy | Score`), one nested table per subject;
    - **comparison**: "Rankings comparison 2000–2022", one row per country with `score, rank` pairs per year (converted from wide to long).
 3. The result (2342 rows, page strings untouched) is saved to `data/raw/pisa_reference.csv`.
@@ -104,8 +94,8 @@ Before writing automated Python scraper code, the Wikipedia page structure was i
 | Scraped at (UTC) | 2026-10-13T06:44:49+00:00 |
 | Raw rows | 2342 |
 | Licence | CC BY-SA 4.0 (Wikipedia) |
-| User-Agent | `P1-edu-project/1.0 (https://github.com/Stratoze/Python-data-scraping; mailto:vohoangquocminh2k5@gmail.com) student coursework` |
-| Manual check file | `data/raw/pisa_manual_check.csv` (92 rows via DevTools) |
+| User-Agent | `P1-edu-project/1.0 (+https://github.com/Stratoze/Python-data-scraping) student coursework` |
+
 `data_processor.py` — `scrape_pisa_table` (lines 315–353)
 
 ```python
@@ -1702,7 +1692,7 @@ def export_results(self) -> tuple[Path, Path]:
     except PermissionError as exc:
         raise PermissionError(
             f"Cannot write output files in '{self.processed_dir}': file is locked by another program (Excel/WPS). "
-            f"Please close the file and retry (Đóng file trong Excel/WPS rồi chạy lại)."
+            "Please close the file and retry."
         ) from exc
     return cleaned_csv, summary_json
 ```
@@ -1710,6 +1700,7 @@ def export_results(self) -> tuple[Path, Path]:
 | Output | Content |
 |---|---|
 | `data/processed/cleaned_students.csv` | 1044 rows (both subjects, column `subject`), encoded columns, derived columns, 6 anomaly flags |
+| `data/processed/cleaned_students_mat.csv`, `cleaned_students_por.csv` | same columns, one file per subject (395 / 649 rows), no `subject` filter needed |
 | `data/processed/pisa_clean.csv` | 1662 clean PISA rows |
 | `data/processed/summary.json` | all statistics in this report |
 | `images/*.png` | 3 required charts + 1 PISA context chart |

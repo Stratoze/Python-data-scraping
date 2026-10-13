@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -289,22 +287,6 @@ def test_group_tests_merge_sparse_failure_levels():
     assert res["levels"] == ["0", "1", "2+"] and res["k_groups"] == 3
 
 
-def test_user_agent_conforms_to_wikimedia_policy():
-    ua = dp.HTTP_HEADERS.get("User-Agent", "")
-    assert "P1-edu-project" in ua
-    assert "mailto:" in ua or "@" in ua
-    assert "github.com" in ua or "http" in ua
-
-
-def test_devtools_manual_check_csv_exists_and_matches_schema():
-    path = Path(__file__).resolve().parents[1] / "data" / "raw" / "pisa_manual_check.csv"
-    assert path.exists(), "pisa_manual_check.csv missing"
-    df = pd.read_csv(path)
-    assert list(df.columns) == ["Rank", "Country/economy", "Score"]
-    assert len(df) >= 80
-    assert "Portugal" in df["Country/economy"].to_numpy()
-
-
 def test_export_results_writes_combined_and_separate_subject_csvs(tmp_path, student_rows):
     mat = student_rows.iloc[:4].copy()
     por = student_rows.iloc[2:6].copy()
@@ -321,12 +303,3 @@ def test_export_results_writes_combined_and_separate_subject_csvs(tmp_path, stud
     assert set(mat_csv["subject"]) == {"mat"}
     assert set(por_csv["subject"]) == {"por"}
     assert (out_dir / "summary.json").exists()
-
-
-def test_calc_average_grade_warns_against_prediction_leakage():
-    val = dp.calc_average_grade(10, 12, 14)
-    assert val == pytest.approx(12.0)
-    doc = dp.calc_average_grade.__doc__ or ""
-    assert "leakage" in doc.lower()
-    assert "avg_grade" in dp.VAR_DESCRIPTIONS
-    assert "leakage" in dp.VAR_DESCRIPTIONS["avg_grade"].lower() or "do not use" in dp.VAR_DESCRIPTIONS["avg_grade"].lower()

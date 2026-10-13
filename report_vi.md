@@ -79,19 +79,9 @@ mô tả của UCI (395 / 649 học sinh, 33 thuộc tính).
 
 ### 3.2 Cào dữ liệu PISA từ Wikipedia
 
-**Bước 1 — Khảo sát trực tiếp trên trình duyệt bằng DevTools (Console, F12):**
-Trước khi viết mã nguồn cào tự động bằng Python, cấu trúc bảng trên Wikipedia đã được khảo sát trực tiếp trong trình duyệt Chrome/Edge:
-1. Mở bài viết Wikipedia PISA, bấm **F12 → chuyển sang tab Console**.
-2. Chạy đoạn mã JavaScript DOM để quét toàn bộ 12 bảng `table.wikitable` trên trang nhằm xác định chính xác vị trí các bảng cần lấy:
-   - Bảng index 1, 2, 3: Bảng xếp hạng PISA 2025 mới nhất (Khoa học, Toán, Đọc hiểu);
-   - Bảng index 5, 6, 7: Bảng so sánh lịch sử 2000–2022 qua các kỳ thi của 3 môn (dạng bảng ngang wide format).
-3. Chạy lệnh trích xuất thử nghiệm `copy(...)` để sao chép bảng Toán 2025 sang CSV và lưu vào `data/raw/pisa_manual_check.csv` (92 dòng) làm minh chứng đối chiếu thủ công.
-
-![Khảo sát bảng PISA qua DevTools Console](images/05_devtools_console.png)
-
-**Bước 2 — Chuyển sang pipeline Python tự động & tái lập được (`requests` + `BeautifulSoup`):**
-1. `requests.get` tải HTML của [bài viết PISA](https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment) (không cần mở trình duyệt khi chạy script vì bảng nằm sẵn trong mã nguồn HTML tĩnh).
-2. `BeautifulSoup` bóc tách DOM và giữ 2 loại bảng mục tiêu:
+**Đã làm gì:**
+1. `requests.get` tải HTML của [bài viết PISA](https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment) (không cần trình duyệt vì bảng nằm sẵn trong HTML).
+2. `BeautifulSoup` tìm mọi `table.wikitable` và giữ 2 loại bảng:
    - **summary**: bảng xếp hạng mới nhất (`Rank | Country/economy | Score`), mỗi môn 1 bảng con;
    - **comparison**: "Rankings comparison 2000–2022", mỗi nước 1 dòng với cặp `score, rank` theo từng năm (chuyển từ dạng rộng sang dạng dài).
 3. Kết quả (2342 dòng, giữ nguyên chuỗi gốc của trang) lưu vào `data/raw/pisa_reference.csv`.
@@ -103,8 +93,8 @@ Trước khi viết mã nguồn cào tự động bằng Python, cấu trúc b�
 | Thời điểm cào (UTC) | 2026-10-13T06:44:49+00:00 |
 | Số dòng thô | 2342 |
 | Giấy phép | CC BY-SA 4.0 (Wikipedia) |
-| User-Agent | `P1-edu-project/1.0 (https://github.com/Stratoze/Python-data-scraping; mailto:vohoangquocminh2k5@gmail.com) student coursework` |
-| File đối chiếu thủ công | `data/raw/pisa_manual_check.csv` (92 dòng qua DevTools) |
+| User-Agent | `P1-edu-project/1.0 (+https://github.com/Stratoze/Python-data-scraping) student coursework` |
+
 `data_processor.py` — `scrape_pisa_table` (lines 315–353)
 
 ```python
@@ -1693,7 +1683,7 @@ def export_results(self) -> tuple[Path, Path]:
     except PermissionError as exc:
         raise PermissionError(
             f"Cannot write output files in '{self.processed_dir}': file is locked by another program (Excel/WPS). "
-            f"Please close the file and retry (Đóng file trong Excel/WPS rồi chạy lại)."
+            "Please close the file and retry."
         ) from exc
     return cleaned_csv, summary_json
 ```
@@ -1701,6 +1691,7 @@ def export_results(self) -> tuple[Path, Path]:
 | Đầu ra | Nội dung |
 |---|---|
 | `data/processed/cleaned_students.csv` | 1044 dòng (cả 2 môn, cột `subject`), cột đã encode, cột tạo thêm, 6 cờ bất thường |
+| `data/processed/cleaned_students_mat.csv`, `cleaned_students_por.csv` | cùng các cột, mỗi môn 1 file (395 / 649 dòng), không cần lọc `subject` |
 | `data/processed/pisa_clean.csv` | 1662 dòng PISA đã làm sạch |
 | `data/processed/summary.json` | toàn bộ thống kê trong báo cáo này |
 | `images/*.png` | 3 biểu đồ theo đề + 1 biểu đồ bối cảnh PISA |

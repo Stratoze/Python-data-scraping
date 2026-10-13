@@ -102,18 +102,18 @@ Dữ liệu gốc từ UCI có **33 cột (thuộc tính)**, được phân thà
 
 ---
 
-# 4. Ý nghĩa của 5 ảnh biểu đồ & minh chứng trong dự án
+# 4. Ý nghĩa của 4 ảnh biểu đồ trong dự án
 
-Các ảnh được lưu tại thư mục `images/`. Ảnh 1–3 là 3 biểu đồ đề yêu cầu; ảnh 4 là biểu đồ bối cảnh PISA; ảnh 5 là ảnh minh chứng khảo sát trực tiếp cấu trúc bảng trên trình duyệt qua DevTools Console:
+Cả 4 ảnh được sinh tự động bởi `matplotlib` khi chạy `python main.py` và lưu tại thư mục `images/`. Ảnh 1–3 là 3 biểu đồ đề yêu cầu; ảnh 4 là biểu đồ bối cảnh cho dữ liệu PISA cào về:
 
 ```
 images/
 ├── 01_bar_studytime_internet.png
 ├── 02_hist_g3.png
 ├── 03_heatmap_corr.png
-├── 04_pisa_portugal_oecd.png
-└── 05_devtools_console.png
+└── 04_pisa_portugal_oecd.png
 ```
+
 ---
 
 ### 📊 Ảnh 1: `01_bar_studytime_internet.png` (Biểu đồ cột nhóm)
@@ -177,15 +177,6 @@ images/
   3. Từ 2018 đến 2025, cả Bồ Đào Nha lẫn OECD cùng đi xuống; năm 2025 Bồ Đào Nha ngang mức OECD (Toán 460 so với 463).
   4. Đây chỉ là bối cảnh **cấp quốc gia**, không ghép với từng học sinh trong dữ liệu UCI.
 
-
-### 🖥️ Ảnh 5: `05_devtools_console.png` (Minh chứng khảo sát DevTools Console F12)
-- **Thành phần ảnh:**
-  - Chụp giao diện Chrome DevTools Console (F12) trên bài viết Wikipedia PISA.
-  - **Lệnh 1:** Quét và in bảng `console.table()` liệt kê toàn bộ 12 thẻ `table.wikitable` trên DOM, định vị chính xác:
-    - Bảng index 1, 2, 3: Bảng xếp hạng PISA 2025 (Khoa học, Toán, Đọc hiểu);
-    - Bảng index 5, 6, 7: Bảng so sánh lịch sử 2000–2022.
-  - **Lệnh 2:** Dùng hàm `copy(...)` của DevTools trích xuất bảng Toán 2025 sang clipboard dạng CSV, lưu thành file đối chiếu độc lập `data/raw/pisa_manual_check.csv` (92 dòng).
-- **Ý nghĩa:** Minh chứng rõ ràng rằng việc cào dữ liệu được thực hiện bài bản qua 2 bước: khảo sát cấu trúc thực tế trên trình duyệt bằng DevTools trước, sau đó mới viết script Python tự động hoá.
 ---
 
 ## 5. Các thư viện cài đặt & Vai trò thực tế trong dự án
@@ -225,7 +216,7 @@ Dự án được quản lý qua `requirements.txt` và cài đặt trong môi t
 ### 5. `requests` (>= 2.31)
 - **Nhiệm vụ:** Giao tiếp mạng (HTTP Client).
   - Tự động tải file zip chứa dữ liệu gốc `student+performance.zip` từ kho lưu trữ của UCI khi máy chưa có dữ liệu.
-  - Gửi HTTP GET request lên Wikipedia để cào mã nguồn HTML bài viết PISA, kèm tiêu đề định danh `User-Agent` tuân thủ nghiêm ngặt chính sách của Wikimedia (chứa tên công cụ, đường dẫn GitHub repo và email liên hệ `mailto:vohoangquocminh2k5@gmail.com`).
+  - Gửi HTTP GET request lên Wikipedia để cào mã nguồn HTML bài viết PISA, kèm `User-Agent` định danh theo chính sách của Wikimedia (tên công cụ + link repo GitHub để liên hệ, không ghi email cá nhân).
 ### 6. `beautifulsoup4` (`bs4.BeautifulSoup` >= 4.12)
 - **Nhiệm vụ:** Bóc tách dữ liệu từ trang web (HTML Parser).
   - Phân tích cây cấu trúc DOM của trang Wikipedia PISA, tìm các thẻ bảng `table.wikitable`.
@@ -233,7 +224,7 @@ Dự án được quản lý qua `requirements.txt` và cài đặt trong môi t
 
 ### 7. `pytest` (>= 8.0)
 - **Nhiệm vụ:** Bộ công cụ kiểm thử phần mềm tự động (Unit Test).
-  - Chạy 51 ca kiểm thử tự động trong thư mục `tests/` để đảm bảo code hoạt động chính xác: kiểm tra điểm biên đỗ/trượt, tính độc lập của rule rủi ro với G3, độ chính xác của cào dữ liệu PISA, kiểm thử hồi quy OLS, đối chứng holdout, ghép cặp 2 môn, chuẩn User-Agent Wikimedia, file đối chiếu DevTools, xuất file theo môn, chống rò rỉ biến mục tiêu và bắt lỗi thiếu file OECD.
+  - Chạy 48 ca kiểm thử tự động trong thư mục `tests/` để đảm bảo code hoạt động chính xác: kiểm tra điểm biên đỗ/trượt, tính độc lập của rule rủi ro với G3, độ chính xác của cào dữ liệu PISA, kiểm thử hồi quy OLS, đối chứng holdout, ghép cặp 2 môn, xuất file theo môn và báo lỗi khi thiếu file OECD.
 
 ### 8. `notebook` / `jupyter` / `IPython`
 - **Nhiệm vụ:** Môi trường thực thi file sổ tay tương tác `analysis.ipynb`.
@@ -317,29 +308,37 @@ File này gồm 5 khối chức năng lớn:
   - `_plot_hist` (Dòng 948–969): Vẽ Biểu đồ 2 (histogram G3, tô đỏ cột điểm 0, vạch đứt mốc 10).
   - `_plot_heatmap` (Dòng 971–989): Vẽ Biểu đồ 3 (ma trận nhiệt tương quan RdBu_r che nửa trên).
   - `_plot_pisa` (Dòng 991–1019): Vẽ Biểu đồ 4 (đường xu hướng 3 môn Bồ Đào Nha vs OECD từ 2000–2025).
-- **Dòng 1022–1043 (`export_results`):** Xuất song song 3 file CSV: `cleaned_students.csv` (1044 dòng hợp nhất), `cleaned_students_mat.csv` (395 dòng môn Toán) và `cleaned_students_por.csv` (649 dòng môn Văn), cùng `pisa_clean.csv` và `summary.json`. Bắt lỗi `PermissionError` trên toàn bộ file nếu đang bị mở bên Excel/WPS.
+- **Dòng 1022–1043 (`export_results`):** Xuất song song 3 file CSV: `cleaned_students.csv` (1044 dòng hợp nhất), `cleaned_students_mat.csv` (395 dòng môn Toán) và `cleaned_students_por.csv` (649 dòng môn Bồ Đào Nha), cùng `pisa_clean.csv` và `summary.json`. Bắt lỗi `PermissionError` trên toàn bộ file nếu đang bị mở bên Excel/WPS.
+
+---
+
 ### 6.3 `report_builder.py` — Bộ sinh báo cáo Markdown tự động
 
-- **Dòng 30–47 (`code` & `code_region`):** Dùng thư viện `inspect` đọc trực tiếp mã nguồn thật từ file `.py` kèm số dòng thực tế để nhúng vào báo cáo, đảm bảo báo cáo không bao giờ bị lệch code so với thực tế.
-- **Dòng 72–135 (`_facts`):** Trích xuất toàn bộ chỉ số thống kê, kết quả kiểm định, mô hình OLS, tỷ lệ holdout và độ nhạy từ `proc.results` thành một từ điển sự thật duy nhất (single source of truth).
-- **Dòng 138–426:** Các hàm dựng câu chữ và bảng Markdown: `_fail_steps`/`_fail_steps_text` (mức tụt điểm theo số lần trượt), `_paired_text` (mục 10.1: 2 môn không độc lập + so sánh ghép cặp), `_portugal_check`, `_reg_rows` (hệ số hồi quy), `_sens_rows` (độ nhạy), `_tier_rows` (3 nhóm rủi ro), `_oecd_rows` (đối chiếu OECD), `_pisa_rows`, `_test_rows` (kiểm định), `_corr_rows`, `_holdout_rows`, `_clean_rows`, `_flag_rows`.
-- **Dòng 432–995 (`render_en`):** Sinh toàn bộ nội dung báo cáo tiếng Anh `report.md`.
-- **Dòng 1001–1556 (`render_vi`):** Sinh toàn bộ nội dung báo cáo tiếng Việt `report_vi.md`.
-- **Dòng 1562–1596 (`_codes`, `build_reports`):** Gom các đoạn code cần nhúng, kiểm tra đủ dữ liệu PISA và file OECD (thiếu thì báo lỗi rõ tên file, không ghi report), rồi ghi đè 2 file báo cáo ra thư mục gốc sau mỗi lần chạy pipeline.
+- **Dòng 29–46 (`code` & `code_region`):** Dùng thư viện `inspect` đọc trực tiếp mã nguồn thật từ file `.py` kèm số dòng thực tế để nhúng vào báo cáo, đảm bảo báo cáo không bao giờ bị lệch code so với thực tế.
+- **Dòng 71–134 (`_facts`):** Trích xuất toàn bộ chỉ số thống kê, kết quả kiểm định, mô hình OLS, tỷ lệ holdout và độ nhạy từ `proc.results` thành một từ điển sự thật duy nhất (single source of truth).
+- **Dòng 137–425:** Các hàm dựng câu chữ và bảng Markdown: `_fail_steps`/`_fail_steps_text` (mức tụt điểm theo số lần trượt), `_paired_text` (mục 10.1: 2 môn không độc lập + so sánh ghép cặp), `_portugal_check`, `_reg_rows` (hệ số hồi quy), `_sens_rows` (độ nhạy), `_tier_rows` (3 nhóm rủi ro), `_oecd_rows` (đối chiếu OECD), `_pisa_rows`, `_test_rows` (kiểm định), `_corr_rows`, `_holdout_rows`, `_clean_rows`, `_flag_rows`.
+- **Dòng 431–985 (`render_en`):** Sinh toàn bộ nội dung báo cáo tiếng Anh `report.md`.
+- **Dòng 991–1536 (`render_vi`):** Sinh toàn bộ nội dung báo cáo tiếng Việt `report_vi.md`.
+- **Dòng 1542–1558 (`_codes`):** Gom các đoạn code thật cần nhúng vào báo cáo.
+- **Dòng 1561–1570 (`_summary`):** Cắt từ báo cáo đầy đủ ra bản tóm tắt 2 trang (tiêu đề, câu hỏi chính, mục 1 Tóm tắt, mục Giới hạn), nên số liệu giống hệt bản đầy đủ.
+- **Dòng 1573–1591 (`build_reports`):** Kiểm tra đủ dữ liệu PISA và file OECD (thiếu thì báo lỗi rõ tên file, không ghi report), rồi ghi 4 file: `report.md`, `report_vi.md` (đầy đủ) và `report_summary.md`, `report_summary_vi.md` (tóm tắt).
 
 ---
 
 ### 6.4 `export_pdf.py` — Bộ xuất báo cáo PDF chuẩn in ấn A4
-- **Dòng 31–50 (`CSS`):** Định dạng trang in chuẩn A4 (căn lề 16mm, font chữ Segoe UI/Consolas hỗ trợ 100% tiếng Việt có dấu, quy định ngắt trang thông minh tránh làm đứt đôi hình ảnh hay hàng của bảng biểu).
-- **Dòng 53–60 (`_highlight`):** Tích hợp Pygments tô màu cú pháp (Syntax Highlighting) cho tất cả các khối code Python trong file báo cáo.
-- **Dòng 63–67 (`md_to_html`):** Dùng `markdown-it-py` biên dịch Markdown (chuẩn CommonMark hỗ trợ bảng biểu) sang HTML trung gian.
-- **Dòng 70–87 (`find_browser`, `html_to_pdf`):** Tự động phát hiện trình duyệt Chrome/Edge trên máy và chạy ở chế độ ngầm (`--headless=new`, `--print-to-pdf`) để xuất ra 2 file PDF chất lượng cao: `report.pdf` và `report_vi.pdf`.
+- **Dòng 23–25 (`REPORTS`):** Danh sách 4 file cần xuất: 2 báo cáo đầy đủ (~33 trang) và 2 bản tóm tắt (2 trang).
+- **Dòng 33–52 (`CSS`):** Định dạng trang in chuẩn A4 (căn lề 16mm, font chữ Segoe UI/Consolas hỗ trợ 100% tiếng Việt có dấu, quy định ngắt trang thông minh tránh làm đứt đôi hình ảnh hay hàng của bảng biểu).
+- **Dòng 55–62 (`_highlight`):** Tích hợp Pygments tô màu cú pháp (Syntax Highlighting) cho tất cả các khối code Python trong file báo cáo.
+- **Dòng 65–69 (`md_to_html`):** Dùng `markdown-it-py` biên dịch Markdown (chuẩn CommonMark hỗ trợ bảng biểu) sang HTML trung gian.
+- **Dòng 72–88 (`find_browser`, `html_to_pdf`):** Tự động phát hiện trình duyệt Chrome/Edge trên máy và chạy ở chế độ ngầm (`--headless=new`, `--print-to-pdf`) để xuất ra 4 file PDF: `report.pdf`, `report_vi.pdf`, `report_summary.pdf`, `report_summary_vi.pdf`.
 
 ---
-### 6.5 Thư mục `tests/` — Hệ thống 51 ca kiểm thử tự động (Unit Tests)
+
+### 6.5 Thư mục `tests/` — Hệ thống 48 ca kiểm thử tự động (Unit Tests)
 - **`conftest.py`:** Khởi tạo dữ liệu mẫu: lấy 6 dòng dữ liệu thật từ `student-mat.csv` làm phôi thử nghiệm và tạo hàm `valid_pisa_raw()` dựng bảng PISA nhỏ nhất đạt chuẩn.
 - **`test_report_builder.py` (1 ca test):** Thiếu file OECD thì `build_reports` báo lỗi ghi rõ tên file và không ghi report nào.
-- **`test_data_processor.py` (50 ca test):**
+- **`test_data_processor.py` (47 ca test):**
+  - **Test hàm cơ bản:** Điểm biên đỗ/trượt (9.0, 9.99, 10.0), biên buổi vắng (3, 4, 9, 10), xử lý dữ liệu yes/no bất thường.
   - **Test tính độc lập của Rule rủi ro:** Đảm bảo hàm `classify_risk` chỉ nhìn G1, G2, số lần trượt, số buổi vắng mà không đổi kết quả khi thay đổi G3.
   - **Test thống kê:** Kiểm tra thuật toán Holm đảm bảo tính đơn điệu và chặn trên 1.0; kiểm tra khoảng tin cậy Wilson.
   - **Test cào PISA:** Kiểm tra parser đọc đúng HTML mẫu, hàm validation bắt trúng 6 dạng lỗi cấu trúc bảng, cơ chế cache-first không gọi mạng khi đã có file.
@@ -348,7 +347,4 @@ File này gồm 5 khối chức năng lớn:
   - **Test kiểm chứng Holdout:** Đảm bảo tập holdout chặt loại bỏ đúng các học sinh học chung cả 2 môn Toán và Bồ Đào Nha.
   - **Test ghép cặp 2 môn:** Đảm bảo `_paired_subjects` chỉ ghép đúng cùng một học sinh, bỏ các key bị lặp và các cặp có G3 = 0.
   - **Test gộp nhóm nhỏ:** Đảm bảo khi kiểm định, mức trượt 2 và 3 được gộp thành "2+".
-  - **Test User-Agent Wikimedia:** Kiểm tra User-Agent chứa link repo và email liên hệ theo đúng chính sách Wikimedia.
-  - **Test đối chiếu DevTools:** Kiểm tra file `data/raw/pisa_manual_check.csv` tồn tại và đúng cấu trúc bảng Toán 2025.
   - **Test xuất file tách môn:** Đảm bảo `export_results` xuất song song cả file hợp nhất và 2 file riêng cho từng môn `mat` và `por`.
-  - **Test cảnh báo rò rỉ biến mục tiêu:** Kiểm tra hàm `calc_average_grade` và mô tả biến luôn có cảnh báo chống target leakage đối với G3.

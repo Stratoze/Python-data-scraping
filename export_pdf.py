@@ -20,7 +20,9 @@ from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 
 ROOT = Path(__file__).resolve().parent
-REPORTS = {"report.md": ("report.pdf", "en"), "report_vi.md": ("report_vi.pdf", "vi")}
+REPORTS = {"report.md": ("report.pdf", "en"), "report_vi.md": ("report_vi.pdf", "vi"),
+           "report_summary.md": ("report_summary.pdf", "en"),
+           "report_summary_vi.md": ("report_summary_vi.pdf", "vi")}
 BROWSERS = [
     Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
     Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
