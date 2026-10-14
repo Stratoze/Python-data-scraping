@@ -4,6 +4,15 @@ Status: in-progress
 
 Audit ngày 2026-10-13, sau khi đã làm xong `.scratch/p1-review-fixes/spec.md`. Mỗi mục có: **bằng chứng** (đã kiểm chứng hay suy luận), **rủi ro**, **cách xử lý gợi ý**.
 
+## Cắt gọn (branch slim-down, 2026-10-14)
+
+Branch `slim-down` cắt bỏ thống kê nâng cao và bộ sinh báo cáo tự động (chi tiết: `.scratch/p1-slim-down/spec.md`). Các mục "đã xử lý" sau giờ bị thay thế:
+- **A1/A2 (report tự sinh, PDF):** bỏ `report_builder.py`, `export_pdf.py`, `report_summary*.md`, mọi `report*.pdf`. `report.md` + `report_vi.md` lại là bản **viết tay 1–2 trang** → rủi ro A2 cũ (số trong report lệch với code) quay lại, chấp nhận vì report ngắn; đổi dữ liệu thì phải tự cập nhật số từ `summary.json`.
+- **B (thống kê):** bỏ hồi quy OLS + HC3, phân tích độ nhạy, so sánh ghép cặp 2 môn (paired t-test/Wilcoxon), Wilson CI, Fisher/tier eval, Kruskal-Wallis, Cohen's d. Vẫn giữ: Welch t-test + CI, ANOVA + $\eta^2$, Holm, kiểm định tương quan Pearson, holdout trên `por`.
+- **C2 (đối chiếu OECD):** giữ nguyên (`cross_check_pisa`).
+- **F2–F4 (các mục về `report_builder`):** không còn áp dụng vì file đã bị xoá. ADR 0003 cũng bị xoá; `STATISTICAL_METHODS.md` + `PROJECT_OVERVIEW.md` được thay bằng `PROJECT_GUIDE.md`.
+- F5 (chạy `export_pdf.py`) không còn áp dụng.
+
 **Tiến độ (cập nhật 2026-10-13):**
 
 | Trạng thái | Mục |

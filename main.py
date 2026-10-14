@@ -7,7 +7,6 @@ import matplotlib
 matplotlib.use("Agg")  # script run: write PNG files only, never open plot windows
 
 from data_processor import StudentDataProcessor, fetch_uci_raw, read_pisa_meta, scrape_pisa_table  # noqa: E402
-from report_builder import build_reports  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 RAW = ROOT / "data" / "raw"
@@ -67,8 +66,6 @@ def main() -> None:
     print(f"Wrote {cleaned_csv}")
     print(f"Wrote {summary_json}")
     print("Charts: 01_bar_studytime_internet.png, 02_hist_g3.png, 03_heatmap_corr.png")
-    for path in build_reports(proc, ROOT):
-        print(f"Wrote {path}")
 
 
 if __name__ == "__main__":

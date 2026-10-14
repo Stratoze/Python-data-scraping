@@ -10,4 +10,4 @@ In `mat`, 38 students have a Final Grade (G3) of 0, and all 38 also have 0 recor
 ## Consequences
 
 - `cleaned_students*.csv` contain the Dropout Suspects; any analysis must filter `dropout_suspect` explicitly.
-- The label is an inference, not confirmed by the schools. The sensitivity analysis (report section 6.1) shows the Absences conclusion holds with or without this assumption.
+- The label is an inference, not confirmed by the schools. `summary.json` keeps both scopes side by side (`all` vs `exclude_dropout`), so the effect of the assumption is visible: r(Absences, G3) is +0.034 on all students and −0.213 without the Dropout Suspects.

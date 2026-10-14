@@ -29,7 +29,7 @@ Count of past class failures (0-3). Distinct from Absences.
 _Avoid_: repeats, fails
 
 **Risk Group**:
-Early-warning segment: low / medium / high, derived only from information available before the final exam (Intermediate Grades, Failures, Absences — never G3). high: G2 < 10 or Failures >= 2; medium: G1 < 10 or Failures >= 1 or Absences high. Tiers map to actions: high = intervene, medium = monitor, low = no action (medium fails several times more often than low, also on the Holdout).
+Early-warning segment: low / medium / high, derived only from information available before the final exam (Intermediate Grades, Failures, Absences — never G3). high: G2 < 10 or Failures >= 2; medium: G1 < 10 or Failures >= 1 or Absences high. Tiers map to actions: high = intervene, medium = monitor, low = no action. Observed fail rates on `mat`: high 81.9%, medium 7.8%, low 1.2%; on the strict Holdout: 66.0%, 9.8%, 0.8%.
 _Avoid_: risk level, danger group
 
 **Holdout**:

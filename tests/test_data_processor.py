@@ -60,44 +60,6 @@ def test_holm_adjustment_is_monotone_and_capped():
     assert dp._holm({"x": 0.6, "y": 0.7}) == {"x": 1.0, "y": 1.0}  # capped at 1
 
 
-def test_wilson_interval_bounds():
-    low, high = dp._wilson(64, 70)
-    assert 0 < low < 64 / 70 < high < 1
-    assert dp._wilson(0, 0) == [0.0, 0.0]
-    assert dp._wilson(10, 10)[1] == pytest.approx(1.0)
-
-
-def test_ols_recovers_known_effects_with_others_held_fixed():
-    rng = np.random.default_rng(0)
-    n = 400
-    studytime = rng.integers(1, 5, n)
-    absences = rng.integers(0, 30, n)
-    sex = rng.choice(["F", "M"], n)
-    # absences correlated with studytime, so a single-variable slope would be biased
-    absences = absences + 3 * studytime
-    g3 = 8 + 1.5 * studytime - 0.2 * absences + 0.7 * (sex == "M") + rng.normal(0, 1, n)
-    df = pd.DataFrame({"studytime": studytime, "absences": absences, "sex": sex,
-                       "address": "U", "G3": g3})
-    res = dp._ols(df, ["studytime", "absences", "male"])
-    for name, true in {"studytime": 1.5, "absences": -0.2, "male": 0.7}.items():
-        c = res["coef"][name]
-        assert c["ci95"][0] < true < c["ci95"][1]
-        assert c["significant"]
-    assert 0.5 < res["r2"] <= 1 and res["n"] == n and res["n_predictors"] == 3
-
-
-def test_tier_eval_detects_medium_riskier_than_low():
-    groups = ["low"] * 200 + ["medium"] * 100 + ["high"] * 100
-    fails = [False] * 199 + [True] + [False] * 85 + [True] * 15 + [True] * 70 + [False] * 30
-    df = pd.DataFrame({"risk_group": groups})
-    t = dp._tier_eval(df, pd.Series(fails))
-    assert (t["low"]["n_fail"], t["medium"]["n_fail"], t["high"]["n_fail"]) == (1, 15, 70)
-    assert t["medium_vs_low"]["relative_risk"] == 30.0
-    assert t["medium_vs_low"]["significant"]
-    same = dp._tier_eval(df, pd.Series([g == "high" or i % 50 == 0 for i, g in enumerate(groups)]))
-    assert not same["medium_vs_low"]["significant"]
-
-
 # ---------------------------------------------------------------------------
 # PISA scraping: parse, validate, clean, cross-check, cache-first
 # ---------------------------------------------------------------------------
@@ -261,19 +223,6 @@ def test_holdout_excludes_students_shared_with_primary_subject(tmp_path, student
     out = proc._risk_holdout()
     assert out["holdout_por"]["n"] == 4
     assert out["holdout_por_only"]["n"] == 3
-
-
-def test_paired_subjects_matches_same_pupils_and_skips_ambiguous_keys(tmp_path, student_rows):
-    mat = student_rows.copy()
-    mat["G3"] = ["10", "11", "12", "13", "0", "15"]   # row 4: dropout suspect in mat -> pair not compared
-    por = student_rows.copy()
-    por["G3"] = ["12", "12", "15", "14", "10", "16"]
-    twin = por.iloc[[5]].assign(G1="3")                # same key as row 5 inside por -> cannot be matched
-    proc = _processor(tmp_path, mat, pd.concat([por, twin], ignore_index=True))
-    res = dp._paired_subjects(proc.clean_data(), "mat", "por")
-    assert res["n_duplicate_keys_b"] == 2
-    assert res["n_matched"] == 5 and res["n_pairs"] == 4
-    assert res["diff"] == pytest.approx(-1.75)        # (10-12 + 11-12 + 12-15 + 13-14) / 4
 
 
 def test_group_tests_merge_sparse_failure_levels():
