@@ -2,11 +2,11 @@
 
 The Risk Group (`classify_risk`) is meant as an early warning, so it may only use information available before the final exam: Intermediate Grades (G1, G2), Failures and Absences. The first version used G3 itself, which made its precision/recall meaningless (it was grading the answer with the answer). The rule now is: high = G2 < 10 or Failures ≥ 2; medium = G1 < 10 or Failures ≥ 1 or Absences high; low otherwise.
 
-Because the thresholds were chosen while looking at `mat`, the headline quality numbers are the ones from the strict Holdout on `por` (students not present in `mat`), not the in-sample numbers.
+Because the thresholds were chosen while looking at `mat`, the headline quality numbers are the ones from the strict Holdout on `por` (students not present in `mat`), not the in-sample numbers. The Holdout on `por` is kept on the slimmed branch (`_risk_holdout`): strict Holdout n = 275, recall 91.4%, precision 66.0%.
 
 ## Considered options
 
-- **Two tiers (high / not high)**: rejected after measuring that medium students fail several times more often than low students, also on the Holdout (Fisher test significant). Three tiers map to three actions: intervene / monitor / no action.
+- **Two tiers (high / not high)**: rejected because the observed fail rates differ clearly between tiers: low 1.2% / medium 7.8% / high 81.9% on `mat`, and 0.8% / 9.8% / 66.0% on the strict Holdout. Three tiers map to three actions: intervene / monitor / no action.
 - **Tuning the medium criteria further**: three alternatives all gave 5–10% fail rates; kept the original to avoid overfitting.
 
 ## Consequences

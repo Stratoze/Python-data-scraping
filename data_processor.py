@@ -43,7 +43,7 @@ PISA_MIN_COUNTRIES, PISA_SCORE_MIN, PISA_SCORE_MAX = PISA_CHECKS
 ALPHA = 0.05
 BINARY_TEST_COLS = ["internet", "famsup", "schoolsup", "paid"]
 MULTI_TEST_COLS = ["studytime", "absence_level", "failures"]
-# Sparse levels merged before ANOVA/Kruskal: failures 2 and 3 have ~12 students each -> one "2+" group
+# Sparse levels merged before ANOVA: failures 2 and 3 have ~12 students each -> one "2+" group
 TEST_LEVEL_CAP = {"failures": 2}
 # Chart 1 bars with fewer students are drawn hatched: their mean is not reliable
 MIN_RELIABLE_N = 10
@@ -52,12 +52,6 @@ CORR_TEST_COLS = ["G1", "G2", "studytime", "failures", "absences", "famsup_bin"]
 # Columns identifying the same student in student-mat and student-por (student-merge.R)
 MERGE_KEYS = ["school", "sex", "age", "address", "famsize", "Pstatus", "Medu", "Fedu",
               "Mjob", "Fjob", "reason", "nursery", "internet"]
-
-# Multivariable regression of G3 (each coefficient = effect with all other columns held fixed).
-# Background factors: the main-question variables plus socio-economic / demographic controls.
-REG_FACTORS = ["studytime", "failures", "absences", "famsup_bin", "schoolsup_bin", "paid_bin",
-               "internet_bin", "higher_bin", "Medu", "Fedu", "male", "age", "urban"]
-REG_GRADES = ["G1", "G2"]
 
 # OECD PISA 2025 Table I.1 (official source used to cross-check the Wikipedia scrape).
 # Country names that differ between the OECD report and Wikipedia:
@@ -447,10 +441,8 @@ def _holm(pvals: dict[str, float]) -> dict[str, float]:
 def _group_tests(df: pd.DataFrame) -> dict:
     """Is the G3 difference between groups larger than chance?
 
-    - yes/no columns: Welch t-test (unequal variances), 95% CI of the mean
-      difference, Cohen's d effect size.
-    - multi-level columns: one-way ANOVA with eta-squared effect size, plus
-      Kruskal-Wallis as a check that does not assume normal data.
+    - yes/no columns: Welch t-test (unequal variances) with the 95% CI of the mean difference.
+    - multi-level columns: one-way ANOVA with eta-squared (share of G3 variance explained).
     All p-values of the family are Holm-adjusted before comparing to ALPHA.
     """
     tests: dict = {}
@@ -459,31 +451,25 @@ def _group_tests(df: pd.DataFrame) -> dict:
         no = df.loc[df[col] == "no", "G3"].astype(float)
         res = stats.ttest_ind(yes, no, equal_var=False)
         ci = res.confidence_interval(1 - ALPHA)
-        pooled_sd = np.sqrt(((len(yes) - 1) * yes.var() + (len(no) - 1) * no.var())
-                            / (len(yes) + len(no) - 2))
-        diff = yes.mean() - no.mean()
         tests[col] = {"test": "Welch t-test", "n_yes": int(len(yes)), "n_no": int(len(no)),
                       "mean_yes": round(float(yes.mean()), 2), "mean_no": round(float(no.mean()), 2),
-                      "diff": round(float(diff), 2),
+                      "diff": round(float(yes.mean() - no.mean()), 2),
                       "ci95": [round(float(ci.low), 2), round(float(ci.high), 2)],
                       "stat": round(float(res.statistic), 2), "df": round(float(res.df), 1),
-                      "p": _p(res.pvalue), "effect": round(float(diff / pooled_sd), 2),
-                      "effect_name": "Cohen's d"}
+                      "p": _p(res.pvalue)}
     for col in MULTI_TEST_COLS:
         cap = TEST_LEVEL_CAP.get(col)
         levels = df[col].clip(upper=cap) if cap is not None else df[col]
         by = df.groupby(levels)
         groups = [g["G3"].astype(float).to_numpy() for _, g in by]
         anova = stats.f_oneway(*groups)
-        kw = stats.kruskal(*groups)
         grand = df["G3"].mean()
         ss_between = sum(len(g) * (g.mean() - grand) ** 2 for g in groups)
         ss_total = float(((df["G3"] - grand) ** 2).sum())
         tests[col] = {"test": "one-way ANOVA", "k_groups": len(groups),
                       "levels": [f"{k}+" if cap is not None and k == cap else str(k) for k in by.groups],
                       "stat": round(float(anova.statistic), 2), "p": _p(anova.pvalue),
-                      "effect": round(float(ss_between / ss_total), 3), "effect_name": "eta²",
-                      "kruskal_H": round(float(kw.statistic), 2), "p_kruskal": _p(kw.pvalue)}
+                      "eta2": round(float(ss_between / ss_total), 3)}
     adjusted = _holm({k: v["p"] for k, v in tests.items()})
     for k, v in tests.items():
         v["p_holm"] = _p(adjusted[k])
@@ -500,70 +486,6 @@ def _corr_tests(df: pd.DataFrame) -> dict:
         out[col] = {"r": round(float(res.statistic), 3), "p": _p(res.pvalue),
                     "ci95": [round(float(ci.low), 3), round(float(ci.high), 3)]}
     return out
-
-
-def _ols(df: pd.DataFrame, cols: list[str]) -> dict:
-    """Linear regression of G3 on `cols` with HC3 heteroskedasticity-robust standard errors.
-
-    Each coefficient b = expected change in G3 (points) for +1 unit of that column while
-    every other column stays fixed. `male` and `urban` are 0/1 versions of sex / address.
-    """
-    X = df.assign(male=(df["sex"] == "M").astype(int),
-                  urban=(df["address"] == "U").astype(int))[cols].astype(float).to_numpy()
-    y = df["G3"].astype(float).to_numpy()
-    A = np.column_stack([np.ones(len(y)), X])
-    n, k = A.shape
-    xtx_inv = np.linalg.inv(A.T @ A)
-    beta = xtx_inv @ A.T @ y
-    resid = y - A @ beta
-    leverage = np.einsum("ij,jk,ik->i", A, xtx_inv, A)
-    meat = A.T @ (A * (resid ** 2 / (1 - leverage) ** 2)[:, None])
-    se = np.sqrt(np.diag(xtx_inv @ meat @ xtx_inv))
-    dof = n - k
-    p = 2 * stats.t.sf(np.abs(beta / se), dof)
-    q = stats.t.ppf(1 - ALPHA / 2, dof)
-    r2 = 1 - (resid @ resid) / ((y - y.mean()) @ (y - y.mean()))
-    return {
-        "n": int(n), "n_predictors": int(k - 1),
-        "r2": round(float(r2), 3), "adj_r2": round(float(1 - (1 - r2) * (n - 1) / dof), 3),
-        "coef": {name: {"b": round(float(b), 3), "se": round(float(s), 3),
-                        "ci95": [round(float(b - q * s), 3), round(float(b + q * s), 3)],
-                        "p": _p(pv), "significant": bool(pv < ALPHA)}
-                 for name, b, s, pv in zip(["intercept"] + cols, beta, se, p)},
-    }
-
-
-
-def _paired_subjects(clean: pd.DataFrame, a: str, b: str) -> dict:
-    """Same pupils in courses a and b: compare their G3 pairwise instead of as two independent groups.
-
-    Pupils are matched on MERGE_KEYS (as in student-merge.R). Keys that repeat inside one
-    course cannot be matched safely, so those rows are left out. Pairs where either
-    course is a dropout suspect (G3 = 0) are excluded from the grade comparison.
-    """
-    def unique_rows(subj: str) -> tuple[pd.DataFrame, int]:
-        g = clean[clean["subject"] == subj]
-        dup = g.duplicated(MERGE_KEYS, keep=False)
-        return g[~dup], int(dup.sum())
-
-    ga, dup_a = unique_rows(a)
-    gb, dup_b = unique_rows(b)
-    pairs = ga.merge(gb, on=MERGE_KEYS, suffixes=(f"_{a}", f"_{b}"))
-    ok = pairs[~pairs[f"dropout_suspect_{a}"] & ~pairs[f"dropout_suspect_{b}"]]
-    x, y = ok[f"G3_{a}"].astype(float), ok[f"G3_{b}"].astype(float)
-    t = stats.ttest_rel(x, y)
-    ci = t.confidence_interval(1 - ALPHA)
-    return {
-        "n_a": int((clean["subject"] == a).sum()), "n_b": int((clean["subject"] == b).sum()),
-        "n_duplicate_keys_a": dup_a, "n_duplicate_keys_b": dup_b,
-        "n_matched": int(len(pairs)), "n_pairs": int(len(ok)),
-        "mean_G3_a": round(float(x.mean()), 2), "mean_G3_b": round(float(y.mean()), 2),
-        "diff": round(float((x - y).mean()), 2),
-        "ci95": [round(float(ci.low), 2), round(float(ci.high), 2)],
-        "p_ttest": _p(t.pvalue), "p_wilcoxon": _p(stats.wilcoxon(x, y).pvalue),
-        "significant": bool(t.pvalue < ALPHA),
-        "corr_G3": round(float(x.corr(y)), 3),
-    }
 
 
 def _scope_stats(df: pd.DataFrame) -> dict:
@@ -594,22 +516,13 @@ def _scope_stats(df: pd.DataFrame) -> dict:
     }
 
 
-def _wilson(k: int, n: int) -> list[float]:
-    """95% Wilson confidence interval of a proportion k/n."""
-    if n == 0:
-        return [0.0, 0.0]
-    ci = stats.binomtest(k, n).proportion_ci(1 - ALPHA, method="wilson")
-    return [round(float(ci.low), 4), round(float(ci.high), 4)]
-
-
 def _risk_eval(df: pd.DataFrame) -> dict:
-    """Confusion counts of risk flags vs. actual fail (G3 < PASS_MARK), with 95% Wilson CIs."""
+    """Confusion counts of risk flags vs. actual fail (G3 < PASS_MARK): precision and recall."""
     actual = df["pass_fail"] == "fail"
     out = {"n": int(len(df)), "fail_rate": round(float(actual.mean()), 4),
            "fail_rate_by_group": {
                g: round(float(actual[df["risk_group"] == g].mean()), 4)
-               for g in ["low", "medium", "high"] if (df["risk_group"] == g).any()},
-           "tiers": _tier_eval(df, actual)}
+               for g in ["low", "medium", "high"] if (df["risk_group"] == g).any()}}
     for name, flagged in {"high": df["risk_group"] == "high",
                           "high_or_medium": df["risk_group"] != "low"}.items():
         tp = int((flagged & actual).sum())
@@ -618,28 +531,7 @@ def _risk_eval(df: pd.DataFrame) -> dict:
         tn = int((~flagged & ~actual).sum())
         out[name] = {"tp": tp, "fp": fp, "fn": fn, "tn": tn,
                      "precision": round(tp / (tp + fp), 4) if tp + fp else 0.0,
-                     "precision_ci95": _wilson(tp, tp + fp),
-                     "recall": round(tp / (tp + fn), 4) if tp + fn else 0.0,
-                     "recall_ci95": _wilson(tp, tp + fn)}
-    return out
-
-
-def _tier_eval(df: pd.DataFrame, actual: pd.Series) -> dict:
-    """Does each risk tier carry information? Fail rate (Wilson CI) per tier, and
-    Fisher's exact test of medium vs low (is 'medium' really riskier than 'low'?)."""
-    out: dict = {}
-    for g in ["low", "medium", "high"]:
-        m = df["risk_group"] == g
-        k, n = int((actual & m).sum()), int(m.sum())
-        out[g] = {"n": n, "n_fail": k, "fail_rate": round(k / n, 4) if n else 0.0,
-                  "fail_rate_ci95": _wilson(k, n)}
-    lo, me = out["low"], out["medium"]
-    table = [[me["n_fail"], me["n"] - me["n_fail"]], [lo["n_fail"], lo["n"] - lo["n_fail"]]]
-    fisher = stats.fisher_exact(table)
-    out["medium_vs_low"] = {
-        "odds_ratio": round(float(fisher.statistic), 2) if np.isfinite(fisher.statistic) else None,
-        "relative_risk": round(me["fail_rate"] / lo["fail_rate"], 1) if lo["fail_rate"] else None,
-        "p": _p(fisher.pvalue), "significant": bool(fisher.pvalue < ALPHA)}
+                     "recall": round(tp / (tp + fn), 4) if tp + fn else 0.0}
     return out
 
 
@@ -764,11 +656,6 @@ class StudentDataProcessor:
             "scopes": {"all": _scope_stats(df), "exclude_dropout": _scope_stats(core)},
             "risk_eval": {"all": _risk_eval(df), "exclude_dropout": _risk_eval(core),
                           **self._risk_holdout()},
-            "subject_comparison": self._subject_comparison(),
-            "subject_paired": {subj: _paired_subjects(self.clean, self.primary_subject, subj)
-                               for subj in sorted(set(self.clean["subject"]) - {self.primary_subject})},
-            "regression": self._regression(),
-            "sensitivity": self._sensitivity(),
             "dropout_profile": {
                 "n": int(df["dropout_suspect"].sum()),
                 "n_absences_zero": int((df.loc[df["dropout_suspect"], "absences"] == 0).sum()),
@@ -788,56 +675,6 @@ class StudentDataProcessor:
         self._plot_charts(df, core)
         return self.results
 
-    def _regression(self) -> dict:
-        """Multivariable OLS per subject (dropout suspects excluded).
-
-        factors: background variables only (what predicts G3 before any grade is known);
-        factors_plus_grades: the same plus G1, G2 (what still matters once grades are known).
-        """
-        out: dict = {}
-        for subj, g in self.clean.groupby("subject"):
-            core = g[~g["dropout_suspect"]]
-            out[subj] = {"factors": _ols(core, REG_FACTORS),
-                         "factors_plus_grades": _ols(core, REG_FACTORS + REG_GRADES)}
-        return out
-
-    def _sensitivity(self) -> dict:
-        """Does the absences finding survive different assumptions about the zeros?
-
-        - all: keep every student;
-        - exclude_dropout: drop G3 = 0 (dropout suspects);
-        - exclude_dropout_and_zero_absences: also drop absences = 0, in case 0 means
-          'not recorded' rather than 'never absent'.
-        """
-        out: dict = {}
-        for subj, g in self.clean.groupby("subject"):
-            scenarios = {
-                "all": g,
-                "exclude_dropout": g[~g["dropout_suspect"]],
-                "exclude_dropout_and_zero_absences": g[~g["dropout_suspect"] & (g["absences"] > 0)],
-            }
-            res = {}
-            for name, d in scenarios.items():
-                r = stats.pearsonr(d["absences"].astype(float), d["G3"].astype(float))
-                ci = r.confidence_interval(1 - ALPHA)
-                levels = [x["G3"].astype(float).to_numpy() for _, x in d.groupby("absence_level")]
-                res[name] = {
-                    "n": int(len(d)),
-                    "r_absences_G3": round(float(r.statistic), 3), "p": _p(r.pvalue),
-                    "ci95": [round(float(ci.low), 3), round(float(ci.high), 3)],
-                    "mean_G3_by_absence_level": {
-                        k: round(float(x["G3"].mean()), 2) for k, x in d.groupby("absence_level")},
-                    "anova_p": _p(stats.f_oneway(*levels).pvalue),
-                    "pass_rate": round(float((d["pass_fail"] == "pass").mean()), 4),
-                }
-            drop = g[g["dropout_suspect"]]
-            res["dropout_pattern"] = {"n_dropout": int(len(drop)),
-                                      "n_dropout_absences_zero": int((drop["absences"] == 0).sum()),
-                                      "share_absences_zero_others": round(float(
-                                          (g.loc[~g["dropout_suspect"], "absences"] == 0).mean()), 4)}
-            out[subj] = res
-        return out
-
     def _risk_holdout(self) -> dict:
         """Evaluate the frozen risk rule on the other subject(s) (out-of-sample).
 
@@ -854,22 +691,6 @@ class StudentDataProcessor:
             shared = g[MERGE_KEYS].astype(str).apply(tuple, axis=1).isin(seen)
             out[f"holdout_{subj}"] = _risk_eval(g)
             out[f"holdout_{subj}_only"] = _risk_eval(g[~shared])
-        return out
-
-    def _subject_comparison(self) -> dict:
-        out = {}
-        for subj, g in self.clean.groupby("subject"):
-            core = g[~g["dropout_suspect"]]
-            out[subj] = {
-                "n": int(len(g)),
-                "n_dropout_suspect": int(g["dropout_suspect"].sum()),
-                "pass_rate": round(float((g["pass_fail"] == "pass").mean()), 4),
-                "mean_G3": round(float(g["G3"].mean()), 2),
-                "mean_G3_exclude_dropout": round(float(core["G3"].mean()), 2),
-                "corr_G2_G3_exclude_dropout": round(float(core["G2"].corr(core["G3"])), 3),
-                "corr_absences_G3_exclude_dropout": round(float(core["absences"].corr(core["G3"])), 3),
-                "corr_failures_G3_exclude_dropout": round(float(core["failures"].corr(core["G3"])), 3),
-            }
         return out
 
     def _pisa_context(self) -> dict:
@@ -894,8 +715,7 @@ class StudentDataProcessor:
         self._plot_bar(df, core)
         self._plot_hist(df, core)
         self._plot_heatmap(df, core)
-        if self.pisa_clean is not None:
-            self._plot_pisa()
+
     def _save_fig(self, fig, filename: str) -> None:
         target = self.images_dir / filename
         try:
@@ -907,7 +727,6 @@ class StudentDataProcessor:
             ) from exc
         finally:
             plt.close(fig)
-
 
     def _plot_bar(self, df: pd.DataFrame, core: pd.DataFrame) -> None:
         """Chart 1: grouped bar - mean G3 by studytime x internet, 95% CI + n."""
@@ -987,36 +806,6 @@ class StudentDataProcessor:
         fig.colorbar(im, ax=ax, shrink=0.8)
         fig.tight_layout()
         self._save_fig(fig, "03_heatmap_corr.png")
-
-    def _plot_pisa(self) -> None:
-        """Chart 4 (context): Portugal vs OECD average PISA score per subject over time."""
-        p = self.pisa_clean
-        fig, axes = plt.subplots(1, 3, figsize=(12, 4.6), sharey=True)
-        styles = {"Portugal": dict(color="C0", marker="o", lw=2),
-                  "OECD average": dict(color="gray", marker="s", ls="--", lw=1.5)}
-        for ax, subject in zip(axes, ["mathematics", "reading", "science"]):
-            series = {c: p[(p["subject"] == subject) & (p["country"] == c)].sort_values("year")
-                      for c in styles}
-            last = {c: s.iloc[-1] for c, s in series.items()}
-            higher = max(last, key=lambda c: last[c]["score"])
-            for country, s in series.items():
-                ax.plot(s["year"], s["score"], label=country, **styles[country])
-                ax.annotate(f"{last[country]['score']}", (last[country]["year"], last[country]["score"]),
-                            textcoords="offset points", xytext=(6, 5 if country == higher else -11),
-                            fontsize=8, color=styles[country]["color"])
-            ax.axvspan(2005, 2006, color="C1", alpha=0.25,
-                       label="UCI cohort (2005–06)" if subject == "mathematics" else None)
-            ax.set_title(subject.capitalize())
-            ax.set_xlabel("PISA cycle (year)")
-            ax.set_xticks(sorted(p.loc[p["subject"] == subject, "year"].unique()))
-            ax.tick_params(axis="x", rotation=45)
-            ax.set_xlim(right=ax.get_xlim()[1] + 2)
-            ax.grid(alpha=0.3)
-        axes[0].set_ylabel("Mean PISA score")
-        fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, fontsize=9)
-        fig.suptitle("PISA mean score: Portugal vs OECD average (source: Wikipedia, cross-checked with OECD)")
-        fig.tight_layout(rect=(0, 0.07, 1, 1))
-        self._save_fig(fig, "04_pisa_portugal_oecd.png")
 
     # -- step 4: export --------------------------------------------------
     def export_results(self) -> tuple[Path, Path]:

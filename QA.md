@@ -1,8 +1,10 @@
 # Bộ Câu hỏi & Trả lời Vấn đáp Dự án P1 (Student Performance & PISA)
 
-Tài liệu ôn tập vấn đáp, bảo vệ đồ án và thuyết trình. Được cấu trúc theo dạng:
+Tài liệu ôn tập vấn đáp, bảo vệ đồ án và thuyết trình. Tài liệu tổng quan chính: [`PROJECT_GUIDE.md`](PROJECT_GUIDE.md); chi tiết công thức thống kê: [`METHODS.md`](METHODS.md). Được cấu trúc theo dạng:
 - **Trả lời nhanh (30 giây):** Dùng để trả lời dứt khoát, đúng trọng tâm khi thầy cô hỏi trực tiếp.
 - **Giải thích sâu & Bằng chứng:** Dùng khi thầy cô hỏi vặn thêm (dẫn đúng số liệu, file code, dòng code).
+
+Mọi số liệu lấy từ `data/processed/summary.json` sau khi chạy `python main.py`; số dòng code theo `data_processor.py` hiện tại (832 dòng).
 
 ---
 
@@ -10,25 +12,26 @@ Tài liệu ôn tập vấn đáp, bảo vệ đồ án và thuyết trình. Đ�
 1. [Tổng quan dự án & Bài toán](#1-tổng-quan-dự-án--bài-toán)
 2. [Bộ dữ liệu học sinh UCI & Tiền xử lý (Data Cleaning)](#2-bộ-dữ-liệu-học-sinh-uci--tiền-xử-lý-data-cleaning)
 3. [Hiện tượng điểm 0 (G3 = 0) & 6 Cờ bất thường (Anomaly Flags)](#3-hiện-tượng-điểm-0-g3--0--6-cờ-bất-thường-anomaly-flags)
-4. [Ý nghĩa 4 Biểu đồ & Kết luận thống kê cốt lõi](#4-ý-nghĩa-4-biểu-đồ--kết-luận-thống-kê-cốt-lõi)
+4. [Ý nghĩa 3 Biểu đồ & Kết luận thống kê cốt lõi](#4-ý-nghĩa-3-biểu-đồ--kết-luận-thống-kê-cốt-lõi)
 5. [Quy tắc cảnh báo sớm rủi ro (Early Warning Risk Rule)](#5-quy-tắc-cảnh-báo-sớm-rủi-ro-early-warning-risk-rule)
-6. [Mô hình Hồi quy Tuyến tính OLS & Kiểm định Nâng cao](#6-mô-hình-hồi-quy-tuyến-tính-ols--kiểm-định-nâng-cao)
+6. [Các kiểm định thống kê được dùng](#6-các-kiểm-định-thống-kê-được-dùng)
 7. [Cào dữ liệu PISA Wikipedia & Đối chiếu OECD (Web Scraping)](#7-cào-dữ-liệu-pisa-wikipedia--đối-chiếu-oecd-web-scraping)
-8. [Kiến trúc Mã nguồn & Quy trình Xuất Báo cáo tự động](#8-kiến-trúc-mã-nguồn--quy-trình-xuất-báo-cáo-tự-động)
+8. [Kiến trúc Mã nguồn & Báo cáo](#8-kiến-trúc-mã-nguồn--báo-cáo)
+9. [Bảng tóm tắt các con số cốt lõi](#9-bảng-tóm-tắt-các-con-số-cốt-lõi-học-thuộc-trước-khi-vào-phòng-thi)
 
 ---
 
 ## 1. Tổng quan dự án & Bài toán
 
 ### Q1.1: Đề tài này giải quyết bài toán gì trong thực tế?
-- **Trả lời nhanh:** Dự án phân tích các yếu tố ảnh hưởng đến kết quả thi cuối kỳ (G3) của học sinh THPT Bồ Đào Nha môn Toán, xây dựng hệ thống quy tắc cảnh báo sớm học sinh có nguy cơ trượt môn ngay từ giữa kỳ (chỉ nhìn G1, G2, vắng học và trượt cũ), đồng thời cào dữ liệu PISA quốc tế từ Wikipedia để đặt trình độ của học sinh vào bối cảnh toàn cầu.
+- **Trả lời nhanh:** Dự án phân tích các yếu tố liên quan đến điểm cuối kỳ (G3) của học sinh THPT Bồ Đào Nha môn Toán, xây dựng quy tắc cảnh báo sớm học sinh có nguy cơ trượt ngay từ giữa kỳ (chỉ nhìn G1, G2, vắng học và số lần trượt cũ), đồng thời cào dữ liệu PISA từ Wikipedia để đặt học sinh vào bối cảnh quốc gia.
 - **Giải thích sâu:** Dự án chia làm 2 cấp độ:
-  - *Cấp vi mô (học sinh):* Trả lời câu hỏi yếu tố nào thực sự quyết định điểm số (điểm giữa kỳ G2 và lịch sử trượt môn áp đảo hoàn toàn các yếu tố như internet hay thời gian tự học).
-  - *Cấp vĩ mô (quốc gia):* Điểm PISA cho thấy thời điểm khảo sát UCI (2005–2006), Bồ Đào Nha thấp hơn trung bình OECD ở cả 3 môn, trước khi vươn lên bắt kịp vào năm 2015.
+  - *Cấp vi mô (học sinh):* Điểm giữa kỳ G2 và lịch sử trượt môn gắn với G3 mạnh hơn hẳn các yếu tố như internet hay thời gian tự học.
+  - *Cấp vĩ mô (quốc gia):* Điểm PISA cho thấy thời điểm khảo sát UCI (2005–2006), Bồ Đào Nha thấp hơn trung bình OECD môn Toán (2006: 466 so với 494), trước khi bắt kịp vào năm 2015 (492 so với 490).
 
-### Q1.2: Tại sao lại chọn môn Toán (`mat`) làm môn phân tích chính mà không phải môn Tiếng Bồ Đào Nha (`por`)?
-- **Trả lời nhanh:** Môn Toán có tính phân loại cao hơn, tỉ lệ trượt cao hơn (Toán trượt 32.9%, Tiếng Bồ Đào Nha chỉ trượt 15.4%), và phân phối điểm trải rộng hơn. Môn Tiếng Bồ Đào Nha được dùng làm tập kiểm chứng độc lập (Holdout validation) ngoài mẫu để kiểm tra độ tin cậy của bộ quy tắc rủi ro.
-- **Bằng chứng:** Quy định trong `docs/adr/0003-por-for-comparison-and-holdout-only.md`.
+### Q1.2: Tại sao chọn môn Toán (`mat`) làm môn phân tích chính mà không phải môn Tiếng Bồ Đào Nha (`por`)?
+- **Trả lời nhanh:** Môn Toán có tỉ lệ trượt cao hơn (Toán trượt 32.9%, Tiếng Bồ Đào Nha chỉ trượt 15.4%) nên phân loại đỗ/trượt có ý nghĩa hơn. Môn `por` được giữ làm **tập kiểm chứng ngoài mẫu (holdout)** cho quy tắc rủi ro.
+- **Bằng chứng:** `_risk_holdout()` trong `data_processor.py`, dòng 678–694.
 
 ### Q1.3: G1, G2, G3 là gì? Thang điểm chấm thế nào? Điểm qua môn là bao nhiêu?
 - **Trả lời nhanh:** Thang điểm 0–20 theo hệ thống giáo dục Bồ Đào Nha:
@@ -41,190 +44,206 @@ Tài liệu ôn tập vấn đáp, bảo vệ đồ án và thuyết trình. Đ�
 
 ## 2. Bộ dữ liệu học sinh UCI & Tiền xử lý (Data Cleaning)
 
-### Q2.1: Quy trình làm sạch dữ liệu trong dự án diễn ra qua các bước nào?
-- **Trả lời nhanh:** Hàm `clean_data()` thực hiện 6 bước chặt chẽ:
-  1. Cắt tỉa khoảng trắng thừa (`strip`) trên toàn bộ cột chuỗi.
+### Q2.1: Làm sạch dữ liệu gồm những bước nào? Log ra sao?
+- **Trả lời nhanh:** Hàm `clean_data()` thực hiện 6 bước:
+  1. Cắt khoảng trắng thừa (`strip`) trên toàn bộ cột chuỗi.
   2. Ép kiểu số và kiểm tra miền giá trị hợp lệ theo định nghĩa UCI (`VALID_RANGES`).
   3. Mã hoá nhị phân các cột `yes`/`no` thành `1`/`0`.
-  4. Xoá dòng trùng lặp (`drop_duplicates`) và kiểm tra giá trị thiếu (`dropna` trên các cột điểm bắt buộc).
+  4. Xoá dòng trùng lặp (`drop_duplicates`) và bỏ dòng thiếu cột bắt buộc (`REQUIRED_COLS`).
   5. Tạo các cột dẫn xuất (`pass_fail`, `absence_level`, `avg_grade`, `avg_g1g2`, `risk_group`).
-  6. Gắn 6 cờ bất thường (`anomaly flags`), tính ngưỡng vắng học bất thường bằng phương pháp IQR riêng cho từng môn.
-- **Vị trí code:** `data_processor.py`, dòng 681–744.
+  6. Gắn 6 cờ bất thường (anomaly flags), ngưỡng vắng học bất thường tính bằng IQR riêng cho từng môn.
+- **Log:** Mỗi bước đếm số ô/dòng bị xử lý và ghi vào `cleaning_log` trong `summary.json`. Lần chạy thực tế: 1044 dòng vào (mat 395, por 649), 0 ô bị strip, 0 giá trị không phải số, 0 ngoài miền, 0 yes/no sai, 0 dòng trùng, 0 dòng thiếu → 1044 dòng ra. Ngưỡng IQR vắng học: mat 20, por 15. Dữ liệu UCI vốn sạch, nhưng các bước này được kiểm thử bằng dữ liệu cấy lỗi trong `tests/`.
+- **Vị trí code:** `data_processor.py`, dòng 573–636.
 
-### Q2.2: Cột `avg_grade` được tính như thế nào và tại sao không được đưa vào mô hình dự báo?
-- **Trả lời nhanh:** `avg_grade = (G1 + G2 + G3) / 3`. Cột này **tuyệt đối không được đưa vào bất kỳ mô hình dự báo hay quy tắc cảnh báo nào** vì nó chứa biến mục tiêu $G3$. Đưa vào sẽ gây ra lỗi **rò rỉ dữ liệu (Data Leakage)** — dùng kết quả tương lai để dự đoán chính nó. Cột này chỉ có ý nghĩa thống kê mô tả.
-- **Bằng chứng:** Đã ghi rõ cảnh báo trong docstring của `calc_average_grade` (`data_processor.py`, dòng 139–145) và `VAR_DESCRIPTIONS`.
+### Q2.2: Cột `avg_grade` được tính như thế nào và tại sao không được dùng để dự báo?
+- **Trả lời nhanh:** `avg_grade = (G1 + G2 + G3) / 3`. Cột này **không được đưa vào quy tắc cảnh báo nào** vì nó chứa biến mục tiêu $G3$ — dùng sẽ gây **rò rỉ dữ liệu (Data Leakage)**. Cột này chỉ dùng cho thống kê mô tả.
+- **Bằng chứng:** Docstring của `calc_average_grade` (`data_processor.py`, dòng 133–139) và `VAR_DESCRIPTIONS` (dòng 63–76).
 
-### Q2.3: Trong 2 file `student-mat.csv` và `student-por.csv`, có bao nhiêu học sinh học cả hai môn? Ghép như thế nào?
-- **Trả lời nhanh:** Có **382 học sinh trùng** xuất hiện ở cả 2 file (theo 13 thuộc tính định danh trong file gốc `student-merge.R`). Sau khi làm sạch và loại bỏ các khoá bị lặp nội bộ trong cùng 1 môn, ghép được **358 học sinh duy nhất**, trong đó có **324 cặp học sinh có điểm thi thật ($G3 > 0$) ở cả 2 môn**.
-- **Giải thích sâu:** Vì cùng một em học sinh học cả 2 môn nên 2 file này **không phải 2 mẫu độc lập**. Do đó, so sánh điểm 2 môn phải dùng **kiểm định ghép cặp (Paired t-test)** chứ không được dùng t-test độc lập. Điểm Toán thấp hơn môn Tiếng Bồ Đào Nha trung bình $-1.26$ điểm ($p < 0.001$).
-- **Bằng chứng:** `docs/adr/0003-por-for-comparison-and-holdout-only.md` và hàm `_paired_subjects()` (`data_processor.py`, dòng 537–566).
+### Q2.3: 2 file `student-mat.csv` và `student-por.csv` có độc lập không? Holdout chặt là gì?
+- **Trả lời nhanh:** Không hoàn toàn độc lập: nhiều học sinh học cả 2 môn. Vì vậy ngoài holdout trên toàn bộ 649 học sinh `por`, code còn tạo **holdout chặt**: chỉ giữ học sinh `por` **không** xuất hiện trong file `mat` (so khớp theo các thuộc tính định danh `MERGE_KEYS`, dòng 53–54), còn lại 275 em.
+- **Bằng chứng:** `_risk_holdout()`, `data_processor.py` dòng 678–694.
 
 ---
 
 ## 3. Hiện tượng điểm 0 (G3 = 0) & 6 Cờ bất thường (Anomaly Flags)
 
 ### Q3.1: Hiện tượng 38 học sinh bị điểm 0 ($G3 = 0$) môn Toán là gì? Tại sao không xoá đi?
-- **Trả lời nhanh:** Trong 395 học sinh môn Toán, có 38 em bị $G3 = 0$. Cả 38 em này đều có **số buổi vắng học bằng 0 (`absences = 0`)** và điểm G1 trung bình vẫn đạt ~7.5. Điều này chỉ ra đây là nhóm **bỏ thi / thôi học giữa chừng (Dropout Suspects)** chứ không phải đi thi làm bài bị 0 điểm. Không xoá vì xoá dữ liệu gốc là sai lệch thực tế; nhóm này được **gắn nhãn cờ `dropout_suspect = True`** và bóc tách riêng khi phân tích.
+- **Trả lời nhanh:** Trong 395 học sinh môn Toán có 38 em $G3 = 0$. Cả 38 em đều có **`absences = 0`** (trong khi chỉ 21.6% học sinh còn lại có `absences = 0`), 13 em cũng có $G2 = 0$, G1 trung bình vẫn đạt 7.53. Đây là nhóm **nghi bỏ thi / thôi học (Dropout Suspects)**, không phải đi thi được 0 điểm. Không xoá; nhóm này được **gắn cờ `dropout_suspect = True`**.
 - **Tại sao không xoá:**
-  1. Giữ tính toàn vẹn dữ liệu gốc (Data Integrity).
-  2. Bỏ học/bỏ thi là một hiện tượng quản lý giáo dục có thật, cần đếm được số lượng (38 em = 9.6%).
-  3. Mọi kết luận khoa học (tương quan, OLS, biểu đồ) được tính trên tập **loại trừ nhóm bỏ thi (`exclude_dropout`)** để tránh kết quả bị méo mó (ví dụ: kéo tỉ lệ đỗ từ 74.2% tụt xuống 67.1%).
+  1. Giữ toàn vẹn dữ liệu gốc.
+  2. Bỏ thi là hiện tượng có thật, cần đếm được (38 em = 9.6%).
+  3. Các kết luận về yếu tố liên quan đến điểm (tương quan, t-test, ANOVA) tính trên tập **loại nhóm bỏ thi (`exclude_dropout`, 357 em)**. Ví dụ: tỉ lệ đỗ 67.1% (tất cả) → 74.2% (loại bỏ thi); $r(\text{absences}, G3)$ đổi từ $+0.034$ thành $-0.213$.
 - **Bằng chứng:** `docs/adr/0001-flag-dropout-suspects-not-delete.md`.
 
-### Q3.2: 6 cờ dữ liệu bất thường (Anomaly Flags) trong dự án là những cờ nào?
-- **Trả lời nhanh:**
-  1. `dropout_suspect`: $G3 = 0$ (nghi bỏ thi/thôi học).
-  2. `g2_zero`: $G2 = 0$ (nghi vắng thi kỳ 2).
-  3. `grade_drop`: Tụt điểm đột ngột giữa các kỳ ($G1 - G3 \ge 8$ hoặc $G2 - G3 \ge 6$).
-  4. `absence_outlier`: Vắng học nhiều bất thường (vượt ngưỡng IQR $Q3 + 1.5 \times IQR$, môn Toán là $> 20$ buổi).
-  5. `age_outlier`: Học muộn / lưu ban ($\ge 20$ tuổi).
-  6. `inconsistent_grade`: Mâu thuẫn logic ($G3 > 0$ nhưng $G2 = 0$, vắng thi giữa kỳ nhưng lại có điểm cuối kỳ).
+### Q3.2: 6 cờ dữ liệu bất thường (Anomaly Flags) là những cờ nào?
+- **Trả lời nhanh:** (số lượng môn Toán / môn Bồ Đào Nha)
+  1. `dropout_suspect`: $G3 = 0$ (nghi bỏ thi) — 38 / 15.
+  2. `g2_zero`: $G2 = 0$ (nghi vắng thi kỳ 2) — 13 / 7.
+  3. `grade_drop`: Tụt điểm đột ngột ($G1 - G3 \ge 8$ hoặc $G2 - G3 \ge 6$) — 0 / 1.
+  4. `absence_outlier`: Vắng vượt ngưỡng IQR $Q3 + 1.5 \times IQR$ (Toán $> 20$ buổi) — 15 / 21.
+  5. `age_outlier`: $\ge 20$ tuổi — 5 / 9.
+  6. `inconsistent_grade`: $G3 > 0$ nhưng $G2 = 0$ — 0 / 0.
 
 ---
 
-## 4. Ý nghĩa 4 Biểu đồ & Kết luận thống kê cốt lõi
+## 4. Ý nghĩa 3 Biểu đồ & Kết luận thống kê cốt lõi
 
-### Q4.1: Biểu đồ 1 (`01_bar_studytime_internet.png`) cho thấy điều gì? Tại sao nhìn cột có internet cao hơn nhưng lại kết luận "không có ý nghĩa thống kê"?
+### Q4.1: Biểu đồ 1 (`01_bar_studytime_internet.png`) cho thấy điều gì? Tại sao cột có internet cao hơn nhưng lại kết luận "không có ý nghĩa thống kê"?
 - **Trả lời nhanh:**
-  - Nhìn mắt thường, nhóm có internet có điểm trung bình cao hơn ~1 điểm. Nhưng **thanh sai số 95% CI (error bar) chồng lấn lên nhau rất nhiều**.
-  - Kiểm định Welch t-test sau khi hiệu chỉnh đa kiểm định Holm cho thấy: $p_{holm} = 0.080 > 0.05$. Do đó, **không đủ bằng chứng thống kê để khẳng định có internet ở nhà giúp tăng điểm Toán**.
-  - Tự học (`studytime`) có làm tăng nhẹ điểm từ mức 1 (<2h) lên mức 3 (5–10h), nhưng tự học trên 10h không làm điểm tăng thêm (hiệu ứng tăng chậm dần).
-- **Về các cột gạch chéo:** Cột nào có cỡ mẫu $n < 10$ học sinh (như nhóm tự học >10h không có internet chỉ có đúng $n=3$ em) được code vẽ **gạch chéo và làm mờ**, cảnh báo rằng mẫu quá nhỏ, không được suy diễn khái quát.
-- **Vị trí code:** `_plot_bar` trong `data_processor.py`, dòng 912–946.
+  - Nhóm có internet có G3 trung bình 11.68 (n = 299) so với 10.71 (n = 58), chênh $+0.98$, 95% CI $[0.11, 1.84]$, Welch $p = 0.0268$.
+  - Nhưng dự án chạy 4 t-test cùng lúc nên phải hiệu chỉnh Holm: $p_{holm} = 0.0804 > 0.05$ → **không đủ bằng chứng để khẳng định internet gắn với điểm Toán cao hơn**.
+  - Tự học (`studytime`): trung bình mức 1/2/3/4 = 11.47/11.07/12.56/12.67; ANOVA có ý nghĩa ($p_{holm} = 0.0193$) nhưng hiệu ứng nhỏ ($\eta^2 = 0.036$).
+- **Về các cột gạch chéo:** Cột có $n < 10$ (vd tự học >10h không có internet chỉ có $n = 3$) được vẽ **gạch chéo và làm mờ** để cảnh báo mẫu quá nhỏ.
+- **Vị trí code:** `_plot_bar` trong `data_processor.py`, dòng 731–765.
 
-### Q4.2: Biểu đồ 2 (`02_hist_g3.png`) chứng minh điều gì về mặt phân phối?
-- **Trả lời nhanh:** Biểu đồ histogram điểm G3 chứng minh 2 điều:
-  1. Phân phối điểm của học sinh thi thật ($G3 > 0$) có dạng **chuẩn hình chuông**, đỉnh tập trung quanh 10–11 điểm và trải đều 2 phía.
-  2. Khoảng điểm 1, 2, 3 hoàn toàn **trống trơn (0 học sinh nào)**, rồi đột ngột vọt lên 38 em ở mốc 0 (cột màu đỏ đứng tách biệt). Đây là bằng chứng thép trực quan chứng minh điểm 0 là do **bỏ thi** chứ không phải do năng lực làm bài kém.
-
-### Q4.3: Biểu đồ 3 (`03_heatmap_corr.png`) chỉ ra biến nào tác động mạnh nhất đến điểm cuối kỳ G3?
+### Q4.2: Biểu đồ 2 (`02_hist_g3.png`) chứng minh điều gì về phân phối?
 - **Trả lời nhanh:**
-  - **Tác động mạnh nhất (áp đảo):** Điểm giữa kỳ $G2$ ($r = +0.966$) và $G1$ ($r = +0.892$).
-  - **Yếu tố kéo tụt điểm mạnh nhất:** Số môn từng trượt trong quá khứ (`failures`, $r = -0.294$) và số buổi vắng học (`absences`, $r = -0.213$). Cả hai đều có $p < 0.001$.
-  - **Yếu tố bất ngờ:** Hỗ trợ từ gia đình (`famsup`) hầu như không tương quan với điểm ($r = -0.067, p = 0.205$). Thời gian tự học (`studytime`) tương quan dương nhẹ ($r = +0.127$) nhưng chỉ giải thích được $3.6\%$ phương sai ($\eta^2 = 0.036$).
+  1. Điểm của học sinh thi thật ($G3 > 0$) có dạng gần hình chuông, tập trung quanh 10–11.
+  2. Khoảng điểm 1–3 gần như trống, rồi vọt lên 38 em ở mốc 0 (cột đỏ tách biệt) → bằng chứng trực quan điểm 0 là do **bỏ thi**, không phải năng lực.
+- **Vị trí code:** `_plot_hist`, dòng 767–788.
 
-### Q4.4: Biểu đồ 4 (`04_pisa_portugal_oecd.png`) mang lại giá trị gì cho bài phân tích?
-- **Trả lời nhanh:** Biểu đồ đường so sánh điểm PISA của Bồ Đào Nha với trung bình OECD từ 2000–2025 ở cả 3 môn (Toán, Đọc hiểu, Khoa học):
-  - Năm 2005–2006 (thời điểm thu thập dữ liệu UCI), Bồ Đào Nha thấp hơn trung bình OECD ở cả 3 môn (môn Toán đạt 466 so với OECD 494).
-  - Đến năm 2015, Bồ Đào Nha bắt kịp OECD môn Toán.
-  - Năm 2025, cả Bồ Đào Nha và OECD đều đi xuống nhẹ, Bồ Đào Nha ở mức ngang bằng OECD (Toán 460 so với 463).
-  - Biểu đồ này cung cấp **bối cảnh cấp quốc gia**, hoàn toàn tách biệt và không ghép vào từng học sinh UCI.
+### Q4.3: Biểu đồ 3 (`03_heatmap_corr.png`) chỉ ra biến nào gắn với G3 mạnh nhất?
+- **Trả lời nhanh:** (tập `exclude_dropout`)
+  - **Mạnh nhất:** $G2$ ($r = +0.966$) và $G1$ ($r = +0.892$).
+  - **Kéo điểm xuống:** `failures` ($r = -0.294$, $p = 1.5 \times 10^{-8}$) và `absences` ($r = -0.213$, $p = 4.9 \times 10^{-5}$).
+  - **Yếu:** `famsup` ($r = -0.067$, $p = 0.205$, không ý nghĩa); `studytime` ($r = +0.127$, $p = 0.0166$).
+- **Lưu ý:** Tương quan không phải nhân quả. Vd `schoolsup` gắn với điểm thấp hơn ($-2.21$ điểm) vì trường hỗ trợ chính những em yếu (nhân quả ngược).
+- **Vị trí code:** `_plot_heatmap`, dòng 790–808; `_corr_tests`, dòng 480–488.
+
+### Q4.4: Dữ liệu PISA được dùng trong phân tích như thế nào?
+- **Trả lời nhanh:** Hàm `_pisa_context()` (dòng 696–711) lấy điểm Bồ Đào Nha và trung bình OECD qua các năm, ghi vào `summary.json` (`pisa_context`). Môn Toán: 2006 466/494, 2015 492/490, 2025 460/463. Đây là **bối cảnh cấp quốc gia**, không ghép vào từng học sinh UCI. Bản này không còn biểu đồ PISA riêng; số liệu được trình bày dạng bảng trong báo cáo.
 
 ---
 
 ## 5. Quy tắc cảnh báo sớm rủi ro (Early Warning Risk Rule)
 
-### Q5.1: Hàm `classify_risk` hoạt động như thế nào? Điều kiện từng nhóm là gì?
-- **Trả lời nhanh:** Quy tắc chia học sinh làm 3 phân tầng rủi ro:
-  - **High (Nguy cơ cao):** Nếu $G2 < 10$ HOẶC từng trượt $\ge 2$ môn (`failures >= 2`).
-  - **Medium (Nguy cơ vừa):** Nếu $G1 < 10$ HOẶC từng trượt 1 môn (`failures == 1`) HOẶC vắng học nhiều (`absences >= 10`).
-  - **Low (Nguy cơ thấp):** Các trường hợp còn lại.
-- **Vị trí code:** `data_processor.py`, dòng 148–162.
+### Q5.1: Hàm `classify_risk` hoạt động như thế nào?
+- **Trả lời nhanh:** Chia học sinh làm 3 nhóm:
+  - **High:** $G2 < 10$ HOẶC `failures >= 2`.
+  - **Medium:** $G1 < 10$ HOẶC `failures == 1` HOẶC `absences >= 10`.
+  - **Low:** Còn lại.
+- **Vị trí code:** `data_processor.py`, dòng 142–156.
 
-### Q5.2: Tại sao trong hàm `classify_risk` tuyệt đối không được dùng điểm G3?
-- **Trả lời nhanh:** Vì đây là **hệ thống cảnh báo sớm (Early Warning System)**, phải chạy **ngay từ giữa kỳ** để thầy cô có thời gian phụ đạo cho học sinh trước khi kỳ thi cuối diễn ra. Lúc đó chưa thi nên chưa có G3. Nếu dùng G3 vào rule thì vừa vô nghĩa trong thực tế vừa phạm lỗi rò rỉ dữ liệu.
+### Q5.2: Tại sao `classify_risk` tuyệt đối không dùng G3?
+- **Trả lời nhanh:** Đây là **cảnh báo sớm**, phải chạy từ giữa kỳ để giáo viên kịp phụ đạo. Lúc đó chưa có G3. Dùng G3 vừa vô nghĩa thực tế vừa rò rỉ dữ liệu. Có test kiểm tra: đổi G3 thì kết quả `classify_risk` không đổi.
 - **Bằng chứng:** `docs/adr/0002-risk-group-never-uses-g3.md`.
 
 ### Q5.3: Hiệu quả của rule được đánh giá qua những chỉ số nào? Kết quả ra sao?
-- **Trả lời nhanh:** Đánh giá bằng **Recall (Độ nhạy - bắt trúng bao nhiêu % em trượt)** và **Precision (Độ chuẩn xác - trong số em bị báo động thì bao nhiêu % trượt thật)**:
-  - Trên môn Toán (tập huấn luyện): **Recall = 93.8%** [86.2%, 97.3%], **Precision = 81.9%** [73.2%, 88.2%].
-  - Trên môn Tiếng Bồ Đào Nha tập Holdout chặt (275 em chưa từng thấy): **Recall = 91.4%** [77.6%, 97.0%], **Precision = 66.0%** [51.7%, 77.8%].
-  - Độ nhạy trên 91% chứng minh quy tắc này cực kỳ an toàn cho mục đích sư phạm: gần như không bỏ sót học sinh nào có nguy cơ trượt môn.
+- **Trả lời nhanh:** Coi nhóm `high` là "báo động", so với trượt thật ($G3 < 10$):
+  - **Recall** = trong số em trượt thật, bao nhiêu % bị báo động.
+  - **Precision** = trong số em bị báo động, bao nhiêu % trượt thật.
 
-### Q5.4: Tại sao cần phân tầng 3 mức (Low, Medium, High) mà không chia đôi Đỗ/Trượt?
-- **Trả lời nhanh:** Vì nguồn lực phụ đạo của nhà trường có hạn:
-  - Nhóm **High** có tỉ lệ trượt thật là **81.9%** $\rightarrow$ Cần can thiệp khẩn cấp 1-kèm-1.
-  - Nhóm **Medium** có tỉ lệ trượt là **22.5%** $\rightarrow$ Nhắc nhở, gửi thông báo cho phụ huynh, cho làm thêm bài tập (kiểm định Fisher khẳng định nhóm Medium trượt nhiều hơn nhóm Low rõ rệt với $p < 0.001$).
-  - Nhóm **Low** tỉ lệ trượt chỉ **4.0%** $\rightarrow$ An toàn, không cần can thiệp.
+| Tập | n | Recall | Precision |
+|---|---|---|---|
+| Toán, tất cả | 395 | 93.8% (122/130) | 81.9% (122/149) |
+| Toán, loại bỏ thi | 357 | 93.5% | 76.1% |
+| Holdout `por` (toàn bộ) | 649 | 90.0% | 59.2% |
+| Holdout chặt `por` | 275 | 91.4% (64/70) | 66.0% (64/97) |
+
+- Recall trên 90% ở cả tập ngoài mẫu → rule ít bỏ sót em có nguy cơ. Precision giảm trên `por` vì môn này tỉ lệ trượt thấp hơn.
+- **Vị trí code:** `_risk_eval`, dòng 519–535; `_risk_holdout`, dòng 678–694.
+
+### Q5.4: Tại sao phân tầng 3 mức (Low, Medium, High) mà không chia đôi?
+- **Trả lời nhanh:** Nguồn lực phụ đạo có hạn, nên cần thứ tự ưu tiên. Tỉ lệ trượt thật theo nhóm:
+
+| Nhóm | Toán (tất cả) | Holdout chặt `por` |
+|---|---|---|
+| High | 81.9% | 66.0% |
+| Medium | 7.8% | 9.8% |
+| Low | 1.2% | 0.8% |
+
+- High → can thiệp ngay; Medium → theo dõi, nhắc nhở; Low → an toàn. Nếu gộp High + Medium làm báo động (Toán, tất cả): recall 98.5% nhưng precision chỉ 56.6%.
+- 36/38 em nghi bỏ thi nằm trong nhóm High, 2 em Medium, 0 em Low.
 
 ---
 
-## 6. Mô hình Hồi quy Tuyến tính OLS & Kiểm định Nâng cao
+## 6. Các kiểm định thống kê được dùng
 
-### Q6.1: Tại sao nhóm tự viết thuật toán hồi quy OLS bằng đại số tuyến tính mà không dùng thư viện `scikit-learn` hay `statsmodels`?
-- **Trả lời nhanh:** Để chứng minh khả năng làm chủ toán học và lập trình khoa học từ con số 0:
-  - Tính vector hệ số hồi quy bằng công thức ma trận: $\beta = (X^T X)^{-1} X^T y$.
-  - Tính ma trận độ đòn bẩy: $H = X (X^T X)^{-1} X^T$.
-  - Tính ma trận hiệp phương sai sai số chuẩn vững **HC3** (chống phương sai thay đổi): $\Sigma_{HC3} = (X^T X)^{-1} X^T \text{diag}\left(\frac{e_i^2}{(1 - h_{ii})^2}\right) X (X^T X)^{-1}$.
-  - Tính $t$-statistic, tra phân phối Student-t lấy $p$-value và khoảng tin cậy 95% của từng biến.
-- **Vị trí code:** Hàm `_ols()` trong `data_processor.py`, dòng 505–533.
+### Q6.1: Dự án dùng những kiểm định nào?
+- **Trả lời nhanh:** Ngưỡng $\alpha = 0.05$ (`ALPHA`, dòng 43). Tất cả chạy trên tập `exclude_dropout`:
+  - **Welch t-test** + 95% CI của chênh lệch trung bình cho 4 biến nhị phân (`internet`, `famsup`, `schoolsup`, `paid`).
+  - **ANOVA một chiều** + $\eta^2$ cho 3 biến nhiều mức (`studytime`, `absence_level`, `failures` gộp 0/1/2+).
+  - **Hiệu chỉnh Holm** cho từng họ kiểm định.
+  - **Kiểm định tương quan Pearson** ($r$, $p$, 95% CI) cho G1, G2, studytime, failures, absences, famsup với G3.
+- **Vị trí code:** `_p` 427–429, `_holm` 432–438, `_group_tests` 441–477, `_corr_tests` 480–488.
 
-### Q6.2: Mô hình A và Mô hình B khác nhau thế nào? R² của từng mô hình là bao nhiêu?
-- **Trả lời nhanh:**
-  - **Mô hình A (Chỉ dùng 13 yếu tố nền, không có điểm):** $R^2 = 0.234$. Nghĩa là toàn bộ hoàn cảnh gia đình, tự học, internet, vắng học chỉ giải thích được $23.4\%$ sự biến thiên của điểm số. Trong đó chỉ có lịch sử trượt (`failures`, $\beta = -1.65$) và vắng học (`absences`, $\beta = -0.06$) là có ý nghĩa thống kê ($p < 0.01$).
-  - **Mô hình B (Thêm điểm kỳ 1 G1 và giữa kỳ G2):** $R^2 = 0.937$. Điểm $G2$ có hệ số $\beta = +0.94$ ($p < 0.001$). Khi đã biết điểm G2, hầu hết các yếu tố nền gia đình đều mất sạch ý nghĩa thống kê.
-- **Lưu ý đa cộng tuyến:** $r(G1, G2) = 0.902$, nên không diễn giải riêng lẻ hệ số của G1 và G2 trong mô hình B.
+### Q6.2: Kết quả các kiểm định nhóm là gì?
 
-### Q6.3: Đa kiểm định (Multiple Testing) là gì và tại sao phải dùng hiệu chỉnh Holm-Bonferroni?
-- **Trả lời nhanh:** Khi chạy nhiều kiểm định thống kê đồng thời với ngưỡng $\alpha = 0.05$, xác suất mắc phải sai số loại I (dương tính giả — kết luận có ý nghĩa trong khi thực tế là do ngẫu nhiên) sẽ tăng vọt theo công thức $1 - (1 - \alpha)^k$. Hiệu chỉnh **Holm-Bonferroni** sắp xếp các $p$-value tăng dần và điều chỉnh ngưỡng kiểm định từng bước, giúp kiểm soát sai số cho toàn bộ họ giả thuyết mà không quá khắt khe như Bonferroni cổ điển.
-- **Vị trí code:** Hàm `_holm()` trong `data_processor.py`, dòng 438–444.
+| Biến | Kiểm định | Kết quả | $p_{holm}$ | Kết luận |
+|---|---|---|---|---|
+| internet | Welch | 11.68 vs 10.71 | 0.0804 | Không ý nghĩa |
+| famsup | Welch | 11.35 vs 11.80 | 0.404 | Không |
+| schoolsup | Welch | 9.62 vs 11.83 | $3.4 \times 10^{-6}$ | Có (nhân quả ngược) |
+| paid | Welch | 11.43 vs 11.61 | 0.585 | Không |
+| studytime | ANOVA | $F = 4.38$, $\eta^2 = 0.036$ | 0.0193 | Có, hiệu ứng nhỏ |
+| absence_level | ANOVA | $F = 9.85$, $\eta^2 = 0.053$ | 0.00034 | Có |
+| failures | ANOVA | $F = 17.19$, $\eta^2 = 0.089$ | $5.3 \times 10^{-7}$ | Có, mạnh nhất |
+
+### Q6.3: Đa kiểm định là gì và tại sao dùng hiệu chỉnh Holm?
+- **Trả lời nhanh:** Chạy $k$ kiểm định cùng lúc ở $\alpha = 0.05$ thì xác suất có ít nhất một dương tính giả tăng lên $1 - (1 - \alpha)^k$. **Holm** sắp $p$-value tăng dần, nhân $p_{(i)}$ với $(k - i + 1)$ và giữ tính đơn điệu, kiểm soát sai số cho cả họ mà ít khắt khe hơn Bonferroni. Ví dụ internet: $p = 0.0268$ nhưng $p_{holm} = 0.0804$.
+- **Vị trí code:** `_holm()`, dòng 432–438.
+
+### Q6.4: Vì sao bản này bỏ hồi quy OLS?
+- **Trả lời nhanh:** Đề bài P1 yêu cầu phân tích mô tả, kiểm định và cảnh báo sớm — không yêu cầu mô hình dự báo. Hồi quy OLS tự viết (cùng HC3, Kruskal-Wallis, Wilson CI, Fisher, phân tích độ nhạy, so sánh ghép cặp 2 môn) làm code phình gấp ~3 lần và khó giải thích khi vấn đáp, trong khi các câu hỏi chính đã được trả lời bằng tương quan, t-test, ANOVA và đánh giá rule. Branch `slim-down` cắt bỏ các phần này: code (không tính test) giảm từ ~2817 xuống 904 dòng.
+- **Nếu bị hỏi "biến nào quan trọng nhất?":** Trả lời bằng tương quan ($G2$ $r = 0.966$) và $\eta^2$ của ANOVA (`failures` 0.089 > `absence_level` 0.053 > `studytime` 0.036), không cần hệ số hồi quy.
 
 ---
 
 ## 7. Cào dữ liệu PISA Wikipedia & Đối chiếu OECD (Web Scraping)
 
 ### Q7.1: Luồng cào dữ liệu PISA hoạt động như thế nào?
-- **Trả lời nhanh:** Hoạt động theo cơ chế **Cache-first**:
-  1. Mặc định đọc file cache offline `data/raw/pisa_reference.csv` (nếu đã có) và chạy kiểm định tính toàn vẹn `validate_pisa_raw()`. Tuyệt đối không gọi mạng vô cớ.
-  2. Khi chạy cờ lệnh `python main.py --refresh-pisa` hoặc thiếu cache: Gửi 1 HTTP GET request bằng `requests` kèm `User-Agent` hợp lệ.
-  3. Dùng `BeautifulSoup` bóc tách cây DOM HTML, lấy bảng tóm tắt 2025 và xoay bảng lịch sử 2000–2022 từ dạng rộng sang dạng dài.
-  4. Chạy `validate_pisa_raw()` kiểm tra 6 tiêu chí. Hợp lệ mới được ghi đè cache và ghi file `pisa_reference.meta.json` lưu nguồn gốc (URL, mã phiên bản Wikipedia `revision_id`, permalink, thời gian cào).
-  5. Nếu cào lỗi hoặc mạng mất: Tự động fallback về file cache cũ, phát cảnh báo `warnings.warn` chứ không làm sập chương trình.
-- **Vị trí code:** `data_processor.py`, dòng 203–353.
+- **Trả lời nhanh:** Cơ chế **cache-first**:
+  1. Mặc định đọc cache `data/raw/pisa_reference.csv` và chạy `validate_pisa_raw()`. Không gọi mạng vô cớ.
+  2. Khi chạy `python main.py --refresh-pisa` hoặc thiếu cache: gửi 1 HTTP GET bằng `requests` kèm `User-Agent` (`HTTP_HEADERS`).
+  3. `BeautifulSoup` bóc tách bảng tóm tắt 2025 và xoay bảng lịch sử 2000–2022 từ dạng rộng sang dạng dài.
+  4. `validate_pisa_raw()` kiểm tra 6 tiêu chí. Hợp lệ mới ghi đè cache và `pisa_reference.meta.json` (URL, `revision_id`, permalink, thời gian cào).
+  5. Lỗi mạng/parse: fallback về cache cũ, phát `warnings.warn`, không làm sập chương trình.
+- **Lần cào hiện tại:** revision 1378067005, 2026-10-13 06:44 UTC, 2342 dòng thô (274 tóm tắt 2025 + 2068 so sánh) → 1662 dòng sạch.
+- **Vị trí code:** `_parse_pisa_html` 197–251, `validate_pisa_raw` 258–290, `scrape_pisa_table` 309–347, `clean_pisa` 350–366.
 
 ### Q7.2: Parser nhận diện các bảng trên trang Wikipedia như thế nào?
-- **Trả lời nhanh:** Parser nhận diện bảng **dựa trên cấu trúc nội dung** chứ không dựa vào thứ tự bảng trên trang:
-  - Bảng 2025: Nhận diện bằng thẻ tiêu đề chứa 3 môn (`mathematics`, `science`, `reading`) và chứa đúng 3 bảng con lồng nhau bên trong.
-  - Bảng so sánh 2000–2022: Nhận diện bằng hàng đầu là tên môn, hàng 2 có ô đầu là `Country` theo sau là các năm, rồi chuyển đổi các cặp (năm, điểm, hạng) từ dạng rộng sang dạng dài.
-  - Nhờ vậy, nếu Wikipedia có thêm bớt các bảng khác trên trang, code vẫn tìm đúng bảng cần lấy.
+- **Trả lời nhanh:** Dựa trên **cấu trúc nội dung**, không dựa vào thứ tự bảng:
+  - Bảng 2025: tiêu đề chứa 3 môn (`mathematics`, `science`, `reading`) và có đúng 3 bảng con lồng nhau.
+  - Bảng so sánh 2000–2022: hàng đầu là tên môn, hàng 2 bắt đầu bằng `Country` rồi các năm; các cặp (năm, điểm, hạng) được chuyển sang dạng dài.
+  - Wikipedia thêm/bớt bảng khác thì code vẫn tìm đúng bảng.
 
-### Q7.3: Hàm `validate_pisa_raw` kiểm tra những gì trước khi cho phép lưu dữ liệu?
-- **Trả lời nhanh:** Kiểm tra 6 điều kiện bắt buộc:
-  1. Đủ cả 3 môn cho cả bảng tóm tắt và bảng so sánh lịch sử.
-  2. Năm thi phải là số từ 2000 đến năm hiện tại.
-  3. Điểm PISA nằm trong khoảng hợp lý từ 200 đến 700.
-  4. Mỗi năm / mỗi môn phải có ít nhất 30 quốc gia tham gia.
-  5. Không có quốc gia nào bị lặp tên trong cùng một kỳ thi.
-  6. Phải có đúng 1 dòng điểm trung bình OECD (`OECD average`).
+### Q7.3: `validate_pisa_raw` kiểm tra những gì?
+- **Trả lời nhanh:** 6 điều kiện:
+  1. Đủ 3 môn cho cả bảng tóm tắt và bảng so sánh.
+  2. Năm là số từ 2000 đến năm hiện tại.
+  3. Điểm trong khoảng 200–700.
+  4. Mỗi năm / môn có ít nhất 30 quốc gia.
+  5. Không quốc gia nào lặp trong cùng một kỳ.
+  6. Có đúng 1 dòng `OECD average`.
 
-### Q7.4: Làm sao chứng minh dữ liệu PISA cào từ Wikipedia là chính xác và đáng tin cậy?
-- **Trả lời nhanh:** Code có hàm `cross_check_pisa()` tự động đối chiếu dữ liệu cào được với bảng chính thức **Table I.1 trong báo cáo *PISA 2025 Results (Volume I)* của OECD**:
-  - Năm 2025: So khớp điểm trực tiếp $\rightarrow$ **274/274 điểm khớp tuyệt đối 100%**.
-  - Năm 2022: OECD tính điểm 2022 bằng công thức `điểm 2025 - mức thay đổi`. Do OECD làm tròn từ số thực, cho phép sai số $\pm 1$ điểm $\rightarrow$ **208/211 dòng nằm trong sai số $\pm 1$**.
-- **Bằng chứng:** Kết quả đối chiếu lưu trong `summary.json` và in trực tiếp trong báo cáo.
+### Q7.4: Làm sao chứng minh dữ liệu PISA cào từ Wikipedia là đáng tin?
+- **Trả lời nhanh:** `cross_check_pisa()` (dòng 369–410) đối chiếu với **Table I.1, *PISA 2025 Results (Volume I)*** của OECD (file `data/raw/` kèm nguồn):
+  - 2025: so trực tiếp → **274/274 khớp tuyệt đối**.
+  - 2022: OECD chỉ cho `điểm 2025 − mức thay đổi`, làm tròn nên cho phép sai $\pm 1$ → **208/211 trong sai số**; 3 dòng lệch đều là Palestinian Authority.
+- **Bằng chứng:** `pisa_oecd_check` trong `summary.json`.
 
 ---
 
-## 8. Kiến trúc Mã nguồn & Quy trình Xuất Báo cáo tự động
+## 8. Kiến trúc Mã nguồn & Báo cáo
 
 ### Q8.1: Kiến trúc mã nguồn được phân chia như thế nào?
-- **Trả lời nhanh:** Gồm 4 file code chính theo nguyên lý phân tách trách nhiệm (Separation of Concerns):
-  1. `main.py`: Điểm điều phối (Entry point), thiết lập chạy ngầm `Agg`, nhận cờ lệnh, chạy pipeline và xuất kết quả.
-  2. `data_processor.py`: Trọng tâm thuật toán: cấu hình ngưỡng, tiền xử lý, kiểm định, OLS, rule rủi ro, cào web và vẽ 4 biểu đồ.
-  3. `report_builder.py`: Dùng `inspect` đọc trực tiếp code và số dòng thật, kết hợp với từ điển kết quả `_facts` để sinh tự động 4 file Markdown báo cáo (`report.md`, `report_vi.md`, `report_summary.md`, `report_summary_vi.md`).
-  4. `export_pdf.py`: Dùng `markdown-it-py`, `pygments` tô màu code và gọi Chromium/Edge headless in ra 4 file PDF chuẩn in ấn A4.
+- **Trả lời nhanh:** 2 file code (904 dòng, không tính test):
+  1. `main.py` (72 dòng): entry point, đặt backend `Agg`, nhận cờ `--refresh-pisa`, chạy pipeline và xuất kết quả.
+  2. `data_processor.py` (832 dòng): cấu hình ngưỡng, hàm thuần (`classify_risk`, `calc_pass_fail`...), cào/kiểm tra PISA, class `StudentDataProcessor` (load → clean → analyze → vẽ 3 biểu đồ → export).
+- **Đầu ra:** `data/processed/cleaned_students.csv`, CSV riêng từng môn, `summary.json`, 3 ảnh trong `images/`.
 
-### Q8.2: Tại sao báo cáo lại được sinh tự động bằng code mà không viết tay bằng Word/Markdown?
-- **Trả lời nhanh:** Để đảm bảo tính **tái lập (Reproducibility)** và nguyên tắc **Single Source of Truth**:
-  - Mọi con số trong báo cáo (từ 0.742, -0.213, R² 0.937 đến số nước PISA) được trích trực tiếp từ đối tượng `proc.results`. Khi dữ liệu thay đổi, chỉ cần chạy lại `main.py` là báo cáo cập nhật 100%, không bao giờ có hiện tượng "chữ một đằng, biểu đồ một nẻo".
-  - Các đoạn code nhúng trong báo cáo được hàm `inspect` đọc từ file `.py` kèm số dòng thực tế, không bị lỗi thời khi sửa code.
+### Q8.2: Báo cáo được viết thế nào?
+- **Trả lời nhanh:** `report.md` (tiếng Anh) và `report_vi.md` (tiếng Việt) là **báo cáo viết tay 1–2 trang**, đúng yêu cầu đề bài. Mọi số trong báo cáo lấy từ `summary.json` của lần chạy `main.py`; nếu dữ liệu đổi, chạy lại `main.py` rồi cập nhật số trong báo cáo. Giải thích chi tiết code nằm ở `PROJECT_GUIDE.md`, công thức thống kê ở `METHODS.md`.
 
-### Q8.3: Dự án có bao nhiêu ca kiểm thử tự động (Unit Tests)? Test những nghiệp vụ gì?
-- **Trả lời nhanh:** Có **48 tests tự động** viết bằng `pytest` trong thư mục `tests/` (100% pass):
-  - Kiểm thử điểm biên đỗ/trượt (9.0, 9.99, 10.0), biên buổi vắng (3, 4, 9, 10).
-  - Kiểm thử tính độc lập của rule rủi ro: Đảm bảo đổi G3 thì kết quả `classify_risk` không bị đổi (chống rò rỉ dữ liệu).
-  - Kiểm thử parser PISA, 6 ca lỗi trong validation, cơ chế cache-first không gọi mạng.
-  - Kiểm thử 6 dòng cấy lỗi làm sạch dữ liệu.
-  - Kiểm thử thuật toán OLS tự code trên dữ liệu giả lập.
-  - Kiểm thử tập holdout chặt và thuật toán ghép cặp 2 môn.
-  - Kiểm thử xuất file CSV riêng cho từng môn `mat` và `por`.
-  - Kiểm thử báo lỗi rõ tên file khi thiếu dữ liệu OECD.
-
-### Q8.4: Tại sao project có cả bản báo cáo đầy đủ (~33 trang) và bản tóm tắt (2 trang)?
-- **Trả lời nhanh:** Để linh hoạt theo yêu cầu chấm điểm:
-  - Bản đầy đủ (`report.pdf`, `report_vi.pdf` ~33 trang): Phục vụ thuyết trình, chiếu slide, chứa toàn bộ phân tích chi tiết, code minh hoạ, 4 ảnh biểu đồ và các bảng kiểm định.
-  - Bản tóm tắt (`report_summary.pdf`, `report_summary_vi.pdf` đúng **2 trang A4**): Đáp ứng yêu cầu đề bài nộp bản executive summary 1–2 trang. Bản tóm tắt được cắt trực tiếp từ bản đầy đủ (tiêu đề, câu hỏi chính, tóm tắt kết quả, giới hạn nghiên cứu) nên số liệu giống hệt nhau 100%.
+### Q8.3: Dự án có bao nhiêu unit test? Test những gì?
+- **Trả lời nhanh:** **43 test** `pytest` trong `tests/test_data_processor.py` (100% pass):
+  - Biên đỗ/trượt (9.0, 9.99, 10.0), biên vắng học (3, 4, 9, 10).
+  - Rule rủi ro không phụ thuộc G3 (chống rò rỉ).
+  - Parser PISA, các ca lỗi của validation, cache-first không gọi mạng.
+  - Làm sạch dữ liệu với các dòng cấy lỗi.
+  - Holdout chặt.
+  - Xuất CSV riêng cho `mat` và `por`.
+  - Báo lỗi rõ tên file khi thiếu dữ liệu OECD.
 
 ---
 
@@ -232,17 +251,17 @@ Tài liệu ôn tập vấn đáp, bảo vệ đồ án và thuyết trình. Đ�
 
 | Chỉ số | Con số thực tế | Ý nghĩa |
 |---|---|---|
-| **Số học sinh môn Toán** | 395 học sinh | Tập dữ liệu phân tích chính |
-| **Số học sinh bỏ thi ($G3 = 0$)** | 38 em (9.6%) | Gắn cờ `dropout_suspect`, đều có `absences = 0` |
+| **Số học sinh** | 1044 (mat 395, por 649) | Sau làm sạch không mất dòng nào |
+| **Học sinh nghi bỏ thi môn Toán ($G3 = 0$)** | 38 em (9.6%) | Gắn cờ `dropout_suspect`, đều có `absences = 0` |
 | **Tỉ lệ đỗ môn Toán** | 67.1% (tất cả) $\rightarrow$ **74.2%** (loại bỏ thi) | Mốc đỗ $G3 \ge 10$ |
-| **Tỉ lệ đỗ môn Tiếng Bồ Đào Nha** | 84.6% (tất cả) $\rightarrow$ **86.6%** (loại bỏ thi) | Môn ngôn ngữ dễ đỗ hơn nhiều |
-| **Tương quan G2 với G3** | $r = +0.966$ ($p < 0.001$) | Yếu tố dự báo điểm cuối kỳ mạnh nhất |
-| **Tương quan vắng học với G3** | $r = -0.213$ ($p < 0.001$) | Càng vắng nhiều điểm càng tụt |
-| **Tương quan trượt cũ với G3** | $r = -0.294$ ($p < 0.001$) | Yếu tố quá khứ kéo điểm mạnh nhất |
-| **Ảnh hưởng của Internet** | $p_{holm} = 0.080$ | **Không có ý nghĩa thống kê** sau hiệu chỉnh Holm |
-| **Hồi quy Mô hình A (yếu tố nền)** | $R^2 = 0.234$ | Chỉ giải thích được 23.4% biến thiên điểm |
-| **Hồi quy Mô hình B (thêm G1, G2)** | $R^2 = 0.937$ | Biết điểm giữa kỳ giải thích được 93.7% |
-| **Độ nhạy Rule rủi ro (Toán)** | **Recall = 93.8%**, Precision = 81.9% | Bắt trúng gần như toàn bộ học sinh sẽ trượt |
-| **Độ nhạy Rule rủi ro (Holdout)** | **Recall = 91.4%**, Precision = 66.0% | Kiểm chứng trên 275 học sinh môn Bồ Đào Nha |
-| **Đối chiếu PISA 2025 với OECD** | **274/274 khớp 100%** | Khẳng định dữ liệu Wikipedia cào về chuẩn xác |
-| **Số lượng Unit Tests** | **48/48 passed** | Đảm bảo phần mềm không có lỗi ngầm |
+| **Tỉ lệ đỗ môn Bồ Đào Nha** | 84.6% (tất cả) $\rightarrow$ 86.6% (loại bỏ thi) | Môn ngôn ngữ dễ đỗ hơn |
+| **Tương quan G2 với G3** | $r = +0.966$ | Gắn với điểm cuối kỳ mạnh nhất |
+| **Tương quan vắng học với G3** | $+0.034$ (tất cả) $\rightarrow$ $-0.213$ (loại bỏ thi) | Nhóm bỏ thi làm méo tương quan |
+| **Tương quan trượt cũ với G3** | $r = -0.294$ | Yếu tố quá khứ kéo điểm mạnh nhất |
+| **Internet** | 11.68 vs 10.71, $p_{holm} = 0.0804$ | **Không có ý nghĩa** sau Holm |
+| **ANOVA failures** | $\eta^2 = 0.089$ | Hiệu ứng lớn nhất trong 3 biến nhiều mức |
+| **Rule rủi ro (Toán)** | Recall 93.8%, Precision 81.9% | Bắt gần hết em sẽ trượt |
+| **Rule rủi ro (holdout chặt, 275 em)** | Recall 91.4%, Precision 66.0% | Kiểm chứng ngoài mẫu |
+| **Tỉ lệ trượt theo nhóm (Toán)** | High 81.9% / Medium 7.8% / Low 1.2% | Phân tầng có ý nghĩa |
+| **Đối chiếu PISA 2025 với OECD** | **274/274 khớp** | Dữ liệu cào chính xác |
+| **Số unit test** | **43/43 passed** | |
