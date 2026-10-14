@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="vi" data-themes="corporate-clean,academic-paper,tokyo-night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đồ án P1: Yếu tố ảnh hưởng đến kết quả học tập</title>
+<link rel="stylesheet" href="../html-ppt-skill/assets/fonts.css">
+<link rel="stylesheet" href="../html-ppt-skill/assets/base.css">
+<link rel="stylesheet" id="theme-link" href="../html-ppt-skill/assets/themes/corporate-clean.css">
+<link rel="stylesheet" href="style.css">
+<script>
+  /* Scale the fixed 1600x900 stage to the current window */
+  (function () {
+    function fit() {
+      document.documentElement.style.setProperty('--fit', Math.min(innerWidth / 1600, innerHeight / 900));
+    }
+    addEventListener('resize', fit);
+    fit();
+  })();
+</script>
+</head>
+<body class="tpl-student-perf">
+<div class="deck">
+
+<!-- =============================== 1. BÌA =============================== -->
+<section class="slide center-v" data-title="Bìa">
+  <p class="kicker">Đồ án P1 · Lĩnh vực Giáo dục</p>
+  <div class="rule"></div>
+  <h1 class="h1">Phân tích các yếu tố ảnh hưởng<br>đến kết quả học tập của học sinh THPT</h1>
+  <p class="lede" style="font-size:21px;max-width:70ch;">Dữ liệu UCI Student Performance (hai trường THPT tại Bồ Đào Nha, năm học 2005–2006), kết hợp dữ liệu tham chiếu PISA thu thập từ Wikipedia và đối chiếu với báo cáo chính thức của OECD.</p>
+  <div class="meta">
+    <span class="k">Sinh viên thực hiện</span><span class="v">[Họ và tên – MSSV]</span>
+    <span class="k">Giảng viên hướng dẫn</span><span class="v">[Họ và tên giảng viên]</span>
+    <span class="k">Học phần</span><span class="v">[Tên học phần]</span>
+  </div>
+  <div class="slide-footer">
+    <span>Mã nguồn: github.com/Stratoze/Python-data-scraping</span>
+    <span class="slide-number" data-current="1" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Kính thưa quý thầy cô. Em xin trình bày đồ án P1: <strong>Phân tích các yếu tố ảnh hưởng đến kết quả học tập của học sinh THPT</strong>.</p>
+    <p>Đồ án sử dụng bộ dữ liệu UCI Student Performance, thu thập tại hai trường THPT ở Bồ Đào Nha trong năm học 2005–2006. Ngoài ra, em thu thập thêm dữ liệu điểm PISA từ Wikipedia để làm bối cảnh quốc tế, và đối chiếu dữ liệu này với bảng số liệu chính thức của OECD.</p>
+    <p>Bài trình bày đi theo đúng quy trình khoa học dữ liệu: từ dữ liệu, làm sạch, phân tích, kiểm định, đến kết luận và hạn chế.</p>
+  </aside>
+</section>
+
+<!-- =============================== 2. ĐẶT VẤN ĐỀ =============================== -->
+<section class="slide" data-title="Đặt vấn đề">
+  <p class="kicker">Phần 1 · Bài toán</p>
+  <h2 class="h2">Đặt vấn đề và câu hỏi nghiên cứu</h2>
+  <p class="lede">Nhà trường cần nhận diện sớm những học sinh có nguy cơ không đạt môn để hỗ trợ kịp thời, thay vì chỉ biết kết quả sau kỳ thi cuối năm.</p>
+
+  <div class="cols c-11 mt-s">
+    <div class="stack">
+      <div class="card accent">
+        <h4>Câu hỏi chính (theo đề bài)</h4>
+        <p style="font-size:16px;">Những yếu tố như <b>thời gian tự học</b>, <b>số buổi vắng</b>, <b>hỗ trợ từ gia đình</b> và <b>điểm giữa kỳ (G1, G2)</b> liên quan như thế nào đến <b>điểm cuối kỳ (G3)</b>?</p>
+      </div>
+      <div class="card">
+        <h4>Câu hỏi phụ</h4>
+        <ul>
+          <li>So sánh điểm G3 theo <code>studytime</code>, <code>absences</code>, <code>failures</code>, <code>internet</code>.</li>
+          <li>Tính tỉ lệ đỗ/trượt (đỗ khi G3 ≥ 10 trên thang 20).</li>
+          <li>Phân nhóm rủi ro học tập chỉ từ thông tin có trước kỳ thi cuối.</li>
+          <li>Kiểm tra mức tương quan giữa G1, G2 và G3.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <h4>Phạm vi phân tích</h4>
+        <ul>
+          <li><b>Môn Toán</b> (<code>student-mat.csv</code>, 395 học sinh): đối tượng phân tích chính.</li>
+          <li><b>Môn Tiếng Bồ Đào Nha</b> (<code>student-por.csv</code>, 649 học sinh): dùng để kiểm chứng quy tắc phân nhóm rủi ro trên học sinh mới.</li>
+          <li><b>PISA</b>: chỉ là bối cảnh cấp quốc gia, không ghép với từng học sinh.</li>
+        </ul>
+      </div>
+      <div class="card warn">
+        <h4>Lưu ý về phương pháp</h4>
+        <p>Dữ liệu là dữ liệu quan sát, cắt ngang (một năm học, hai trường). Các kết quả được trình bày là <b>mối liên hệ</b>, không phải quan hệ nhân quả.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Đề bài P1: thư mục requirement/ · Thuật ngữ: CONTEXT.md</span>
+    <span class="slide-number" data-current="2" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Bài toán thực tế đặt ra là: làm thế nào để nhà trường nhận diện sớm học sinh có nguy cơ không đạt môn, để có biện pháp hỗ trợ trước kỳ thi cuối năm.</p>
+    <p>Câu hỏi chính của đề bài là: thời gian tự học, số buổi vắng, hỗ trợ từ gia đình và điểm giữa kỳ liên quan như thế nào đến điểm cuối kỳ G3. Bên cạnh đó có bốn câu hỏi phụ: so sánh điểm theo từng nhóm, tính tỉ lệ đỗ/trượt, phân nhóm rủi ro và kiểm tra tương quan giữa G1, G2, G3.</p>
+    <p>Về phạm vi: em chọn môn Toán làm đối tượng phân tích chính; môn Tiếng Bồ Đào Nha được dùng để kiểm chứng quy tắc rủi ro trên những học sinh mà quy tắc chưa từng "nhìn thấy". Dữ liệu PISA chỉ đóng vai trò bối cảnh quốc gia.</p>
+    <p>Em cũng xin lưu ý ngay từ đầu: đây là dữ liệu quan sát, nên các kết luận là mối liên hệ chứ không khẳng định quan hệ nhân quả.</p>
+  </aside>
+</section>
+
+<!-- =============================== 3. NỘI DUNG =============================== -->
+<section class="slide" data-title="Nội dung">
+  <p class="kicker">Nội dung trình bày</p>
+  <h2 class="h2">Bố cục bài trình bày</h2>
+  <p class="lede">Trình tự bám theo quy trình khoa học dữ liệu trong đề bài: thu thập → làm sạch → khám phá → kiểm định → ứng dụng → kết luận.</p>
+  <div class="agenda mt-m">
+    <div class="it"><span class="no">01</span><div><div class="t">Bài toán và câu hỏi nghiên cứu</div><div class="d">Mục tiêu, phạm vi, giới hạn phương pháp</div></div></div>
+    <div class="it"><span class="no">05</span><div><div class="t">Quy tắc cảnh báo sớm</div><div class="d">Phân nhóm rủi ro, kiểm chứng ngoài mẫu</div></div></div>
+    <div class="it"><span class="no">02</span><div><div class="t">Dữ liệu</div><div class="d">Nguồn, cách thu thập, cấu trúc, thuộc tính, thống kê mô tả</div></div></div>
+    <div class="it"><span class="no">06</span><div><div class="t">Bối cảnh quốc tế PISA</div><div class="d">Bồ Đào Nha so với trung bình OECD, đối chiếu nguồn</div></div></div>
+    <div class="it"><span class="no">03</span><div><div class="t">Làm sạch và kiểm soát chất lượng dữ liệu</div><div class="d">6 bước làm sạch, mã nguồn, log kết quả, kiểm thử, trường hợp G3 = 0</div></div></div>
+    <div class="it"><span class="no">07</span><div><div class="t">Tổ chức mã nguồn và kiểm thử</div><div class="d">Đối chiếu yêu cầu đề bài, 43 unit test</div></div></div>
+    <div class="it"><span class="no">04</span><div><div class="t">Phân tích khám phá và kiểm định</div><div class="d">3 biểu đồ, tương quan, t-test, ANOVA, hiệu chỉnh Holm</div></div></div>
+    <div class="it"><span class="no">08</span><div><div class="t">Kết luận và hạn chế</div><div class="d">Trả lời câu hỏi nghiên cứu, khuyến nghị, hướng phát triển</div></div></div>
+  </div>
+  <div class="slide-footer">
+    <span>Đồ án P1 · Student Performance</span>
+    <span class="slide-number" data-current="3" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Bài trình bày gồm tám phần, đi theo đúng trình tự của quy trình khoa học dữ liệu mà đề bài yêu cầu.</p>
+    <p>Em sẽ dành phần lớn thời gian cho phần 2 và phần 3, tức là mô tả dữ liệu và quá trình làm sạch, vì đây là nền tảng cho mọi kết luận phía sau. Sau đó là phân tích khám phá, kiểm định thống kê, quy tắc cảnh báo sớm, bối cảnh PISA, và cuối cùng là kết luận cùng các hạn chế.</p>
+  </aside>
+</section>
+
+<!-- =============================== 4. NGUỒN DỮ LIỆU =============================== -->
+<section class="slide" data-title="Nguồn dữ liệu">
+  <p class="kicker">Phần 2 · Dữ liệu</p>
+  <h2 class="h2">Nguồn dữ liệu và quy trình xử lý tổng thể</h2>
+  <p class="lede">Ba nguồn dữ liệu, mỗi nguồn có vai trò riêng. Toàn bộ quy trình chạy bằng một lệnh <code>python main.py</code>.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Nguồn</th><th>Nội dung</th><th>Cách thu thập</th><th>Lưu tại (dữ liệu thô)</th><th>Vai trò</th></tr></thead>
+    <tbody>
+      <tr><td><b>UCI Student Performance</b></td><td>2 file CSV (Toán, Bồ Đào Nha) + file mô tả thuộc tính</td><td>Tải <code>student.zip</code> qua HTTP, giải nén trong bộ nhớ (<code>fetch_uci_raw</code>)</td><td><code>data/raw/student-mat.csv</code><br><code>data/raw/student-por.csv</code></td><td>Dữ liệu phân tích chính</td></tr>
+      <tr><td><b>Wikipedia – bài PISA</b></td><td>Bảng xếp hạng PISA 2000–2025, 3 môn (Toán, Khoa học, Đọc hiểu)</td><td>Cào HTML bằng <code>requests</code> + <code>BeautifulSoup</code>, có cache (<code>scrape_pisa_table</code>)</td><td><code>data/raw/pisa_reference.csv</code><br>+ <code>.meta.json</code> (revision)</td><td>Bối cảnh quốc gia</td></tr>
+      <tr><td><b>OECD – PISA 2025, Table I.1</b></td><td>Điểm chính thức 2025 và mức thay đổi so với 2022</td><td>Chép từ báo cáo PDF chính thức (giấy phép CC BY 4.0)</td><td><code>data/raw/oecd_pisa2025_table_I1.csv</code></td><td>Đối chiếu độ chính xác của dữ liệu cào</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="mt-l" style="font-size:16px;margin-bottom:10px;">Luồng xử lý trong <code>main.py</code> và lớp <code>StudentDataProcessor</code></h4>
+  <div class="flow">
+    <div class="step"><b>fetch_uci_raw()</b>Tải dữ liệu UCI nếu chưa có</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>scrape_pisa_table()</b>Cào PISA (đọc cache mặc định)</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>load_data()</b>Đọc 2 môn dạng chuỗi gốc, ghép 1044 dòng</div>
+    <span class="arrow">→</span>
+    <div class="step key"><b>clean_data()</b>6 bước làm sạch, ghi log</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>analyze()</b>Thống kê, kiểm định, cảnh báo sớm, vẽ 3 biểu đồ</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>export_results()</b><code>cleaned_students*.csv</code>, <code>pisa_clean.csv</code>, <code>summary.json</code></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mã nguồn: main.py · data_processor.py (fetch_uci_raw dòng 173, scrape_pisa_table 309, StudentDataProcessor 538)</span>
+    <span class="slide-number" data-current="4" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Đồ án sử dụng ba nguồn dữ liệu.</p>
+    <p>Thứ nhất là bộ <strong>UCI Student Performance</strong>, nguồn phân tích chính. Chương trình tự tải file zip từ UCI nếu trên máy chưa có dữ liệu gốc.</p>
+    <p>Thứ hai là các bảng xếp hạng PISA trên <strong>Wikipedia</strong>, được cào bằng requests và BeautifulSoup. Đây là phần web scraping theo yêu cầu đề bài.</p>
+    <p>Thứ ba là bảng Table I.1 trong báo cáo PISA 2025 của <strong>OECD</strong>. Bảng này không dùng để phân tích, mà dùng để kiểm tra xem dữ liệu cào từ Wikipedia có chính xác hay không.</p>
+    <p>Phía dưới là luồng xử lý: tải dữ liệu, cào PISA, nạp dữ liệu, làm sạch, phân tích và xuất kết quả. Bước làm sạch được đánh dấu màu cam vì em sẽ trình bày chi tiết ở phần 3.</p>
+  </aside>
+</section>
+
+<!-- =============================== 5. THU THẬP =============================== -->
+<section class="slide" data-title="Thu thập dữ liệu">
+  <p class="kicker">Phần 2 · Dữ liệu</p>
+  <h2 class="h2">Thu thập dữ liệu: tải UCI và cào bảng PISA</h2>
+  <p class="lede">Cả hai hàm đều chỉ gọi mạng khi cần, nên kết quả chạy lại được ngoại tuyến và cho cùng một con số.</p>
+
+  <div class="cols c-11">
+    <div class="code">
+      <div class="bar"><span>fetch_uci_raw()</span><span>data_processor.py:173–186</span></div>
+<pre><code class="py">def fetch_uci_raw(raw_dir: Path, url: str = UCI_ZIP_URL) -&gt; list[Path]:
+    """Download UCI student.zip and extract raw files if any are missing."""
+    raw_dir = Path(raw_dir)
+    targets = [raw_dir / name for name in UCI_FILES]
+    if all(p.exists() for p in targets):
+        return targets
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    resp = requests.get(url, timeout=60, headers=HTTP_HEADERS)
+    resp.raise_for_status()
+    with zipfile.ZipFile(io.BytesIO(resp.content)) as outer:
+        with zipfile.ZipFile(io.BytesIO(outer.read("student.zip"))) as inner:
+            for name in UCI_FILES:
+                (raw_dir / name).write_bytes(inner.read(name))
+    return targets</code></pre>
+    </div>
+    <div class="code">
+      <div class="bar"><span>scrape_pisa_table() – cache-first</span><span>data_processor.py:319–333</span></div>
+<pre><code class="py">cache = Path(out_csv) if out_csv is not None else None
+if cache is not None and cache.exists() and not refresh:
+    return _read_pisa_cache(cache)        # đọc cache + validate lại
+try:
+    resp = requests.get(url, timeout=25, headers=HTTP_HEADERS)
+    resp.raise_for_status()
+    resp.encoding = "utf-8"
+    df = _parse_pisa_html(resp.text)      # BeautifulSoup
+    validate_pisa_raw(df)                 # kiểm tra bảng cào
+except Exception as exc:
+    if cache is not None and cache.exists():
+        warnings.warn(...)                # lỗi: giữ cache cũ
+        return _read_pisa_cache(cache)
+    raise RuntimeError(...) from exc</code></pre>
+    </div>
+  </div>
+
+  <div class="cols c-111 mt-m">
+    <div class="card">
+      <h4>Gửi yêu cầu đúng quy định</h4>
+      <p>Khai báo <code>User-Agent</code> gồm tên công cụ và đường dẫn repo theo chính sách của Wikimedia; mỗi lần cào chỉ 1 request; có <code>timeout</code>.</p>
+    </div>
+    <div class="card">
+      <h4>Bóc tách 2 loại bảng</h4>
+      <p>Bảng tóm tắt 2025 (274 dòng) và bảng so sánh lịch sử 2000–2022 (2068 dòng, chuyển từ dạng rộng sang dạng dài) → <b>2342 dòng thô</b>.</p>
+    </div>
+    <div class="card">
+      <h4>Kiểm tra trước khi ghi</h4>
+      <p><code>validate_pisa_raw</code>: đủ 3 môn, năm hợp lệ, điểm trong 200–700, ≥ 30 nước mỗi bảng, đúng 1 dòng trung bình OECD. Lưu revision Wikipedia <b>1378067005</b>.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Cào lại dữ liệu mới: python main.py --refresh-pisa · Metadata: data/raw/pisa_reference.meta.json</span>
+    <span class="slide-number" data-current="5" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Slide này trình bày mã nguồn của bước thu thập dữ liệu.</p>
+    <p>Bên trái là hàm <code>fetch_uci_raw</code>. Hàm kiểm tra bốn file gốc đã có hay chưa; nếu thiếu thì tải file zip từ UCI. File zip của UCI chứa một file zip khác bên trong, nên hàm giải nén hai lớp ngay trong bộ nhớ rồi ghi bốn file vào thư mục <code>data/raw</code>.</p>
+    <p>Bên phải là phần lõi của hàm cào PISA, thiết kế theo nguyên tắc "cache trước". Mặc định chương trình đọc bản đã lưu, không gọi mạng, nên mỗi lần chạy đều cho cùng kết quả. Chỉ khi chạy với cờ <code>--refresh-pisa</code> mới cào lại. Nếu trang Wikipedia thay đổi bố cục và dữ liệu cào về không qua được bước kiểm tra, chương trình cảnh báo và giữ lại bản cũ, không ghi đè dữ liệu sai.</p>
+    <p>Kết quả cào là 2342 dòng thô, lấy từ phiên bản Wikipedia số 1378067005, được ghi lại trong file metadata để có thể truy vết.</p>
+  </aside>
+</section>
+
+<!-- =============================== 6. CẤU TRÚC DỮ LIỆU =============================== -->
+<section class="slide" data-title="Cấu trúc dữ liệu">
+  <p class="kicker">Phần 2 · Dữ liệu</p>
+  <h2 class="h2">Cấu trúc tập dữ liệu UCI Student Performance</h2>
+  <p class="lede">Mỗi dòng là <b>một học sinh trong một môn học</b>. Hai file có cùng 33 cột, phân cách bằng dấu chấm phẩy, thang điểm 0–20.</p>
+
+  <div class="cols c-11">
+    <div class="stack">
+      <table class="tbl">
+        <thead><tr><th>File</th><th class="num">Số dòng</th><th class="num">Số cột</th><th>Môn</th><th>Vai trò trong đồ án</th></tr></thead>
+        <tbody>
+          <tr><td><code>student-mat.csv</code></td><td class="num">395</td><td class="num">33</td><td>Toán</td><td>Phân tích chính</td></tr>
+          <tr><td><code>student-por.csv</code></td><td class="num">649</td><td class="num">33</td><td>Bồ Đào Nha</td><td>Kiểm chứng quy tắc rủi ro</td></tr>
+          <tr><td><b>Tổng</b></td><td class="num"><b>1044</b></td><td class="num"></td><td colspan="2">Ghép lại, thêm cột <code>subject</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="cols c-111" style="gap:12px;">
+        <div class="stat"><div class="v">16</div><div class="l">Cột số</div><div class="s">6 số đếm/điểm (age, failures, absences, G1–G3) + 10 thang thứ bậc mã hoá số</div></div>
+        <div class="stat"><div class="v">13</div><div class="l">Cột nhị phân</div><div class="s">8 cột yes/no + 5 cột mã chữ (GP/MS, F/M, U/R, LE3/GT3, T/A)</div></div>
+        <div class="stat"><div class="v">4</div><div class="l">Cột định danh</div><div class="s">Mjob, Fjob, reason, guardian</div></div>
+      </div>
+
+      <div class="card soft">
+        <p><b>Biến mục tiêu:</b> <code>G3</code> – điểm cuối năm (0–20); <b>đỗ khi G3 ≥ 10</b>. <code>G1</code>, <code>G2</code> là điểm giai đoạn 1 và 2, có trước kỳ thi cuối.</p>
+        <p class="mt-s"><b>Hai file không độc lập:</b> theo mô tả của UCI, 382 học sinh có mặt ở cả hai môn. So khớp 13 cột định danh (như <code>student-merge.R</code>), 374/649 dòng môn Bồ Đào Nha trùng với học sinh môn Toán.</p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="code">
+        <div class="bar"><span>Dữ liệu thô: 2 dòng đầu của student-mat.csv</span><span>data/raw/</span></div>
+<pre><code>school;sex;age;address;famsize;Pstatus;Medu;Fedu;Mjob;
+Fjob;reason;guardian;traveltime;studytime;failures;
+schoolsup;famsup;paid;activities;nursery;higher;internet;
+romantic;famrel;freetime;goout;Dalc;Walc;health;absences;
+G1;G2;G3
+"GP";"F";18;"U";"GT3";"A";4;4;"at_home";"teacher";
+"course";"mother";2;2;0;"yes";"no";"no";"no";"yes";"yes";
+"no";"no";4;3;4;1;1;3;6;<span class="s">"5";"6";6</span></code></pre>
+      </div>
+      <div class="card warn">
+        <h4>Quan sát từ dữ liệu thô</h4>
+        <ul>
+          <li>Định dạng không đồng nhất: <code>G1</code>, <code>G2</code> nằm trong dấu nháy (<code>"5"</code>), còn <code>G3</code> thì không (<code>6</code>).</li>
+          <li>Vì vậy chương trình đọc mọi cột dưới dạng chuỗi gốc (<code>dtype=str</code>) rồi tự ép kiểu có kiểm tra, thay vì để pandas tự suy luận kiểu.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: data/raw/student.txt (mô tả thuộc tính của UCI) · MERGE_KEYS: data_processor.py:53</span>
+    <span class="slide-number" data-current="6" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Về cấu trúc: đơn vị quan sát là một học sinh trong một môn học. File Toán có 395 dòng, file Tiếng Bồ Đào Nha có 649 dòng, cả hai đều có 33 cột. Khi nạp vào, chương trình ghép hai file thành 1044 dòng và thêm cột <code>subject</code> để phân biệt.</p>
+    <p>Theo kiểu dữ liệu, 33 cột chia thành: 16 cột số, trong đó 6 cột là số đếm hoặc điểm và 10 cột là thang thứ bậc đã được mã hoá thành số; 13 cột nhị phân; và 4 cột định danh.</p>
+    <p>Biến mục tiêu là G3, điểm cuối năm trên thang 20, học sinh đỗ khi G3 từ 10 trở lên. G1 và G2 là điểm của giai đoạn 1 và 2, đã có trước kỳ thi cuối.</p>
+    <p>Một điểm quan trọng: hai file không độc lập. Theo mô tả của UCI có 382 học sinh học cả hai môn. Em so khớp 13 cột định danh giống file R đi kèm bộ dữ liệu và xác định 374 dòng môn Bồ Đào Nha trùng với học sinh môn Toán. Điều này ảnh hưởng đến cách em kiểm chứng quy tắc rủi ro ở phần 5.</p>
+    <p>Bên phải là dữ liệu thô. Có thể thấy G1, G2 nằm trong dấu nháy còn G3 thì không, tức là định dạng không đồng nhất. Đây là lý do em đọc toàn bộ dữ liệu dưới dạng chuỗi rồi mới ép kiểu có kiểm soát.</p>
+  </aside>
+</section>
+
+<!-- =============================== 7. TỪ ĐIỂN THUỘC TÍNH =============================== -->
+<section class="slide" data-title="Thuộc tính">
+  <p class="kicker">Phần 2 · Dữ liệu</p>
+  <h2 class="h2">Từ điển thuộc tính: 33 cột chia thành 5 nhóm</h2>
+  <p class="lede">Miền giá trị lấy từ file mô tả gốc <code>student.txt</code>; đây cũng là căn cứ cho bước kiểm tra miền giá trị khi làm sạch.</p>
+
+  <table class="tbl sm">
+    <thead><tr><th style="width:28%">Thuộc tính</th><th style="width:16%">Kiểu dữ liệu</th><th>Miền giá trị / ý nghĩa</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="3">Nhóm 1 · Cá nhân và trường học</td></tr>
+      <tr><td><code>school</code>, <code>sex</code>, <code>address</code>, <code>famsize</code>, <code>Pstatus</code></td><td>Nhị phân</td><td>GP/MS · F/M · U (thành thị)/R (nông thôn) · LE3/GT3 (≤ 3 / &gt; 3 người) · T (bố mẹ sống chung)/A</td></tr>
+      <tr><td><code>age</code></td><td>Số nguyên</td><td>15–22 tuổi</td></tr>
+      <tr class="grp"><td colspan="3">Nhóm 2 · Gia đình</td></tr>
+      <tr><td><code>Medu</code>, <code>Fedu</code></td><td>Thứ bậc 0–4</td><td>Học vấn của mẹ/bố: 0 không đi học, 1 tiểu học, 2 lớp 5–9, 3 THPT, 4 đại học</td></tr>
+      <tr><td><code>Mjob</code>, <code>Fjob</code>, <code>guardian</code>, <code>reason</code></td><td>Định danh</td><td>Nghề mẹ/bố (teacher, health, services, at_home, other) · người giám hộ · lý do chọn trường</td></tr>
+      <tr class="grp"><td colspan="3">Nhóm 3 · Học tập và hỗ trợ</td></tr>
+      <tr><td><code>studytime</code></td><td>Thứ bậc 1–4</td><td>Thời gian tự học mỗi tuần: 1 (&lt; 2h), 2 (2–5h), 3 (5–10h), 4 (&gt; 10h)</td></tr>
+      <tr><td><code>failures</code></td><td>Số nguyên 0–3</td><td>Số lần trượt môn trước đây</td></tr>
+      <tr><td><code>schoolsup</code>, <code>famsup</code>, <code>paid</code>, <code>higher</code>, <code>internet</code></td><td>Nhị phân yes/no</td><td>Phụ đạo ở trường · gia đình hỗ trợ học · học thêm có trả phí · muốn học đại học · có internet ở nhà</td></tr>
+      <tr class="grp"><td colspan="3">Nhóm 4 · Đời sống, quan hệ, sức khoẻ</td></tr>
+      <tr><td><code>activities</code>, <code>nursery</code>, <code>romantic</code></td><td>Nhị phân yes/no</td><td>Hoạt động ngoại khoá · từng học mẫu giáo · có quan hệ tình cảm</td></tr>
+      <tr><td><code>famrel</code>, <code>freetime</code>, <code>goout</code>, <code>Dalc</code>, <code>Walc</code>, <code>health</code></td><td>Thứ bậc 1–5</td><td>Quan hệ gia đình · thời gian rảnh · đi chơi · uống rượu ngày thường/cuối tuần · sức khoẻ (1 rất thấp … 5 rất cao)</td></tr>
+      <tr><td><code>traveltime</code></td><td>Thứ bậc 1–4</td><td>Thời gian đến trường: 1 (&lt; 15 phút) … 4 (&gt; 1 giờ)</td></tr>
+      <tr class="grp"><td colspan="3">Nhóm 5 · Chuyên cần và kết quả học tập</td></tr>
+      <tr><td><code>absences</code></td><td>Số đếm</td><td>Số buổi vắng: 0–93</td></tr>
+      <tr><td><code>G1</code>, <code>G2</code>, <code>G3</code></td><td>Số nguyên 0–20</td><td>Điểm giai đoạn 1, giai đoạn 2 và <b>điểm cuối năm G3 (biến mục tiêu)</b></td></tr>
+    </tbody>
+  </table>
+
+  <div class="slide-footer">
+    <span>Nguồn: data/raw/student.txt · Ánh xạ mô tả biến trong code: VAR_DESCRIPTIONS (data_processor.py:63)</span>
+    <span class="slide-number" data-current="7" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Bảng này là từ điển thuộc tính của 33 cột, chia thành năm nhóm.</p>
+    <p>Nhóm 1 là thông tin cá nhân và trường học. Nhóm 2 là thông tin gia đình như học vấn và nghề nghiệp của bố mẹ. Nhóm 3 là các yếu tố học tập và hỗ trợ, gồm các biến đề bài quan tâm: thời gian tự học, số lần trượt trước đây, hỗ trợ từ gia đình, học thêm và internet. Nhóm 4 là đời sống và sức khoẻ, chủ yếu là thang đo từ 1 đến 5. Nhóm 5 là chuyên cần và điểm số, trong đó G3 là biến mục tiêu.</p>
+    <p>Miền giá trị trong cột bên phải được lấy nguyên từ file mô tả của UCI. Em dùng chính các miền giá trị này làm quy tắc kiểm tra ở bước làm sạch.</p>
+  </aside>
+</section>
+
+<!-- =============================== 8. THỐNG KÊ MÔ TẢ =============================== -->
+<section class="slide" data-title="Thống kê mô tả">
+  <p class="kicker">Phần 2 · Dữ liệu</p>
+  <h2 class="h2">Thống kê mô tả các biến chính (môn Toán, n = 395)</h2>
+  <p class="lede">Tính trên dữ liệu sau làm sạch, chưa loại trường hợp nào. Một số đặc điểm phân phối định hướng trực tiếp cho bước làm sạch.</p>
+
+  <div class="cols c-21">
+    <table class="tbl">
+      <thead><tr><th>Biến</th><th class="num">Trung bình</th><th class="num">Độ lệch chuẩn</th><th class="num">Min</th><th class="num">Q1</th><th class="num">Trung vị</th><th class="num">Q3</th><th class="num">Max</th></tr></thead>
+      <tbody>
+        <tr><td><code>age</code></td><td class="num">16,70</td><td class="num">1,28</td><td class="num">15</td><td class="num">16</td><td class="num">17</td><td class="num">18</td><td class="num">22</td></tr>
+        <tr><td><code>studytime</code></td><td class="num">2,04</td><td class="num">0,84</td><td class="num">1</td><td class="num">1</td><td class="num">2</td><td class="num">2</td><td class="num">4</td></tr>
+        <tr><td><code>failures</code></td><td class="num">0,33</td><td class="num">0,74</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">3</td></tr>
+        <tr><td><code>absences</code></td><td class="num">5,71</td><td class="num">8,00</td><td class="num">0</td><td class="num">0</td><td class="num">4</td><td class="num">8</td><td class="num bad-t">75</td></tr>
+        <tr><td><code>G1</code></td><td class="num">10,91</td><td class="num">3,32</td><td class="num">3</td><td class="num">8</td><td class="num">11</td><td class="num">13</td><td class="num">19</td></tr>
+        <tr><td><code>G2</code></td><td class="num">10,71</td><td class="num">3,76</td><td class="num bad-t">0</td><td class="num">9</td><td class="num">11</td><td class="num">13</td><td class="num">19</td></tr>
+        <tr><td><code>G3</code></td><td class="num">10,42</td><td class="num">4,58</td><td class="num bad-t">0</td><td class="num">8</td><td class="num">11</td><td class="num">14</td><td class="num">20</td></tr>
+      </tbody>
+    </table>
+
+    <table class="tbl sm">
+      <thead><tr><th>Biến phân loại</th><th class="num">Số lượng</th><th class="num">Tỉ lệ</th></tr></thead>
+      <tbody>
+        <tr><td>Trường GP / MS</td><td class="num">349 / 46</td><td class="num">88,4% / 11,6%</td></tr>
+        <tr><td>Nữ / Nam</td><td class="num">208 / 187</td><td class="num">52,7% / 47,3%</td></tr>
+        <tr><td>Thành thị / Nông thôn</td><td class="num">307 / 88</td><td class="num">77,7% / 22,3%</td></tr>
+        <tr><td>Có / không có internet</td><td class="num">329 / 66</td><td class="num">83,3% / 16,7%</td></tr>
+        <tr><td>Đỗ / Trượt (G3 ≥ 10)</td><td class="num">265 / 130</td><td class="num">67,1% / 32,9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cols c-111 mt-m">
+    <div class="card warn"><h4>absences lệch phải mạnh</h4><p>Trung bình 5,71 &gt; trung vị 4; giá trị lớn nhất 75 buổi. → Cần ngưỡng ngoại lai riêng (IQR) thay vì dùng trung bình.</p></div>
+    <div class="card bad"><h4>G2 và G3 có giá trị 0</h4><p>Điểm G1 thấp nhất là 3 nhưng G2, G3 có giá trị 0. → Cần kiểm tra ý nghĩa của điểm 0 (trình bày ở slide 14).</p></div>
+    <div class="card accent"><h4>failures tập trung ở 0</h4><p>312/395 học sinh (79%) chưa từng trượt; mức 2 và 3 chỉ có 17 và 16 em. → Gộp thành nhóm "2+" khi chạy ANOVA.</p></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: data/processed/cleaned_students_mat.csv (pandas describe, value_counts)</span>
+    <span class="slide-number" data-current="8" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Đây là thống kê mô tả của các biến chính trong môn Toán, gồm 395 học sinh.</p>
+    <p>Điểm G3 trung bình là 10,42, độ lệch chuẩn 4,58; tỉ lệ đỗ trên toàn bộ là 67,1%. Phần lớn học sinh học ở trường GP, và khoảng 83% có internet ở nhà.</p>
+    <p>Từ bảng này em rút ra ba đặc điểm định hướng cho bước làm sạch. Một, số buổi vắng lệch phải mạnh: trung bình lớn hơn trung vị và có học sinh vắng tới 75 buổi, nên em dùng ngưỡng IQR để đánh dấu ngoại lai. Hai, G1 thấp nhất là 3 nhưng G2 và G3 lại có giá trị 0, đây là dấu hiệu cần kiểm tra ý nghĩa của điểm 0. Ba, số lần trượt tập trung ở 0, các mức 2 và 3 có rất ít học sinh, nên khi kiểm định em gộp thành một nhóm "2 trở lên".</p>
+  </aside>
+</section>
+
+<!-- =============================== 9. QUY TRÌNH LÀM SẠCH =============================== -->
+<section class="slide" data-title="Quy trình làm sạch">
+  <p class="kicker">Phần 3 · Làm sạch dữ liệu</p>
+  <h2 class="h2">Quy trình làm sạch 6 bước trong <code>clean_data()</code></h2>
+  <p class="lede">Nguyên tắc: <b>không sửa đoán</b> (giá trị sai chuyển thành rỗng), <b>không xoá dữ liệu bất thường</b> (chỉ gắn cờ), và <b>mọi bước đều được đếm và ghi vào <code>cleaning_log</code></b>.</p>
+
+  <div class="flow">
+    <div class="step"><b>1 · Khoảng trắng</b>Cắt khoảng trắng thừa ở các cột chuỗi</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>2 · Kiểu và miền</b>Ép kiểu số, kiểm tra miền giá trị 16 cột số</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>3 · Mã hoá yes/no</b>8 cột yes/no → 1/0, giá trị lạ → rỗng</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>4 · Trùng và thiếu</b>Bỏ dòng trùng, bỏ dòng thiếu 7 cột bắt buộc</div>
+    <span class="arrow">→</span>
+    <div class="step"><b>5 · Cột dẫn xuất</b>pass_fail, absence_level, avg_g1g2, risk_group…</div>
+    <span class="arrow">→</span>
+    <div class="step key"><b>6 · Cờ bất thường</b>6 cờ True/False, không xoá dòng</div>
+  </div>
+
+  <div class="cols c-21 mt-m">
+    <div class="code">
+      <div class="bar"><span>Cấu hình kiểm tra (lấy từ student.txt)</span><span>data_processor.py:79–92</span></div>
+<pre><code class="py">VALID_RANGES = {
+    "age": (15, 22), "Medu": (0, 4), "Fedu": (0, 4),
+    "traveltime": (1, 4), "studytime": (1, 4), "failures": (0, 3),
+    "famrel": (1, 5), "freetime": (1, 5), "goout": (1, 5),
+    "Dalc": (1, 5), "Walc": (1, 5), "health": (1, 5),
+    "absences": (0, 93), "G1": (0, 20), "G2": (0, 20), "G3": (0, 20),
+}
+REQUIRED_COLS = ["G1", "G2", "G3", "absences", "failures", "studytime", "age"]
+
+YES_NO_COLS = ["schoolsup", "famsup", "paid", "activities", "nursery",
+               "higher", "internet", "romantic"]
+
+FLAG_COLS = ["dropout_suspect", "g2_zero", "grade_drop",
+             "absence_outlier", "age_outlier", "inconsistent_grade"]</code></pre>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <h4>Đọc dữ liệu ở dạng chuỗi gốc</h4>
+        <p><code>pd.read_csv(path, sep=";", dtype=str, keep_default_na=False)</code> – pandas không tự đổi kiểu hay tự biến ô trống thành NaN, nên mọi giá trị lỗi đều phải đi qua bước kiểm tra.</p>
+      </div>
+      <div class="card">
+        <h4>Ngưỡng là hằng số, không viết cứng</h4>
+        <p><code>THRESHOLDS = (10, 10, 4, 10, 2)</code> và <code>ANOMALY_THRESHOLDS = (1.5, 8, 6, 20)</code> được khai báo dạng tuple ở đầu file (dòng 31, 35).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mã nguồn: StudentDataProcessor.load_data (dòng 559) · clean_data (dòng 573–636)</span>
+    <span class="slide-number" data-current="9" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Phần 3 là quy trình làm sạch dữ liệu, gồm 6 bước nằm trong hàm <code>clean_data</code>.</p>
+    <p>Em áp dụng ba nguyên tắc. Thứ nhất, không sửa đoán: giá trị sai được chuyển thành rỗng chứ không tự thay bằng giá trị khác. Thứ hai, không xoá dữ liệu bất thường mà chỉ gắn cờ, để người đọc vẫn kiểm tra lại được. Thứ ba, mỗi bước đều đếm số trường hợp bị xử lý và ghi vào nhật ký <code>cleaning_log</code>.</p>
+    <p>Bên trái là cấu hình kiểm tra. <code>VALID_RANGES</code> là miền giá trị hợp lệ của 16 cột số, lấy đúng từ file mô tả của UCI. <code>REQUIRED_COLS</code> là 7 cột bắt buộc phải có giá trị. <code>YES_NO_COLS</code> là 8 cột yes/no cần mã hoá, và <code>FLAG_COLS</code> là 6 cờ bất thường.</p>
+    <p>Ngoài ra, dữ liệu được đọc dưới dạng chuỗi gốc để pandas không tự xử lý ngầm bất kỳ giá trị nào.</p>
+  </aside>
+</section>
+
+<!-- =============================== 10. CODE BƯỚC 1–4 =============================== -->
+<section class="slide" data-title="Làm sạch: bước 1–4">
+  <p class="kicker">Phần 3 · Làm sạch dữ liệu</p>
+  <h2 class="h2">Bước 1–4: chuẩn hoá chuỗi, kiểu dữ liệu, giá trị trùng và thiếu</h2>
+
+  <div class="cols c-21 mt-s">
+    <div class="code">
+      <div class="bar"><span>clean_data() – bước 1 đến 4</span><span>data_processor.py:578–609</span></div>
+<pre><code class="py"># 1) whitespace
+str_cols = [c for c in df.columns if c not in VALID_RANGES]
+stripped = df[str_cols].apply(lambda s: s.str.strip())
+log["n_cells_stripped"] = int((stripped != df[str_cols]).sum().sum())
+df[str_cols] = stripped
+
+# 2) numeric casts + domain checks (bad values -&gt; NaN)
+log["n_non_numeric"], log["n_out_of_range"] = {}, {}
+for col, (lo, hi) in VALID_RANGES.items():
+    num = pd.to_numeric(df[col], errors="coerce")
+    log["n_non_numeric"][col] = int((num.isna() &amp; (df[col] != "")).sum())
+    bad = num.notna() &amp; ~num.between(lo, hi)
+    log["n_out_of_range"][col] = int(bad.sum())
+    df[col] = num.mask(bad)
+
+# 3) yes/no encoding with validation
+log["n_invalid_yes_no"] = {}
+for col in YES_NO_COLS:
+    enc = df[col].map(convert_yes_no)
+    log["n_invalid_yes_no"][col] = int(enc.isna().sum())
+    df[col + "_bin"] = enc.astype("Int64")
+
+# 4) duplicates (within subject) + missing required values
+before = len(df)
+df = df.drop_duplicates()
+log["n_duplicates_dropped"] = int(before - len(df))
+before = len(df)
+df = df.dropna(subset=REQUIRED_COLS).reset_index(drop=True)
+log["n_missing_required_dropped"] = int(before - len(df))</code></pre>
+    </div>
+
+    <div class="stack">
+      <table class="tbl sm">
+        <thead><tr><th>Bước</th><th>Kiểm tra</th><th class="num">Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Ô có khoảng trắng thừa (vd <code>" yes"</code>)</td><td class="num">0 ô</td></tr>
+          <tr><td>2</td><td>Ô không phải số, 16 cột</td><td class="num">0 ô</td></tr>
+          <tr><td>2</td><td>Ô ngoài miền hợp lệ, 16 cột</td><td class="num">0 ô</td></tr>
+          <tr><td>3</td><td>Giá trị khác yes/no, 8 cột</td><td class="num">0 ô</td></tr>
+          <tr><td>4</td><td>Dòng trùng hoàn toàn</td><td class="num">0 dòng</td></tr>
+          <tr><td>4</td><td>Dòng thiếu cột bắt buộc</td><td class="num">0 dòng</td></tr>
+          <tr><td colspan="2"><b>Số dòng vào → ra</b></td><td class="num"><b>1044 → 1044</b></td></tr>
+        </tbody>
+      </table>
+      <div class="card accent">
+        <h4>Hàm mã hoá có kiểm tra</h4>
+        <p><code>convert_yes_no</code> (dòng 108) trả về 1 cho "yes", 0 cho "no" và <b>None cho mọi giá trị khác</b>. Giá trị lạ không bị ép thành 0 mà được đếm vào log.</p>
+      </div>
+      <div class="card soft">
+        <p>Bộ dữ liệu UCI <b>sạch về mặt hình thức</b>: các bước 1–4 không phát hiện lỗi nào. Khả năng phát hiện lỗi của các bước này được kiểm chứng bằng dữ liệu cấy lỗi ở slide 13.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Kết quả: data/processed/summary.json → cleaning_log</span>
+    <span class="slide-number" data-current="10" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Đây là mã nguồn của bốn bước đầu.</p>
+    <p>Bước 1 cắt khoảng trắng thừa ở các cột chuỗi, vì một giá trị như " yes" có dấu cách sẽ không khớp với "yes".</p>
+    <p>Bước 2 ép kiểu số cho 16 cột. Giá trị không chuyển được thành số, hoặc nằm ngoài miền hợp lệ, ví dụ tuổi bằng 30 hay điểm bằng 25, sẽ bị chuyển thành rỗng và được đếm vào log.</p>
+    <p>Bước 3 mã hoá 8 cột yes/no thành 1 và 0, lưu vào cột mới có hậu tố <code>_bin</code>, giữ nguyên cột gốc. Giá trị lạ trả về None chứ không bị ép thành 0.</p>
+    <p>Bước 4 bỏ các dòng trùng hoàn toàn và các dòng thiếu một trong 7 cột bắt buộc, bao gồm cả những ô vừa bị chuyển thành rỗng ở bước 2.</p>
+    <p>Bảng bên phải là kết quả thật: tất cả đều bằng 0, giữ nguyên 1044 dòng. Nói cách khác, bộ UCI sạch về mặt hình thức. Để chứng minh các bước này thật sự bắt được lỗi, em có bài kiểm thử với dữ liệu cấy lỗi, sẽ trình bày ở slide 13.</p>
+  </aside>
+</section>
+
+<!-- =============================== 11. CODE BƯỚC 5–6 =============================== -->
+<section class="slide" data-title="Làm sạch: bước 5–6">
+  <p class="kicker">Phần 3 · Làm sạch dữ liệu</p>
+  <h2 class="h2">Bước 5–6: tạo cột dẫn xuất và gắn cờ bất thường</h2>
+
+  <div class="cols c-11 mt-s">
+    <div class="stack">
+      <div class="code">
+        <div class="bar"><span>clean_data() – bước 5 và 6</span><span>data_processor.py:611–628</span></div>
+<pre><code class="py"># 5) derived columns
+df["pass_fail"] = df["G3"].apply(calc_pass_fail)
+df["absence_level"] = df["absences"].apply(classify_absences)
+df["avg_grade"] = df.apply(
+    lambda r: calc_average_grade(r["G1"], r["G2"], r["G3"]), axis=1).round(2)
+df["avg_g1g2"] = ((df["G1"] + df["G2"]) / 2).round(2)
+df["risk_group"] = df.apply(classify_risk, axis=1)
+
+# 6) anomaly flags (flag, never delete); absence fence per subject
+q = df.groupby("subject")["absences"].quantile([0.25, 0.75]).unstack()
+fences = (q[0.75] + IQR_K * (q[0.75] - q[0.25])).to_dict()
+df["dropout_suspect"] = df["G3"] == 0
+df["g2_zero"] = df["G2"] == 0
+df["grade_drop"] = ((((df["G1"] - df["G3"]) &gt;= G1_DROP)
+                     | ((df["G2"] - df["G3"]) &gt;= G2_DROP))
+                    &amp; ~df["dropout_suspect"])
+df["absence_outlier"] = df["absences"] &gt; df["subject"].map(fences)
+df["age_outlier"] = df["age"] &gt;= AGE_OUTLIER
+df["inconsistent_grade"] = (df["G3"] &gt; 0) &amp; (df["G2"] == 0)</code></pre>
+      </div>
+      <div class="card soft">
+        <p><b>Ngưỡng ngoại lai số buổi vắng (Tukey, tính riêng từng môn):</b> fence = Q3 + 1,5 × IQR → Toán: 8 + 1,5 × 8 = <b>20</b> buổi; Bồ Đào Nha: 6 + 1,5 × 6 = <b>15</b> buổi.</p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <table class="tbl sm">
+        <thead><tr><th>Cột dẫn xuất</th><th>Cách tính</th></tr></thead>
+        <tbody>
+          <tr><td><code>pass_fail</code></td><td>"pass" nếu G3 ≥ 10, ngược lại "fail"</td></tr>
+          <tr><td><code>absence_level</code></td><td>low (0–3), medium (4–9), high (≥ 10)</td></tr>
+          <tr><td><code>avg_grade</code></td><td>(G1 + G2 + G3) / 3 – <b>chỉ để mô tả</b>, vì chứa G3</td></tr>
+          <tr><td><code>avg_g1g2</code></td><td>(G1 + G2) / 2 – dùng được cho dự báo sớm</td></tr>
+          <tr><td><code>risk_group</code></td><td>low / medium / high – chỉ dùng G1, G2, failures, absences</td></tr>
+        </tbody>
+      </table>
+
+      <table class="tbl sm">
+        <thead><tr><th>Cờ bất thường</th><th>Điều kiện</th><th class="num">Toán</th><th class="num">BĐN</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td><code>dropout_suspect</code></td><td>G3 = 0</td><td class="num"><b>38</b></td><td class="num">15</td></tr>
+          <tr><td><code>g2_zero</code></td><td>G2 = 0</td><td class="num">13</td><td class="num">7</td></tr>
+          <tr><td><code>grade_drop</code></td><td>G1 − G3 ≥ 8 hoặc G2 − G3 ≥ 6 (không tính dropout)</td><td class="num">0</td><td class="num">1</td></tr>
+          <tr><td><code>absence_outlier</code></td><td>absences &gt; fence IQR của môn</td><td class="num">15</td><td class="num">21</td></tr>
+          <tr><td><code>age_outlier</code></td><td>age ≥ 20</td><td class="num">5</td><td class="num">9</td></tr>
+          <tr><td><code>inconsistent_grade</code></td><td>G3 &gt; 0 nhưng G2 = 0</td><td class="num">0</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+      <p class="dim" style="font-size:14px;">Các cờ chỉ đánh dấu True/False; không dòng nào bị xoá. Mỗi phân tích phía sau tự quyết định có lọc theo cờ hay không.</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Kết quả: summary.json → anomaly_counts, cleaning_log.absence_outlier_fence · Quyết định thiết kế: docs/adr/0001</span>
+    <span class="slide-number" data-current="11" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Bước 5 tạo các cột dẫn xuất. <code>pass_fail</code> là kết quả đỗ/trượt. <code>absence_level</code> chia số buổi vắng thành ba mức. Cột <code>avg_grade</code> là trung bình ba điểm, nhưng vì có chứa G3 nên em chỉ dùng để mô tả, không bao giờ dùng để dự đoán G3; thay vào đó cột <code>avg_g1g2</code> chỉ dùng G1 và G2. Cột <code>risk_group</code> là nhóm rủi ro, sẽ trình bày ở phần 5.</p>
+    <p>Bước 6 gắn 6 cờ bất thường. Ngưỡng ngoại lai của số buổi vắng dùng phương pháp IQR của Tukey và tính riêng từng môn, vì phân phối hai môn khác nhau: 20 buổi với môn Toán và 15 buổi với môn Bồ Đào Nha.</p>
+    <p>Cờ đáng chú ý nhất là <code>dropout_suspect</code>: 38 học sinh môn Toán có G3 bằng 0. Đây là vấn đề về ý nghĩa của dữ liệu mà bốn bước kiểm tra hình thức trước đó không phát hiện được, vì 0 vẫn nằm trong miền hợp lệ 0–20. Em sẽ phân tích kỹ ở slide 14.</p>
+  </aside>
+</section>
+
+<!-- =============================== 12. KẾT QUẢ LÀM SẠCH =============================== -->
+<section class="slide" data-title="Kết quả làm sạch">
+  <p class="kicker">Phần 3 · Làm sạch dữ liệu</p>
+  <h2 class="h2">Kết quả làm sạch: nhật ký xử lý và dữ liệu trước/sau</h2>
+
+  <div class="cols c-1111 mt-s" style="gap:14px;">
+    <div class="stat"><div class="v">1044 → 1044</div><div class="l">Số dòng vào → ra</div><div class="s">Không dòng nào bị loại</div></div>
+    <div class="stat"><div class="v">33 → 53</div><div class="l">Số cột</div><div class="s">+1 subject, +8 cột _bin, +5 cột dẫn xuất, +6 cờ</div></div>
+    <div class="stat"><div class="v good">0</div><div class="l">Ô rỗng trong file sạch</div><div class="s">cleaned_students_mat.csv</div></div>
+    <div class="stat"><div class="v">3 file</div><div class="l">Dữ liệu sạch xuất ra</div><div class="s">Gộp 2 môn + từng môn riêng</div></div>
+  </div>
+
+  <div class="cols c-11 mt-m">
+    <div class="code">
+      <div class="bar"><span>summary.json → cleaning_log (kết quả thật)</span><span>data/processed/</span></div>
+<pre><code class="py">"cleaning_log": {
+  "rows_in": 1044,
+  "n_cells_stripped": 0,
+  "n_non_numeric":    {"age": 0, "Medu": 0, ..., "G3": 0},
+  "n_out_of_range":   {"age": 0, "Medu": 0, ..., "G3": 0},
+  "n_invalid_yes_no": {"schoolsup": 0, ..., "romantic": 0},
+  "n_duplicates_dropped": 0,
+  "n_missing_required_dropped": 0,
+  "absence_outlier_fence": {"mat": 20.0, "por": 15.0},
+  "rows_out": 1044
+}</code></pre>
+      <div class="bar" style="border-top:1px solid #30363d;"><span>Kết quả in ra khi chạy python main.py</span><span></span></div>
+<pre><code>Loaded raw: 1044 rows ({'por': 649, 'mat': 395})
+Cleaned: 1044 rows, log={'rows_in': 1044, 'n_cells_stripped': 0,
+  'n_duplicates_dropped': 0, 'n_missing_required_dropped': 0,
+  'rows_out': 1044}</code></pre>
+    </div>
+
+    <table class="tbl sm">
+      <thead><tr><th>Cột</th><th>Dữ liệu thô</th><th>Sau làm sạch</th><th>Kiểu</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">Học sinh thứ nhất, file student-mat.csv</td></tr>
+        <tr><td><code>age</code></td><td><code>"18"</code> (chuỗi)</td><td>18</td><td>int64</td></tr>
+        <tr><td><code>G1</code> / <code>G2</code></td><td><code>"5"</code> / <code>"6"</code></td><td>5 / 6</td><td>int64</td></tr>
+        <tr><td><code>G3</code></td><td><code>"6"</code></td><td>6</td><td>int64</td></tr>
+        <tr><td><code>internet</code></td><td><code>"no"</code></td><td><code>internet_bin</code> = 0</td><td>Int64</td></tr>
+        <tr class="grp"><td colspan="4">Cột mới được tạo</td></tr>
+        <tr><td><code>pass_fail</code></td><td>–</td><td>"fail" (G3 = 6 &lt; 10)</td><td>chuỗi</td></tr>
+        <tr><td><code>absence_level</code></td><td>–</td><td>"medium" (vắng 6 buổi)</td><td>chuỗi</td></tr>
+        <tr><td><code>avg_g1g2</code></td><td>–</td><td>5,5</td><td>float</td></tr>
+        <tr><td><code>risk_group</code></td><td>–</td><td>"high" (G2 = 6 &lt; 10)</td><td>chuỗi</td></tr>
+        <tr><td><code>dropout_suspect</code></td><td>–</td><td>False</td><td>bool</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="slide-footer">
+    <span>Đầu ra: data/processed/cleaned_students.csv, cleaned_students_mat.csv, cleaned_students_por.csv, summary.json</span>
+    <span class="slide-number" data-current="12" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Slide này là bằng chứng của quá trình làm sạch.</p>
+    <p>Bốn con số phía trên: 1044 dòng vào và 1044 dòng ra; số cột tăng từ 33 lên 53, gồm cột môn học, 8 cột mã hoá nhị phân, 5 cột dẫn xuất và 6 cột cờ; file sạch không còn ô rỗng nào; và kết quả được xuất ra ba file: một file gộp và hai file riêng cho từng môn.</p>
+    <p>Bên trái là nhật ký <code>cleaning_log</code> được lưu thật trong <code>summary.json</code>, cùng với dòng kết quả in ra màn hình khi chạy <code>main.py</code>.</p>
+    <p>Bên phải là ví dụ trước và sau của học sinh đầu tiên. Trong dữ liệu thô, tuổi và điểm đều là chuỗi; sau làm sạch chúng là số nguyên. Cột internet được mã hoá thành 0. Các cột mới cho biết học sinh này trượt, vắng ở mức trung bình, và thuộc nhóm rủi ro cao vì G2 bằng 6, thấp hơn 10.</p>
+  </aside>
+</section>
+
+<!-- =============================== 13. KIỂM CHỨNG BỘ LÀM SẠCH =============================== -->
+<section class="slide" data-title="Kiểm chứng làm sạch">
+  <p class="kicker">Phần 3 · Làm sạch dữ liệu</p>
+  <h2 class="h2">Kiểm chứng bộ làm sạch bằng dữ liệu cấy lỗi; làm sạch dữ liệu PISA</h2>
+  <p class="lede">Dữ liệu UCI không có lỗi hình thức, nên cần chứng minh rằng nếu có lỗi thì các bước làm sạch vẫn phát hiện được.</p>
+
+  <div class="cols c-12">
+    <div class="stack">
+      <table class="tbl sm">
+        <thead><tr><th>Lỗi được cấy vào 6 dòng thật</th><th>Kết quả kiểm tra</th></tr></thead>
+        <tbody>
+          <tr><td><code>age = "30"</code> (ngoài 15–22)</td><td>Đếm 1 ô ngoài miền → dòng bị loại</td></tr>
+          <tr><td><code>famsup = " maybe "</code></td><td>Đếm 1 giá trị lạ, <code>famsup_bin</code> để rỗng</td></tr>
+          <tr><td><code>school = " GP "</code></td><td>Cắt khoảng trắng → "GP"</td></tr>
+          <tr><td>Thêm 1 dòng trùng</td><td>Đếm và bỏ 1 dòng trùng</td></tr>
+          <tr><td><code>G3 = "0"</code></td><td>Gắn cờ dropout_suspect, <b>giữ dòng</b></td></tr>
+          <tr><td colspan="2"><b>7 dòng vào → 5 dòng ra, đúng như kỳ vọng</b></td></tr>
+        </tbody>
+      </table>
+      <div class="card good">
+        <h4>Kết quả chạy kiểm thử</h4>
+        <p><code>pytest</code>: <b>43/43 test đạt</b>, trong đó có test trên. Chạy không cần mạng.</p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="code">
+        <div class="bar"><span>test_clean_data_counts_problems_and_flags_dropouts</span><span>tests/test_data_processor.py:194–214</span></div>
+<pre><code class="py">rows = student_rows.copy()
+rows.loc[0, "age"] = "30"           # outside 15-22 -&gt; NaN -&gt; required column -&gt; dropped
+rows.loc[1, "famsup"] = " maybe "   # not yes/no -&gt; counted, encoded as missing
+rows.loc[2, "G3"] = "0"             # dropout suspect (flag, keep row)
+rows.loc[3, "school"] = " GP "      # whitespace
+rows = pd.concat([rows, rows.iloc[[4]]], ignore_index=True)  # exact duplicate
+...
+assert log["n_out_of_range"]["age"] == 1
+assert log["n_missing_required_dropped"] == 1
+assert log["n_invalid_yes_no"]["famsup"] == 1
+assert log["n_duplicates_dropped"] == 1
+assert log["rows_in"] == 7 and log["rows_out"] == len(clean) == 5
+assert clean["dropout_suspect"].sum() == 1
+assert set(clean["school"]) == {"GP"}</code></pre>
+      </div>
+      <div class="card accent">
+        <h4>Làm sạch dữ liệu PISA (<code>clean_pisa</code>, dòng 350–366): 2342 → 1662 dòng</h4>
+        <ul>
+          <li>Bỏ chú thích <code>[41]</code> và dấu <code>*</code> cuối tên nước; đổi "International Average (OECD)" → "OECD average".</li>
+          <li>Ép kiểu số cho năm, hạng, điểm; ô "—" (nước không tham gia năm đó) → bỏ dòng; bỏ trùng theo (năm, môn, nước).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Lệnh kiểm thử: uv run --with-requirements requirements.txt pytest → 43 passed</span>
+    <span class="slide-number" data-current="13" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Vì bộ UCI không có lỗi hình thức, các con số 0 trong nhật ký chưa đủ để chứng minh bộ làm sạch hoạt động đúng. Do đó em viết một bài kiểm thử: lấy 6 dòng dữ liệu thật rồi cấy lỗi có chủ đích.</p>
+    <p>Cụ thể: một tuổi ngoài miền, một giá trị yes/no lạ, một ô có khoảng trắng thừa, một dòng trùng và một điểm G3 bằng 0. Kết quả: mỗi lỗi đều được đếm đúng; dòng có tuổi sai bị loại, dòng trùng bị bỏ, còn dòng có G3 bằng 0 được giữ lại và gắn cờ. Từ 7 dòng vào còn 5 dòng ra, đúng như kỳ vọng. Toàn bộ 43 bài kiểm thử của dự án đều đạt.</p>
+    <p>Dữ liệu PISA cũng được làm sạch: bỏ chú thích và ký hiệu thừa trong tên nước, chuẩn hoá tên dòng trung bình OECD, ép kiểu số, và bỏ các ô gạch ngang tương ứng với những nước không tham gia năm đó. Từ 2342 dòng thô còn 1662 dòng sạch.</p>
+  </aside>
+</section>
+
+<!-- =============================== 14. G3 = 0 =============================== -->
+<section class="slide" data-title="Trường hợp G3 = 0">
+  <p class="kicker">Phần 3 · Kiểm soát chất lượng dữ liệu</p>
+  <h2 class="h2">Vấn đề về ý nghĩa dữ liệu: 38 học sinh có điểm cuối năm bằng 0</h2>
+
+  <div class="cols c-11 mt-s">
+    <div class="figure">
+      <img src="../images/02_hist_g3.png" alt="Phân phối điểm G3 môn Toán, cột G3 = 0 tô đỏ">
+      <div class="cap">Biểu đồ 2 – images/02_hist_g3.png · vạch đứt: ngưỡng đỗ G3 = 10</div>
+    </div>
+
+    <div class="stack">
+      <div class="card bad">
+        <h4>Dấu hiệu cho thấy điểm 0 không phải điểm thi thật</h4>
+        <ul>
+          <li>38/395 học sinh (9,6%) có G3 = 0; <b>không có học sinh nào đạt 1, 2 hoặc 3 điểm</b>.</li>
+          <li><b>Cả 38/38 em có số buổi vắng bằng 0</b>, trong khi tỉ lệ này ở các học sinh còn lại là 21,6%.</li>
+          <li>Điểm G1 trung bình của nhóm là 7,53; 13 em có G2 = 0.</li>
+        </ul>
+        <p class="mt-s">→ Cách giải thích hợp lý: học sinh <b>không dự thi hoặc đã thôi học</b>, nên không còn được ghi nhận vắng. Đây là suy luận từ dữ liệu, chưa được nhà trường xác nhận.</p>
+      </div>
+      <div class="card good">
+        <h4>Cách xử lý (docs/adr/0001)</h4>
+        <p>Giữ nguyên 38 dòng, gắn cờ <code>dropout_suspect</code>; báo cáo song song hai phạm vi. Các kết luận về yếu tố ảnh hưởng dùng 357 học sinh có G3 &gt; 0.</p>
+      </div>
+      <table class="tbl sm">
+        <thead><tr><th>Chỉ số</th><th class="num">Tất cả (n = 395)</th><th class="num">G3 &gt; 0 (n = 357)</th></tr></thead>
+        <tbody>
+          <tr><td>Tỉ lệ đỗ</td><td class="num">67,1%</td><td class="num">74,2%</td></tr>
+          <tr class="hl"><td>Tương quan r(absences, G3)</td><td class="num bad-t"><b>+0,034</b></td><td class="num good-t"><b>−0,213</b></td></tr>
+          <tr><td>Tương quan r(G2, G3)</td><td class="num">0,905</td><td class="num">0,966</td></tr>
+          <tr><td>Tương quan r(G1, G3)</td><td class="num">0,801</td><td class="num">0,892</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: summary.json → dropout_profile, scopes.all / scopes.exclude_dropout · Môn Bồ Đào Nha: 15 trường hợp G3 = 0</span>
+    <span class="slide-number" data-current="14" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Đây là phát hiện quan trọng nhất của bước kiểm soát chất lượng dữ liệu.</p>
+    <p>Biểu đồ phân phối điểm G3 cho thấy 38 học sinh có điểm 0, tách hẳn khỏi phần còn lại: không có học sinh nào đạt 1, 2 hoặc 3 điểm. Khi kiểm tra thêm, cả 38 em đều có số buổi vắng bằng 0, trong khi ở các học sinh khác tỉ lệ này chỉ là 21,6%. Điểm G1 trung bình của nhóm này vẫn là 7,53.</p>
+    <p>Cách giải thích hợp lý là các em không dự thi hoặc đã thôi học, nên nhà trường không còn ghi nhận buổi vắng. Em xin nhấn mạnh đây là suy luận từ dữ liệu, chưa được nhà trường xác nhận.</p>
+    <p>Em không xoá các dòng này mà gắn cờ, và báo cáo song song hai phạm vi. Bảng phía dưới cho thấy ảnh hưởng của quyết định này: nếu tính gộp, tương quan giữa số buổi vắng và điểm là +0,034, tức là vắng nhiều lại có vẻ điểm cao hơn, một kết luận trái thực tế. Khi tách 38 em ra, tương quan là −0,213, đúng chiều kỳ vọng. Vì vậy các kết luận về yếu tố ảnh hưởng ở phần sau đều dùng 357 học sinh có G3 lớn hơn 0.</p>
+  </aside>
+</section>
+
+<!-- =============================== 15. BIỂU ĐỒ 1 =============================== -->
+<section class="slide" data-title="Biểu đồ 1">
+  <p class="kicker">Phần 4 · Phân tích khám phá</p>
+  <h2 class="h2">Điểm G3 theo thời gian tự học và internet ở nhà</h2>
+
+  <div class="cols c-11 mt-s">
+    <div class="figure">
+      <img src="../images/01_bar_studytime_internet.png" alt="Điểm G3 trung bình theo studytime và internet">
+      <div class="cap">Biểu đồ 1 – images/01_bar_studytime_internet.png · thanh sai số: khoảng tin cậy 95% · cột gạch chéo: n &lt; 10</div>
+    </div>
+
+    <div class="stack">
+      <table class="tbl sm">
+        <thead><tr><th>Thời gian tự học/tuần</th><th class="num">&lt; 2h</th><th class="num">2–5h</th><th class="num">5–10h</th><th class="num">&gt; 10h</th></tr></thead>
+        <tbody>
+          <tr><td>G3 trung bình</td><td class="num">11,47</td><td class="num">11,07</td><td class="num">12,56</td><td class="num">12,67</td></tr>
+          <tr><td>Số học sinh</td><td class="num">92</td><td class="num">182</td><td class="num">59</td><td class="num">24</td></tr>
+        </tbody>
+      </table>
+      <div class="card accent">
+        <h4>Thời gian tự học: có liên hệ, nhưng hiệu ứng nhỏ</h4>
+        <p>ANOVA: F = 4,38; p<sub>Holm</sub> = 0,019 (có ý nghĩa). Tuy nhiên η² = 0,036: thời gian tự học chỉ giải thích khoảng <b>3,6%</b> biến thiên của G3. Xu hướng không đơn điệu (nhóm 2–5h thấp nhất).</p>
+      </div>
+      <div class="card warn">
+        <h4>Internet: chênh lệch chưa đủ bằng chứng thống kê</h4>
+        <p>Có internet 11,68 so với không có 10,71 (chênh 0,98 điểm, KTC 95% [0,11; 1,84]). Welch t-test p = 0,027, nhưng sau hiệu chỉnh Holm p<sub>Holm</sub> = <b>0,080 &gt; 0,05</b> → không có ý nghĩa thống kê.</p>
+      </div>
+      <div class="card soft">
+        <p><b>Nhóm nhỏ:</b> tự học &gt; 10h và không có internet chỉ có n = 3; 5–10h không có internet n = 5. Các cột này được vẽ gạch chéo và không dùng để kết luận.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Phạm vi: môn Toán, 357 học sinh có G3 &gt; 0 · Nguồn: summary.json → scopes.exclude_dropout</span>
+    <span class="slide-number" data-current="15" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Phần 4 là phân tích khám phá. Biểu đồ 1 so sánh điểm G3 trung bình theo thời gian tự học và theo việc có internet ở nhà, tính trên 357 học sinh.</p>
+    <p>Về thời gian tự học: điểm trung bình nhìn chung cao hơn ở nhóm học nhiều, nhưng xu hướng không đơn điệu, nhóm 2 đến 5 giờ lại thấp nhất. Kiểm định ANOVA có ý nghĩa sau hiệu chỉnh, nhưng hệ số eta bình phương chỉ 0,036, nghĩa là thời gian tự học chỉ giải thích khoảng 3,6% biến thiên của điểm.</p>
+    <p>Về internet: nhóm có internet cao hơn khoảng 1 điểm. Kiểm định t ban đầu cho p bằng 0,027, nhưng vì em thực hiện nhiều kiểm định cùng lúc nên phải hiệu chỉnh Holm; sau hiệu chỉnh p là 0,080, lớn hơn 0,05. Do đó em kết luận chưa đủ bằng chứng thống kê cho thấy internet liên quan đến điểm.</p>
+    <p>Ngoài ra, một số nhóm có rất ít học sinh, ví dụ chỉ 3 em; các cột này được vẽ gạch chéo để người xem không rút ra kết luận từ đó.</p>
+  </aside>
+</section>
+
+<!-- =============================== 16. BIỂU ĐỒ 3 =============================== -->
+<section class="slide" data-title="Biểu đồ 3">
+  <p class="kicker">Phần 4 · Phân tích khám phá</p>
+  <h2 class="h2">Ma trận tương quan Pearson với điểm cuối năm G3</h2>
+
+  <div class="cols c-11 mt-s">
+    <div class="figure">
+      <img src="../images/03_heatmap_corr.png" alt="Ma trận tương quan Pearson">
+      <div class="cap">Biểu đồ 3 – images/03_heatmap_corr.png · thang màu RdBu_r: đỏ dương, xanh âm</div>
+    </div>
+
+    <div class="stack">
+      <table class="tbl">
+        <thead><tr><th>Biến</th><th class="num">r với G3</th><th class="num">KTC 95%</th><th class="num">p</th></tr></thead>
+        <tbody>
+          <tr><td>G2 – điểm giai đoạn 2</td><td class="num good-t"><b>+0,966</b></td><td class="num">[0,958; 0,972]</td><td class="num">&lt; 0,001</td></tr>
+          <tr><td>G1 – điểm giai đoạn 1</td><td class="num good-t"><b>+0,892</b></td><td class="num">[0,868; 0,911]</td><td class="num">&lt; 0,001</td></tr>
+          <tr><td>failures – số lần trượt</td><td class="num bad-t"><b>−0,294</b></td><td class="num">[−0,386; −0,196]</td><td class="num">&lt; 0,001</td></tr>
+          <tr><td>absences – số buổi vắng</td><td class="num bad-t"><b>−0,213</b></td><td class="num">[−0,310; −0,112]</td><td class="num">&lt; 0,001</td></tr>
+          <tr><td>studytime – tự học</td><td class="num">+0,127</td><td class="num">[0,023; 0,228]</td><td class="num">0,017</td></tr>
+          <tr><td>famsup – gia đình hỗ trợ</td><td class="num">−0,067</td><td class="num">[−0,170; 0,037]</td><td class="num">0,205</td></tr>
+        </tbody>
+      </table>
+      <div class="card accent">
+        <h4>Nhận xét</h4>
+        <ul>
+          <li>G1, G2 liên hệ rất chặt với G3: kết quả học tập có tính liên tục trong năm.</li>
+          <li>Trong các biến không phải điểm, số lần trượt trước đây và số buổi vắng có liên hệ âm rõ nhất.</li>
+          <li>Hỗ trợ từ gia đình không có tương quan đáng kể (khoảng tin cậy chứa 0).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Phạm vi: môn Toán, n = 357 · Nguồn: summary.json → scopes.exclude_dropout.corr_tests</span>
+    <span class="slide-number" data-current="16" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Biểu đồ 3 là ma trận tương quan Pearson; bảng bên phải liệt kê tương quan của từng biến với G3 kèm khoảng tin cậy 95%.</p>
+    <p>G2 và G1 có tương quan rất mạnh với G3, lần lượt 0,966 và 0,892. Điều này cho thấy kết quả học tập có tính liên tục: học sinh có điểm giai đoạn 2 tốt thì điểm cuối năm cũng thường tốt.</p>
+    <p>Trong các biến không phải điểm số, số lần trượt trước đây có tương quan âm mạnh nhất, −0,294, tiếp theo là số buổi vắng, −0,213. Thời gian tự học có tương quan dương nhưng yếu. Hỗ trợ từ gia đình có r gần bằng 0 và khoảng tin cậy chứa 0, tức là không có tương quan đáng kể.</p>
+    <p>Em lưu ý tương quan chỉ đo mối liên hệ tuyến tính, không khẳng định quan hệ nhân quả.</p>
+  </aside>
+</section>
+
+<!-- =============================== 17. KIỂM ĐỊNH =============================== -->
+<section class="slide" data-title="Kiểm định thống kê">
+  <p class="kicker">Phần 4 · Kiểm định thống kê</p>
+  <h2 class="h2">So sánh điểm G3 giữa các nhóm, có hiệu chỉnh đa kiểm định Holm</h2>
+  <p class="lede">7 kiểm định ở mức α = 0,05. Nếu không hiệu chỉnh, xác suất có ít nhất một kết quả dương tính giả ≈ 1 − 0,95⁷ ≈ 30%. Holm–Bonferroni kiểm soát sai số loại I cho cả họ kiểm định.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Biến</th><th>Kiểm định</th><th class="num">Thống kê</th><th class="num">Chênh lệch (KTC 95%) / η²</th><th class="num">p</th><th class="num">p<sub>Holm</sub></th><th>Kết luận</th></tr></thead>
+    <tbody>
+      <tr><td><b>failures</b> (0 / 1 / 2+)</td><td>ANOVA một nhân tố</td><td class="num">F = 17,19</td><td class="num">η² = 0,089</td><td class="num">7,5·10⁻⁸</td><td class="num">5,3·10⁻⁷</td><td><span class="pill good">Có ý nghĩa</span></td></tr>
+      <tr><td><b>schoolsup</b> (phụ đạo ở trường)</td><td>Welch t-test</td><td class="num">t = −5,46</td><td class="num">−2,21 [−3,02; −1,41]</td><td class="num">5,6·10⁻⁷</td><td class="num">3,4·10⁻⁶</td><td><span class="pill good">Có ý nghĩa</span> *</td></tr>
+      <tr><td><b>absence_level</b> (low / medium / high)</td><td>ANOVA một nhân tố</td><td class="num">F = 9,85</td><td class="num">η² = 0,053</td><td class="num">6,9·10⁻⁵</td><td class="num">0,0003</td><td><span class="pill good">Có ý nghĩa</span></td></tr>
+      <tr><td><b>studytime</b> (4 mức)</td><td>ANOVA một nhân tố</td><td class="num">F = 4,38</td><td class="num">η² = 0,036</td><td class="num">0,0048</td><td class="num">0,019</td><td><span class="pill good">Có ý nghĩa</span></td></tr>
+      <tr class="hl"><td><b>internet</b></td><td>Welch t-test</td><td class="num">t = 2,25</td><td class="num">+0,98 [0,11; 1,84]</td><td class="num">0,027</td><td class="num"><b>0,080</b></td><td><span class="pill bad">Không có ý nghĩa</span></td></tr>
+      <tr><td><b>famsup</b> (gia đình hỗ trợ)</td><td>Welch t-test</td><td class="num">t = −1,28</td><td class="num">−0,45 [−1,13; 0,24]</td><td class="num">0,202</td><td class="num">0,404</td><td><span class="pill mute">Không có ý nghĩa</span></td></tr>
+      <tr><td><b>paid</b> (học thêm có trả phí)</td><td>Welch t-test</td><td class="num">t = −0,55</td><td class="num">−0,19 [−0,86; 0,48]</td><td class="num">0,585</td><td class="num">0,585</td><td><span class="pill mute">Không có ý nghĩa</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols c-111 mt-m">
+    <div class="card"><h4>Welch t-test (biến yes/no)</h4><p>So sánh trung bình hai nhóm, không giả định phương sai bằng nhau; báo cáo kèm khoảng tin cậy của chênh lệch.</p></div>
+    <div class="card"><h4>ANOVA + η² (biến nhiều mức)</h4><p>p cho biết có khác biệt hay không; η² cho biết mức độ: tỉ lệ biến thiên của G3 được giải thích bởi biến nhóm.</p></div>
+    <div class="card warn"><h4>* Lưu ý khi diễn giải schoolsup</h4><p>Nhóm được phụ đạo có điểm thấp hơn 2,21 điểm. Nhiều khả năng do học sinh yếu mới được chọn phụ đạo, không phải phụ đạo làm giảm điểm.</p></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Phạm vi: môn Toán, n = 357 · Mã nguồn: _group_tests (dòng 441), _holm (dòng 432) · Chi tiết: METHODS.md</span>
+    <span class="slide-number" data-current="17" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Để trả lời câu hỏi "nhóm nào có điểm khác biệt", em dùng Welch t-test cho các biến yes/no và ANOVA một nhân tố cho các biến nhiều mức.</p>
+    <p>Vì thực hiện 7 kiểm định cùng lúc, nếu không hiệu chỉnh thì xác suất có ít nhất một kết quả dương tính giả lên tới khoảng 30%. Vì vậy em áp dụng hiệu chỉnh Holm–Bonferroni. Bảng được sắp xếp theo p tăng dần.</p>
+    <p>Sau hiệu chỉnh, bốn yếu tố có ý nghĩa thống kê: số lần trượt trước đây, phụ đạo ở trường, mức độ vắng và thời gian tự học. Trong đó số lần trượt có hiệu ứng lớn nhất, η² gần 9%.</p>
+    <p>Biến internet có p ban đầu nhỏ hơn 0,05 nhưng sau hiệu chỉnh là 0,080, nên không có ý nghĩa. Hỗ trợ từ gia đình và học thêm có trả phí cũng không có ý nghĩa.</p>
+    <p>Riêng biến phụ đạo ở trường cần diễn giải cẩn thận: nhóm được phụ đạo có điểm thấp hơn, nhưng nhiều khả năng là do học sinh yếu mới được chọn phụ đạo, chứ không phải phụ đạo làm giảm điểm. Dữ liệu cắt ngang không cho phép phân biệt hai cách giải thích này.</p>
+  </aside>
+</section>
+
+<!-- =============================== 18. QUY TẮC CẢNH BÁO SỚM =============================== -->
+<section class="slide" data-title="Quy tắc cảnh báo sớm">
+  <p class="kicker">Phần 5 · Ứng dụng</p>
+  <h2 class="h2">Quy tắc phân nhóm rủi ro học tập (cảnh báo sớm)</h2>
+  <p class="lede">Chỉ dùng thông tin <b>có trước kỳ thi cuối</b>: G1, G2, số lần trượt, số buổi vắng. Quy tắc <b>không bao giờ đọc G3</b>, nên có thể đánh giá công bằng với kết quả đỗ/trượt thực tế.</p>
+
+  <div class="cols c-11">
+    <div class="stack">
+      <div class="code">
+        <div class="bar"><span>classify_risk()</span><span>data_processor.py:142–156</span></div>
+<pre><code class="py"># (PASS_MARK, G_WARN, ABS_MED, ABS_HIGH, FAIL_HIGH)
+THRESHOLDS = (10, 10, 4, 10, 2)
+
+def classify_risk(row: pd.Series) -&gt; str:
+    if row["G2"] &lt; G_WARN or row["failures"] &gt;= FAIL_HIGH:
+        return "high"
+    if (row["G1"] &lt; G_WARN or row["failures"] &gt; 0
+            or classify_absences(row["absences"]) == "high"):
+        return "medium"
+    return "low"</code></pre>
+      </div>
+      <div class="card accent">
+        <h4>Vì sao không dùng G3 (docs/adr/0002)</h4>
+        <p>Phiên bản đầu dùng G3 nên precision/recall không còn ý nghĩa (dùng đáp án để chấm đáp án). Test <code>test_risk_rule_ignores_final_grade</code> bảo đảm: thay đổi G3 không làm thay đổi nhóm rủi ro.</p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <table class="tbl">
+        <thead><tr><th>Nhóm</th><th>Điều kiện</th><th class="num">n</th><th class="num">G3 TB</th><th class="num">Tỉ lệ trượt</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill bad">high</span></td><td>G2 &lt; 10 hoặc trượt ≥ 2 lần</td><td class="num">149</td><td class="num">6,22</td><td class="num bad-t"><b>81,9%</b></td></tr>
+          <tr><td><span class="pill warn">medium</span></td><td>G1 &lt; 10, hoặc từng trượt, hoặc vắng ≥ 10 buổi</td><td class="num">77</td><td class="num">11,60</td><td class="num warn-t"><b>7,8%</b></td></tr>
+          <tr><td><span class="pill good">low</span></td><td>Các trường hợp còn lại</td><td class="num">169</td><td class="num">13,57</td><td class="num good-t"><b>1,2%</b></td></tr>
+        </tbody>
+      </table>
+      <div class="card">
+        <h4>Ba nhóm tương ứng ba mức hành động</h4>
+        <ul>
+          <li><b>high</b>: can thiệp (phụ đạo, liên hệ phụ huynh).</li>
+          <li><b>medium</b>: theo dõi; tỉ lệ trượt gấp khoảng 6,6 lần nhóm low.</li>
+          <li><b>low</b>: chưa cần can thiệp.</li>
+        </ul>
+      </div>
+      <p class="dim" style="font-size:14px;">Môn Toán, n = 395 (tính cả 38 em G3 = 0; 36/38 em này được xếp vào nhóm high).</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: summary.json → risk_eval.all, scopes.all.by_risk_group · Quyết định thiết kế: docs/adr/0002</span>
+    <span class="slide-number" data-current="18" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Phần 5 là ứng dụng: xây dựng quy tắc phân nhóm rủi ro để cảnh báo sớm.</p>
+    <p>Nguyên tắc quan trọng nhất: quy tắc chỉ được dùng thông tin có trước kỳ thi cuối, gồm G1, G2, số lần trượt và số buổi vắng. Nếu dùng G3 thì đánh giá quy tắc bằng kết quả đỗ/trượt sẽ không còn ý nghĩa, vì đỗ/trượt được tính từ chính G3. Lỗi này gọi là rò rỉ dữ liệu, và có một bài kiểm thử riêng để bảo đảm quy tắc không phụ thuộc vào G3.</p>
+    <p>Quy tắc chia ba nhóm. Nhóm high: G2 dưới 10 hoặc đã trượt từ 2 lần. Nhóm medium: G1 dưới 10, hoặc từng trượt, hoặc vắng từ 10 buổi. Còn lại là low.</p>
+    <p>Trên môn Toán, tỉ lệ trượt thực tế của ba nhóm là 81,9%, 7,8% và 1,2%. Sự khác biệt rõ ràng này là lý do em giữ ba mức, tương ứng ba mức hành động: can thiệp, theo dõi và chưa cần can thiệp.</p>
+  </aside>
+</section>
+
+<!-- =============================== 19. HOLDOUT =============================== -->
+<section class="slide" data-title="Kiểm chứng ngoài mẫu">
+  <p class="kicker">Phần 5 · Ứng dụng</p>
+  <h2 class="h2">Đánh giá quy tắc: trong mẫu và kiểm chứng ngoài mẫu (holdout)</h2>
+  <p class="lede">Ngưỡng được chọn khi quan sát môn Toán, nên kết quả trên môn Toán có xu hướng lạc quan. Quy tắc được giữ nguyên và áp dụng cho <b>275 học sinh môn Bồ Đào Nha không có trong file Toán</b> (đã loại 374 dòng trùng theo 13 cột định danh).</p>
+
+  <div class="cols c-11">
+    <div class="card">
+      <h4>Môn Toán – trong mẫu (n = 395)</h4>
+      <table class="tbl sm">
+        <thead><tr><th>Nhóm high so với thực tế</th><th class="num">Trượt thật</th><th class="num">Đỗ thật</th></tr></thead>
+        <tbody>
+          <tr><td>Được cảnh báo (high)</td><td class="num"><b>122</b> (TP)</td><td class="num">27 (FP)</td></tr>
+          <tr><td>Không cảnh báo</td><td class="num">8 (FN)</td><td class="num">238 (TN)</td></tr>
+        </tbody>
+      </table>
+      <div class="cols c-11 mt-s" style="gap:12px;">
+        <div class="stat"><div class="v good">93,8%</div><div class="l">Recall</div><div class="s">122/130 em trượt được cảnh báo</div></div>
+        <div class="stat"><div class="v">81,9%</div><div class="l">Precision</div><div class="s">122/149 em được cảnh báo trượt thật</div></div>
+      </div>
+    </div>
+
+    <div class="card accent">
+      <h4>Môn Bồ Đào Nha – holdout độc lập (n = 275)</h4>
+      <table class="tbl sm">
+        <thead><tr><th>Nhóm high so với thực tế</th><th class="num">Trượt thật</th><th class="num">Đỗ thật</th></tr></thead>
+        <tbody>
+          <tr><td>Được cảnh báo (high)</td><td class="num"><b>64</b> (TP)</td><td class="num">33 (FP)</td></tr>
+          <tr><td>Không cảnh báo</td><td class="num">6 (FN)</td><td class="num">172 (TN)</td></tr>
+        </tbody>
+      </table>
+      <div class="cols c-11 mt-s" style="gap:12px;">
+        <div class="stat"><div class="v good">91,4%</div><div class="l">Recall</div><div class="s">64/70 em trượt được cảnh báo</div></div>
+        <div class="stat"><div class="v warn">66,0%</div><div class="l">Precision</div><div class="s">64/97 em được cảnh báo trượt thật</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols c-111 mt-m">
+    <div class="card soft"><p><b>Recall giữ ổn định</b> (93,8% → 91,4%); <b>precision giảm</b> (81,9% → 66,0%): khoảng 1/3 số em được cảnh báo ở holdout cuối cùng vẫn đỗ.</p></div>
+    <div class="card soft"><p>Tỉ lệ trượt theo nhóm trên holdout: high 66,0% · medium 9,8% · low 0,8% – thứ tự ba nhóm được giữ nguyên.</p></div>
+    <div class="card soft"><p>Với cảnh báo sớm, bỏ sót học sinh trượt (FN) thường tốn kém hơn cảnh báo thừa (FP), nên recall được ưu tiên.</p></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: summary.json → risk_eval.all, risk_eval.holdout_por_only · Mã nguồn: _risk_eval (dòng 519), _risk_holdout (dòng 678)</span>
+    <span class="slide-number" data-current="19" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Để đánh giá quy tắc, em so sánh nhóm high với kết quả trượt thật.</p>
+    <p>Trên môn Toán, quy tắc cảnh báo được 122 trên 130 em trượt, tức recall 93,8%, và 81,9% số em bị cảnh báo thực sự trượt. Tuy nhiên ngưỡng được chọn khi nhìn vào môn Toán, nên con số này có xu hướng lạc quan.</p>
+    <p>Vì vậy em kiểm chứng ngoài mẫu trên môn Bồ Đào Nha. Do hai file có học sinh trùng nhau, em loại 374 dòng trùng và chỉ giữ 275 học sinh không có trong file Toán. Quy tắc được giữ nguyên, không chỉnh ngưỡng.</p>
+    <p>Kết quả: recall vẫn là 91,4%, tức 64 trên 70 em trượt được cảnh báo. Precision giảm xuống 66%, nghĩa là khoảng một phần ba số em bị cảnh báo cuối cùng vẫn đỗ. Thứ tự tỉ lệ trượt của ba nhóm vẫn giữ nguyên.</p>
+    <p>Trong bài toán cảnh báo sớm, bỏ sót một học sinh sẽ trượt thường tốn kém hơn hỗ trợ thừa một học sinh, nên em ưu tiên recall.</p>
+  </aside>
+</section>
+
+<!-- =============================== 20. PISA =============================== -->
+<section class="slide" data-title="Bối cảnh PISA">
+  <p class="kicker">Phần 6 · Bối cảnh quốc tế</p>
+  <h2 class="h2">Bối cảnh PISA: Bồ Đào Nha so với trung bình OECD</h2>
+  <p class="lede">Dữ liệu PISA là số liệu cấp quốc gia, <b>không ghép</b> với từng học sinh UCI. Chỉ dùng để đặt bộ dữ liệu vào bối cảnh chung.</p>
+
+  <div class="cols c-21">
+    <div class="stack">
+      <table class="tbl">
+        <thead><tr><th>Điểm Toán PISA</th><th class="num">2000</th><th class="num">2003</th><th class="num">2006</th><th class="num">2009</th><th class="num">2012</th><th class="num">2015</th><th class="num">2018</th><th class="num">2022</th><th class="num">2025</th></tr></thead>
+        <tbody>
+          <tr><td><b>Bồ Đào Nha</b></td><td class="num">454</td><td class="num">466</td><td class="num"><b>466</b></td><td class="num">487</td><td class="num">487</td><td class="num">492</td><td class="num">492</td><td class="num">472</td><td class="num">460</td></tr>
+          <tr><td>Trung bình OECD</td><td class="num">492</td><td class="num">499</td><td class="num"><b>494</b></td><td class="num">495</td><td class="num">494</td><td class="num">490</td><td class="num">489</td><td class="num">472</td><td class="num">463</td></tr>
+          <tr><td>Chênh lệch</td><td class="num bad-t">−38</td><td class="num bad-t">−33</td><td class="num bad-t"><b>−28</b></td><td class="num bad-t">−8</td><td class="num bad-t">−7</td><td class="num good-t">+2</td><td class="num good-t">+3</td><td class="num">0</td><td class="num bad-t">−3</td></tr>
+        </tbody>
+      </table>
+      <div class="card accent">
+        <h4>Nhận xét</h4>
+        <ul>
+          <li>Kỳ PISA 2006, gần thời điểm thu thập dữ liệu UCI (2005–2006), điểm Toán của Bồ Đào Nha thấp hơn trung bình OECD 28 điểm.</li>
+          <li>Khoảng cách thu hẹp dần; từ kỳ 2015 trở đi, chênh lệch chỉ còn trong khoảng ±3 điểm.</li>
+          <li>Đây là bối cảnh mô tả; dữ liệu không đủ để giải thích nguyên nhân của các thay đổi này.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="card good">
+        <h4>Đối chiếu Wikipedia với OECD Table I.1</h4>
+        <table class="tbl sm">
+          <thead><tr><th>Năm</th><th class="num">Khớp</th><th class="num">Dung sai</th></tr></thead>
+          <tbody>
+            <tr><td>2025</td><td class="num"><b>274/274</b></td><td class="num">khớp tuyệt đối</td></tr>
+            <tr><td>2022 (= điểm 2025 − mức thay đổi)</td><td class="num"><b>208/211</b></td><td class="num">±1 điểm</td></tr>
+          </tbody>
+        </table>
+        <p class="mt-s" style="font-size:15px;">3 trường hợp lệch 2022 đều của Palestinian Authority (lệch 6–7 điểm). Wikipedia thiếu Uzbekistan ở môn Toán và Đọc hiểu 2025.</p>
+      </div>
+      <div class="card soft">
+        <p style="font-size:15px;">Dung sai ±1 cho năm 2022 vì OECD tính mức thay đổi từ điểm trung bình chưa làm tròn. Số liệu 2000–2018 chỉ có từ Wikipedia, chưa đối chiếu được.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: Wikipedia "Programme for International Student Assessment" (revision 1378067005) · OECD (2026), PISA 2025 Results Vol. I, Table I.1, doi.org/10.1787/73451bc5-en</span>
+    <span class="slide-number" data-current="20" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Phần 6 là bối cảnh quốc tế từ dữ liệu PISA đã cào. Em nhấn mạnh đây là số liệu cấp quốc gia và không được ghép với từng học sinh.</p>
+    <p>Bảng cho thấy điểm Toán PISA của Bồ Đào Nha so với trung bình OECD qua các kỳ. Ở kỳ 2006, gần thời điểm thu thập dữ liệu UCI, Bồ Đào Nha thấp hơn trung bình OECD 28 điểm. Khoảng cách này thu hẹp dần, và từ kỳ 2015 trở đi chênh lệch chỉ còn trong khoảng cộng trừ 3 điểm. Dữ liệu này chỉ mô tả bối cảnh, không đủ để giải thích nguyên nhân.</p>
+    <p>Để kiểm tra độ tin cậy của dữ liệu cào, em đối chiếu với bảng chính thức của OECD. Năm 2025, 274 trên 274 điểm số khớp tuyệt đối. Năm 2022, 208 trên 211 điểm nằm trong dung sai 1 điểm; ba trường hợp lệch đều thuộc Palestinian Authority. Em ghi nhận các sai khác này thay vì bỏ qua.</p>
+  </aside>
+</section>
+
+<!-- =============================== 21. MÃ NGUỒN & KIỂM THỬ =============================== -->
+<section class="slide" data-title="Mã nguồn và kiểm thử">
+  <p class="kicker">Phần 7 · Tổ chức mã nguồn</p>
+  <h2 class="h2">Đối chiếu yêu cầu đề bài và kiểm thử tự động</h2>
+
+  <div class="cols c-21 mt-s">
+    <table class="tbl sm">
+      <thead><tr><th style="width:30%">Yêu cầu của đề bài</th><th>Hiện thực trong mã nguồn</th></tr></thead>
+      <tbody>
+        <tr><td>4 hàm cơ bản</td><td><code>convert_yes_no</code>, <code>calc_pass_fail</code>, <code>classify_absences</code>, <code>calc_average_grade</code> (dòng 108–139)</td></tr>
+        <tr><td>List of dicts</td><td><code>SAMPLE_STUDENTS</code> – học sinh mẫu (dòng 95)</td></tr>
+        <tr><td>Dict mapping</td><td><code>VAR_DESCRIPTIONS</code> – mô tả biến (dòng 63)</td></tr>
+        <tr><td>Set</td><td><code>set()</code> lấy danh sách trường và nghề nghiệp duy nhất trong <code>analyze()</code></td></tr>
+        <tr><td>Tuple cấu hình ngưỡng</td><td><code>THRESHOLDS</code>, <code>ANOMALY_THRESHOLDS</code>, <code>PISA_CHECKS</code></td></tr>
+        <tr><td>OOP</td><td><code>StudentDataProcessor</code>: <code>load_data</code> → <code>clean_data</code> → <code>analyze</code> → <code>export_results</code></td></tr>
+        <tr><td>Tự động hoá</td><td><code>main.py</code> chạy toàn bộ pipeline, xuất <code>cleaned_students.csv</code> + <code>summary.json</code></td></tr>
+        <tr><td>Web scraping</td><td><code>scrape_pisa_table</code>, <code>_parse_pisa_html</code>, <code>validate_pisa_raw</code></td></tr>
+        <tr><td>Sản phẩm nộp</td><td><code>analysis.ipynb</code>, <code>data_processor.py</code> (832 dòng), <code>main.py</code> (72 dòng), dữ liệu raw/processed, 3 biểu đồ, báo cáo <code>report_vi.md</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="stack">
+      <div class="stat"><div class="v good">43 / 43</div><div class="l">Unit test đạt (pytest)</div><div class="s">17 hàm test, một số có tham số hoá; chạy trong 0,11 giây, không cần mạng</div></div>
+      <div class="card">
+        <h4>Nội dung được kiểm thử</h4>
+        <ul>
+          <li>Giá trị biên: đỗ/trượt, mức vắng, yes/no lạ.</li>
+          <li>Quy tắc rủi ro: không phụ thuộc G3, đúng ngưỡng.</li>
+          <li>Làm sạch: đếm lỗi cấy, gắn cờ G3 = 0.</li>
+          <li>Holm: đơn điệu, không vượt quá 1.</li>
+          <li>PISA: bóc tách HTML, từ chối bảng hỏng, đọc cache không gọi mạng, giữ cache khi trang lỗi, đối chiếu OECD.</li>
+          <li>Holdout loại học sinh trùng; xuất đủ các file CSV.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>tests/test_data_processor.py · Lệnh: uv run --with-requirements requirements.txt pytest → 43 passed in 0.11s</span>
+    <span class="slide-number" data-current="21" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Slide này đối chiếu từng yêu cầu của đề bài với vị trí tương ứng trong mã nguồn: bốn hàm cơ bản, các cấu trúc dữ liệu list of dicts, dict, set, tuple, lớp hướng đối tượng <code>StudentDataProcessor</code> với bốn phương thức, file <code>main.py</code> chạy toàn bộ quy trình, và phần web scraping.</p>
+    <p>Dự án có 43 bài kiểm thử tự động, tất cả đều đạt và chạy không cần mạng. Các bài kiểm thử bao phủ giá trị biên của các hàm cơ bản, việc quy tắc rủi ro không phụ thuộc G3, khả năng phát hiện lỗi của bước làm sạch, thuật toán Holm, và các tình huống lỗi của bộ cào PISA.</p>
+  </aside>
+</section>
+
+<!-- =============================== 22. KẾT LUẬN =============================== -->
+<section class="slide" data-title="Kết luận">
+  <p class="kicker">Phần 8 · Kết luận</p>
+  <h2 class="h2">Trả lời câu hỏi nghiên cứu</h2>
+  <p class="lede">Trên 357 học sinh môn Toán có G3 &gt; 0; các kết quả là mối liên hệ, không phải quan hệ nhân quả.</p>
+
+  <table class="tbl">
+    <thead><tr><th style="width:24%">Yếu tố</th><th style="width:36%">Bằng chứng</th><th>Kết luận</th></tr></thead>
+    <tbody>
+      <tr><td><b>Điểm giữa kỳ G1, G2</b></td><td>r = 0,892 và 0,966</td><td>Liên hệ mạnh nhất; G2 là chỉ báo sớm tốt nhất cho G3.</td></tr>
+      <tr><td><b>Số lần trượt trước đây</b></td><td>r = −0,294; η² = 0,089; p<sub>Holm</sub> &lt; 0,001</td><td>Yếu tố bất lợi rõ nhất trong các yếu tố không phải điểm.</td></tr>
+      <tr><td><b>Số buổi vắng</b></td><td>r = −0,213; η² = 0,053; p<sub>Holm</sub> &lt; 0,001</td><td>Liên hệ âm, chỉ thấy rõ sau khi tách 38 trường hợp G3 = 0.</td></tr>
+      <tr><td><b>Thời gian tự học</b></td><td>η² = 0,036; p<sub>Holm</sub> = 0,019</td><td>Có liên hệ nhưng hiệu ứng nhỏ, xu hướng không đơn điệu.</td></tr>
+      <tr><td><b>Hỗ trợ từ gia đình</b></td><td>p<sub>Holm</sub> = 0,404; r = −0,067</td><td>Không có khác biệt có ý nghĩa thống kê.</td></tr>
+      <tr><td><b>Internet, học thêm có phí</b></td><td>p<sub>Holm</sub> = 0,080 và 0,585</td><td>Không có khác biệt có ý nghĩa thống kê sau hiệu chỉnh.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="mt-m" style="font-size:16px;margin-bottom:10px;">Đề xuất áp dụng (cần thử nghiệm thêm trước khi triển khai)</h4>
+  <div class="cols c-111" style="gap:16px;">
+    <div class="card accent"><p><b>Rà soát sau khi có G2:</b> áp dụng quy tắc rủi ro để lập danh sách hỗ trợ; trên holdout bắt được 91,4% học sinh trượt.</p></div>
+    <div class="card accent"><p><b>Theo dõi từ đầu năm</b> học sinh đã từng trượt môn, và học sinh vắng từ 10 buổi trở lên.</p></div>
+    <div class="card accent"><p><b>Kiểm tra điểm 0</b> trước khi phân tích điểm số, để không nhầm học sinh bỏ thi với học sinh thi kém.</p></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: summary.json · report_vi.md</span>
+    <span class="slide-number" data-current="22" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Quay lại câu hỏi chính, em xin tóm tắt câu trả lời.</p>
+    <p>Điểm giữa kỳ G1, G2 có liên hệ mạnh nhất với điểm cuối năm; G2 là chỉ báo sớm tốt nhất. Trong các yếu tố không phải điểm, số lần trượt trước đây là yếu tố bất lợi rõ nhất, tiếp theo là số buổi vắng. Thời gian tự học có liên hệ nhưng hiệu ứng nhỏ. Hỗ trợ từ gia đình, internet và học thêm có phí không cho thấy khác biệt có ý nghĩa thống kê.</p>
+    <p>Từ đó em đề xuất ba hướng áp dụng: rà soát học sinh bằng quy tắc rủi ro ngay khi có điểm G2; theo dõi từ đầu năm những học sinh từng trượt môn hoặc vắng nhiều; và luôn kiểm tra các điểm 0 trước khi phân tích. Các đề xuất này cần được thử nghiệm thêm trên dữ liệu khác trước khi áp dụng thực tế.</p>
+  </aside>
+</section>
+
+<!-- =============================== 23. HẠN CHẾ =============================== -->
+<section class="slide" data-title="Hạn chế">
+  <p class="kicker">Phần 8 · Kết luận</p>
+  <h2 class="h2">Hạn chế và hướng phát triển</h2>
+
+  <div class="cols c-11 mt-s">
+    <div class="card warn big">
+      <h4>Hạn chế</h4>
+      <ul>
+        <li>Chỉ 2 trường, 1 năm học, dữ liệu cắt ngang: kết quả là mối liên hệ, không phải nhân quả.</li>
+        <li>Thời gian tự học và số buổi vắng là số liệu khai báo/ghi nhận theo mức; các yếu tố như động lực, giáo viên, thu nhập không có trong dữ liệu.</li>
+        <li>Nhãn "nghi bỏ thi" (G3 = 0) là suy luận từ dữ liệu, chưa được nhà trường xác nhận.</li>
+        <li>Một số nhóm nhỏ cho trung bình kém tin cậy (vd tự học &gt; 10h, không có internet: n = 3).</li>
+        <li>Ngưỡng quy tắc rủi ro chọn trên môn Toán; tập holdout cùng trường, cùng năm học.</li>
+        <li>PISA chỉ là bối cảnh quốc gia; số liệu 2000–2018 chỉ lấy từ Wikipedia.</li>
+      </ul>
+    </div>
+    <div class="card good big">
+      <h4>Hướng phát triển</h4>
+      <ul>
+        <li>Kiểm chứng quy tắc rủi ro trên dữ liệu của trường khác hoặc năm học khác.</li>
+        <li>Xác nhận nhãn bỏ thi với dữ liệu hành chính của nhà trường.</li>
+        <li>Thử mô hình đa biến (hồi quy logistic, cây quyết định) với kiểm định chéo, so sánh với quy tắc đơn giản hiện tại.</li>
+        <li>Bổ sung các biến về môi trường học tập để giảm thiên lệch do biến bị bỏ sót.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Nguồn: report_vi.md, mục 3 – Giới hạn</span>
+    <span class="slide-number" data-current="23" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Em xin nêu các hạn chế của đồ án.</p>
+    <p>Dữ liệu chỉ gồm hai trường trong một năm học, nên kết quả là mối liên hệ chứ không phải nhân quả. Một số biến là số liệu khai báo theo mức, và nhiều yếu tố quan trọng không có trong dữ liệu. Nhãn nghi bỏ thi là suy luận, chưa được xác nhận. Ngưỡng của quy tắc rủi ro được chọn trên môn Toán, và tập kiểm chứng vẫn cùng trường, cùng năm học, nên khả năng tổng quát hoá còn hạn chế.</p>
+    <p>Hướng phát triển gồm: kiểm chứng trên dữ liệu trường hoặc năm học khác, xác nhận nhãn bỏ thi, thử các mô hình đa biến với kiểm định chéo để so sánh với quy tắc đơn giản hiện tại, và bổ sung thêm biến.</p>
+  </aside>
+</section>
+
+<!-- =============================== 24. CẢM ƠN =============================== -->
+<section class="slide center-v" data-title="Hỏi đáp">
+  <p class="kicker">Kết thúc</p>
+  <div class="rule"></div>
+  <h1 class="h1">Em xin cảm ơn quý thầy cô<br>đã lắng nghe</h1>
+  <p class="lede" style="font-size:21px;">Em rất mong nhận được nhận xét và câu hỏi của thầy cô.</p>
+
+  <div class="cols c-1111 mt-l" style="gap:16px;max-width:1200px;">
+    <div class="stat"><div class="v">395 / 649</div><div class="l">Học sinh Toán / Bồ Đào Nha</div></div>
+    <div class="stat"><div class="v">38</div><div class="l">Trường hợp G3 = 0 được gắn cờ</div></div>
+    <div class="stat"><div class="v good">91,4%</div><div class="l">Recall trên holdout (n = 275)</div></div>
+    <div class="stat"><div class="v">274 / 274</div><div class="l">Điểm PISA 2025 khớp OECD</div></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Mã nguồn: github.com/Stratoze/Python-data-scraping · Tài liệu: README.md, METHODS.md, PROJECT_GUIDE.md</span>
+    <span class="slide-number" data-current="24" data-total="24"></span>
+  </div>
+  <aside class="notes">
+    <p>Tóm lại, đồ án đã đi qua đầy đủ quy trình: thu thập dữ liệu từ UCI và cào dữ liệu PISA; làm sạch dữ liệu có kiểm soát và phát hiện 38 trường hợp điểm 0 không phản ánh điểm thi thật; phân tích và kiểm định có hiệu chỉnh đa kiểm định; xây dựng quy tắc cảnh báo sớm đạt recall 91,4% trên tập kiểm chứng độc lập; và đối chiếu dữ liệu cào với nguồn chính thức của OECD.</p>
+    <p>Em xin cảm ơn quý thầy cô đã lắng nghe, và rất mong nhận được nhận xét cũng như câu hỏi của thầy cô.</p>
+  </aside>
+</section>
+
+</div>
+
+<script>
+  /* Minimal Python syntax highlighting for <code class="py"> blocks (offline, no CDN) */
+  (function () {
+    var re = /(#[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|\b(def|return|if|elif|else|for|in|not|and|or|is|None|True|False|with|as|try|except|raise|lambda|assert|from)\b|\b(\d+(?:\.\d+)?)\b/g;
+    function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    document.querySelectorAll('pre code.py').forEach(function (el) {
+      var src = el.textContent, out = '', last = 0, m;
+      re.lastIndex = 0;
+      while ((m = re.exec(src))) {
+        var cls = m[1] ? 'c' : m[2] ? 's' : m[3] ? 'k' : 'n';
+        out += esc(src.slice(last, m.index)) + '<span class="' + cls + '">' + esc(m[0]) + '</span>';
+        last = re.lastIndex;
+      }
+      el.innerHTML = out + esc(src.slice(last));
+    });
+  })();
+</script>
+<script src="../html-ppt-skill/assets/runtime.js"></script>
+</body>
+</html>

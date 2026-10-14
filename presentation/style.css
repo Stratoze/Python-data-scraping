@@ -1,0 +1,288 @@
+/* Presentation styles · P1 Student Performance
+ * Scoped under .tpl-student-perf. Slides are laid out on a fixed 1600x900
+ * stage that is scaled to fit the screen (see the --fit script in index.html).
+ */
+
+/* ---------- Stage: fixed 16:9 canvas, scaled to the viewport ---------- */
+html, body { background: var(--bg); }
+.tpl-student-perf .deck {
+  position: fixed;
+  width: 1600px;
+  height: 900px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(var(--fit, 1));
+  transform-origin: center center;
+}
+@media print {
+  .tpl-student-perf .deck { position: static; transform: none; }
+}
+
+.tpl-student-perf .slide {
+  padding: 48px 72px 76px;
+  justify-content: flex-start;
+  background: var(--bg);
+  color: var(--text-1);
+}
+.tpl-student-perf .slide.center-v { justify-content: center; }
+
+/* ---------- Typography ---------- */
+.tpl-student-perf .kicker {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin: 0 0 6px;
+}
+.tpl-student-perf .h1 {
+  font-size: 54px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin: 0 0 18px;
+}
+.tpl-student-perf .h2 {
+  font-size: 40px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  margin: 0 0 6px;
+}
+.tpl-student-perf .lede {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--text-2);
+  font-weight: 400;
+  max-width: 120ch;
+  margin: 0 0 18px;
+}
+.tpl-student-perf p { margin: 0; }
+.tpl-student-perf code {
+  font-size: .92em;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.tpl-student-perf .dim { color: var(--text-3); }
+.tpl-student-perf b, .tpl-student-perf strong { color: var(--text-1); font-weight: 600; }
+.tpl-student-perf .good-t { color: var(--good); }
+.tpl-student-perf .bad-t { color: var(--bad); }
+.tpl-student-perf .warn-t { color: var(--warn); }
+.tpl-student-perf .acc-t { color: var(--accent-2); }
+
+/* ---------- Footer ---------- */
+.tpl-student-perf .slide-footer {
+  position: absolute;
+  left: 72px;
+  right: 72px;
+  bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+/* ---------- Layout helpers ---------- */
+.tpl-student-perf .cols { display: grid; gap: 28px; align-items: start; }
+.tpl-student-perf .c-11 { grid-template-columns: 1fr 1fr; }
+.tpl-student-perf .c-21 { grid-template-columns: 1.45fr 1fr; }
+.tpl-student-perf .c-12 { grid-template-columns: 1fr 1.45fr; }
+.tpl-student-perf .c-111 { grid-template-columns: repeat(3, 1fr); }
+.tpl-student-perf .c-1111 { grid-template-columns: repeat(4, 1fr); }
+.tpl-student-perf .stack { display: flex; flex-direction: column; gap: 14px; }
+.tpl-student-perf .mt-s { margin-top: 10px; }
+.tpl-student-perf .mt-m { margin-top: 18px; }
+.tpl-student-perf .mt-l { margin-top: 28px; }
+
+/* ---------- Cards ---------- */
+.tpl-student-perf .card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+}
+.tpl-student-perf .card h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--text-1);
+}
+.tpl-student-perf .card p, .tpl-student-perf .card li {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.tpl-student-perf .card ul { margin: 0; padding-left: 18px; }
+.tpl-student-perf .card li + li { margin-top: 4px; }
+.tpl-student-perf .card.accent { border-left: 4px solid var(--accent-2); }
+.tpl-student-perf .card.good { border-left: 4px solid var(--good); }
+.tpl-student-perf .card.bad { border-left: 4px solid var(--bad); }
+.tpl-student-perf .card.warn { border-left: 4px solid var(--warn); }
+.tpl-student-perf .card.soft { background: var(--surface-2); box-shadow: none; }
+
+/* ---------- Stat boxes ---------- */
+.tpl-student-perf .stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+}
+.tpl-student-perf .stat .v {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--accent-2);
+}
+.tpl-student-perf .stat .v.good { color: var(--good); }
+.tpl-student-perf .stat .v.bad { color: var(--bad); }
+.tpl-student-perf .stat .v.warn { color: var(--warn); }
+.tpl-student-perf .stat .l { font-size: 15.5px; font-weight: 600; color: var(--text-1); margin-top: 4px; }
+.tpl-student-perf .stat .s { font-size: 14px; color: var(--text-3); line-height: 1.4; margin-top: 2px; }
+
+/* ---------- Pills ---------- */
+.tpl-student-perf .pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+  color: var(--accent-2);
+}
+.tpl-student-perf .pill.good { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good); }
+.tpl-student-perf .pill.bad { background: color-mix(in srgb, var(--bad) 12%, transparent); color: var(--bad); }
+.tpl-student-perf .pill.warn { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+.tpl-student-perf .pill.mute { background: var(--surface-2); color: var(--text-2); }
+
+/* ---------- Tables ---------- */
+.tpl-student-perf .tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15.5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.tpl-student-perf .tbl th {
+  background: var(--surface-2);
+  color: var(--text-1);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-strong);
+  font-size: 14px;
+}
+.tpl-student-perf .tbl td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-2);
+  vertical-align: top;
+  line-height: 1.4;
+}
+.tpl-student-perf .tbl tr:last-child td { border-bottom: none; }
+.tpl-student-perf .tbl .num { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
+.tpl-student-perf .tbl th.num { text-align: right; }
+.tpl-student-perf .tbl .grp td {
+  background: color-mix(in srgb, var(--accent-2) 6%, transparent);
+  color: var(--text-1);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 5px 12px;
+}
+.tpl-student-perf .tbl tr.hl td { background: color-mix(in srgb, var(--bad) 7%, transparent); }
+.tpl-student-perf .tbl.sm { font-size: 14.5px; }
+.tpl-student-perf .tbl.sm td { padding: 5px 10px; }
+.tpl-student-perf .tbl.sm th { padding: 6px 10px; font-size: 13px; }
+
+/* ---------- Code blocks ---------- */
+.tpl-student-perf .code {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.tpl-student-perf .code .bar {
+  background: #161b22;
+  color: #8b949e;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 14px;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tpl-student-perf .code pre {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #c9d1d9;
+  white-space: pre;
+  overflow: hidden;
+}
+.tpl-student-perf .code pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+.tpl-student-perf .code .k { color: #ff7b72; }
+.tpl-student-perf .code .s { color: #a5d6ff; }
+.tpl-student-perf .code .n { color: #79c0ff; }
+.tpl-student-perf .code .c { color: #8b949e; font-style: italic; }
+
+/* ---------- Pipeline flow ---------- */
+.tpl-student-perf .flow { display: flex; align-items: stretch; gap: 8px; }
+.tpl-student-perf .flow .step {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent-2);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 14.5px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+.tpl-student-perf .flow .step b { display: block; font-family: var(--font-mono); font-size: 14px; color: var(--text-1); margin-bottom: 3px; }
+.tpl-student-perf .flow .arrow { align-self: center; color: var(--text-3); font-size: 18px; }
+.tpl-student-perf .flow .step.key { border-top-color: var(--warn); }
+
+/* ---------- Chart image frame ---------- */
+.tpl-student-perf .figure {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+.tpl-student-perf .figure img { width: 100%; height: auto; max-height: 560px; object-fit: contain; margin: 0 auto; }
+.tpl-student-perf .figure .cap { font-size: 13px; color: #6b7280; font-family: var(--font-mono); margin-top: 4px; text-align: center; }
+
+/* ---------- Agenda ---------- */
+.tpl-student-perf .agenda { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 56px; }
+.tpl-student-perf .agenda .it { display: flex; gap: 16px; align-items: baseline; border-bottom: 1px solid var(--border); padding: 10px 0; }
+.tpl-student-perf .agenda .no { font-family: var(--font-mono); font-size: 28px; font-weight: 700; color: var(--accent-2); min-width: 36px; }
+.tpl-student-perf .agenda .t { font-size: 23px; font-weight: 600; color: var(--text-1); }
+.tpl-student-perf .agenda .d { font-size: 16.5px; color: var(--text-3); margin-top: 2px; }
+
+/* ---------- Cover ---------- */
+.tpl-student-perf .meta { display: grid; grid-template-columns: 240px 1fr; gap: 10px 20px; font-size: 19px; margin-top: 28px; }
+.tpl-student-perf .meta .k { color: var(--text-3); }
+.tpl-student-perf .meta .v { color: var(--text-1); font-weight: 500; }
+.tpl-student-perf .rule { height: 3px; width: 72px; background: var(--accent-2); margin: 0 0 22px; border-radius: 2px; }
+
+/* Colour helpers must beat the default table cell colour */
+.tpl-student-perf .tbl td.good-t, .tpl-student-perf .tbl .good-t { color: var(--good); }
+.tpl-student-perf .tbl td.bad-t, .tpl-student-perf .tbl .bad-t { color: var(--bad); }
+.tpl-student-perf .tbl td.warn-t, .tpl-student-perf .tbl .warn-t { color: var(--warn); }
+.tpl-student-perf .good-t b, .tpl-student-perf .bad-t b, .tpl-student-perf .warn-t b { color: inherit; }
+.tpl-student-perf .card.big h4 { font-size: 20px; }
+.tpl-student-perf .card.big li { font-size: 18px; line-height: 1.55; }
+.tpl-student-perf .card.big li + li { margin-top: 10px; }
