@@ -35,7 +35,7 @@
   </div>
   <div class="slide-footer">
     <span>Mã nguồn: github.com/Stratoze/Python-data-scraping</span>
-    <span class="slide-number" data-current="1" data-total="24"></span>
+    <span class="slide-number" data-current="1" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Kính thưa quý thầy cô. Em xin trình bày đồ án P1: <strong>Phân tích các yếu tố ảnh hưởng đến kết quả học tập của học sinh THPT</strong>.</p>
@@ -84,7 +84,7 @@
 
   <div class="slide-footer">
     <span>Đề bài P1: thư mục requirement/ · Thuật ngữ: CONTEXT.md</span>
-    <span class="slide-number" data-current="2" data-total="24"></span>
+    <span class="slide-number" data-current="2" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Bài toán thực tế đặt ra là: làm thế nào để nhà trường nhận diện sớm học sinh có nguy cơ không đạt môn, để có biện pháp hỗ trợ trước kỳ thi cuối năm.</p>
@@ -101,21 +101,20 @@
   <p class="lede">Trình tự bám theo quy trình khoa học dữ liệu trong đề bài: thu thập → làm sạch → khám phá → kiểm định → ứng dụng → kết luận.</p>
   <div class="agenda mt-m">
     <div class="it"><span class="no">01</span><div><div class="t">Bài toán và câu hỏi nghiên cứu</div><div class="d">Mục tiêu, phạm vi, giới hạn phương pháp</div></div></div>
-    <div class="it"><span class="no">05</span><div><div class="t">Quy tắc cảnh báo sớm</div><div class="d">Phân nhóm rủi ro, kiểm chứng ngoài mẫu</div></div></div>
     <div class="it"><span class="no">02</span><div><div class="t">Dữ liệu</div><div class="d">Nguồn, cách thu thập, cấu trúc, thuộc tính, thống kê mô tả</div></div></div>
-    <div class="it"><span class="no">06</span><div><div class="t">Bối cảnh quốc tế PISA</div><div class="d">Bồ Đào Nha so với trung bình OECD, đối chiếu nguồn</div></div></div>
     <div class="it"><span class="no">03</span><div><div class="t">Làm sạch và kiểm soát chất lượng dữ liệu</div><div class="d">6 bước làm sạch, mã nguồn, log kết quả, kiểm thử, trường hợp G3 = 0</div></div></div>
-    <div class="it"><span class="no">07</span><div><div class="t">Tổ chức mã nguồn và kiểm thử</div><div class="d">Đối chiếu yêu cầu đề bài, 43 unit test</div></div></div>
     <div class="it"><span class="no">04</span><div><div class="t">Phân tích khám phá và kiểm định</div><div class="d">3 biểu đồ, tương quan, t-test, ANOVA, hiệu chỉnh Holm</div></div></div>
-    <div class="it"><span class="no">08</span><div><div class="t">Kết luận và hạn chế</div><div class="d">Trả lời câu hỏi nghiên cứu, khuyến nghị, hướng phát triển</div></div></div>
+    <div class="it"><span class="no">05</span><div><div class="t">Quy tắc cảnh báo sớm</div><div class="d">Phân nhóm rủi ro, kiểm chứng ngoài mẫu</div></div></div>
+    <div class="it"><span class="no">06</span><div><div class="t">Bối cảnh quốc tế PISA</div><div class="d">Bồ Đào Nha so với trung bình OECD, đối chiếu nguồn</div></div></div>
+    <div class="it" style="grid-column: span 2;"><span class="no">07</span><div><div class="t">Kết luận và đề xuất áp dụng</div><div class="d">Trả lời câu hỏi nghiên cứu, khuyến nghị can thiệp theo nhóm rủi ro</div></div></div>
   </div>
   <div class="slide-footer">
     <span>Đồ án P1 · Student Performance</span>
-    <span class="slide-number" data-current="3" data-total="24"></span>
+    <span class="slide-number" data-current="3" data-total="22"></span>
   </div>
   <aside class="notes">
-    <p>Bài trình bày gồm tám phần, đi theo đúng trình tự của quy trình khoa học dữ liệu mà đề bài yêu cầu.</p>
-    <p>Em sẽ dành phần lớn thời gian cho phần 2 và phần 3, tức là mô tả dữ liệu và quá trình làm sạch, vì đây là nền tảng cho mọi kết luận phía sau. Sau đó là phân tích khám phá, kiểm định thống kê, quy tắc cảnh báo sớm, bối cảnh PISA, và cuối cùng là kết luận cùng các hạn chế.</p>
+    <p>Bài trình bày gồm bảy phần, đi theo đúng trình tự của quy trình khoa học dữ liệu mà đề bài yêu cầu.</p>
+    <p>Em sẽ dành phần lớn thời gian cho phần 2 và phần 3, tức là mô tả dữ liệu và quá trình làm sạch, vì đây là nền tảng cho mọi kết luận phía sau. Sau đó là phân tích khám phá, kiểm định thống kê, quy tắc cảnh báo sớm, bối cảnh PISA, và cuối cùng là kết luận cùng các khuyến nghị.</p>
   </aside>
 </section>
 
@@ -151,7 +150,7 @@
 
   <div class="slide-footer">
     <span>Mã nguồn: main.py · data_processor.py (fetch_uci_raw dòng 173, scrape_pisa_table 309, StudentDataProcessor 538)</span>
-    <span class="slide-number" data-current="4" data-total="24"></span>
+    <span class="slide-number" data-current="4" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Đồ án sử dụng ba nguồn dữ liệu.</p>
@@ -222,7 +221,7 @@ except Exception as exc:
 
   <div class="slide-footer">
     <span>Cào lại dữ liệu mới: python main.py --refresh-pisa · Metadata: data/raw/pisa_reference.meta.json</span>
-    <span class="slide-number" data-current="5" data-total="24"></span>
+    <span class="slide-number" data-current="5" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Slide này trình bày mã nguồn của bước thu thập dữ liệu.</p>
@@ -285,7 +284,7 @@ G1;G2;G3
 
   <div class="slide-footer">
     <span>Nguồn: data/raw/student.txt (mô tả thuộc tính của UCI) · MERGE_KEYS: data_processor.py:53</span>
-    <span class="slide-number" data-current="6" data-total="24"></span>
+    <span class="slide-number" data-current="6" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Về cấu trúc: đơn vị quan sát là một học sinh trong một môn học. File Toán có 395 dòng, file Tiếng Bồ Đào Nha có 649 dòng, cả hai đều có 33 cột. Khi nạp vào, chương trình ghép hai file thành 1044 dòng và thêm cột <code>subject</code> để phân biệt.</p>
@@ -327,7 +326,7 @@ G1;G2;G3
 
   <div class="slide-footer">
     <span>Nguồn: data/raw/student.txt · Ánh xạ mô tả biến trong code: VAR_DESCRIPTIONS (data_processor.py:63)</span>
-    <span class="slide-number" data-current="7" data-total="24"></span>
+    <span class="slide-number" data-current="7" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Bảng này là từ điển thuộc tính của 33 cột, chia thành năm nhóm.</p>
@@ -376,7 +375,7 @@ G1;G2;G3
 
   <div class="slide-footer">
     <span>Nguồn: data/processed/cleaned_students_mat.csv (pandas describe, value_counts)</span>
-    <span class="slide-number" data-current="8" data-total="24"></span>
+    <span class="slide-number" data-current="8" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Đây là thống kê mô tả của các biến chính trong môn Toán, gồm 395 học sinh.</p>
@@ -437,7 +436,7 @@ FLAG_COLS = ["dropout_suspect", "g2_zero", "grade_drop",
 
   <div class="slide-footer">
     <span>Mã nguồn: StudentDataProcessor.load_data (dòng 559) · clean_data (dòng 573–636)</span>
-    <span class="slide-number" data-current="9" data-total="24"></span>
+    <span class="slide-number" data-current="9" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Phần 3 là quy trình làm sạch dữ liệu, gồm 6 bước nằm trong hàm <code>clean_data</code>.</p>
@@ -511,7 +510,7 @@ log["n_missing_required_dropped"] = int(before - len(df))</code></pre>
 
   <div class="slide-footer">
     <span>Kết quả: data/processed/summary.json → cleaning_log</span>
-    <span class="slide-number" data-current="10" data-total="24"></span>
+    <span class="slide-number" data-current="10" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Đây là mã nguồn của bốn bước đầu.</p>
@@ -586,7 +585,7 @@ df["inconsistent_grade"] = (df["G3"] &gt; 0) &amp; (df["G2"] == 0)</code></pre>
 
   <div class="slide-footer">
     <span>Kết quả: summary.json → anomaly_counts, cleaning_log.absence_outlier_fence · Quyết định thiết kế: docs/adr/0001</span>
-    <span class="slide-number" data-current="11" data-total="24"></span>
+    <span class="slide-number" data-current="11" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Bước 5 tạo các cột dẫn xuất. <code>pass_fail</code> là kết quả đỗ/trượt. <code>absence_level</code> chia số buổi vắng thành ba mức. Cột <code>avg_grade</code> là trung bình ba điểm, nhưng vì có chứa G3 nên em chỉ dùng để mô tả, không bao giờ dùng để dự đoán G3; thay vào đó cột <code>avg_g1g2</code> chỉ dùng G1 và G2. Cột <code>risk_group</code> là nhóm rủi ro, sẽ trình bày ở phần 5.</p>
@@ -648,7 +647,7 @@ Cleaned: 1044 rows, log={'rows_in': 1044, 'n_cells_stripped': 0,
 
   <div class="slide-footer">
     <span>Đầu ra: data/processed/cleaned_students.csv, cleaned_students_mat.csv, cleaned_students_por.csv, summary.json</span>
-    <span class="slide-number" data-current="12" data-total="24"></span>
+    <span class="slide-number" data-current="12" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Slide này là bằng chứng của quá trình làm sạch.</p>
@@ -713,7 +712,7 @@ assert set(clean["school"]) == {"GP"}</code></pre>
 
   <div class="slide-footer">
     <span>Lệnh kiểm thử: uv run --with-requirements requirements.txt pytest → 43 passed</span>
-    <span class="slide-number" data-current="13" data-total="24"></span>
+    <span class="slide-number" data-current="13" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Vì bộ UCI không có lỗi hình thức, các con số 0 trong nhật ký chưa đủ để chứng minh bộ làm sạch hoạt động đúng. Do đó em viết một bài kiểm thử: lấy 6 dòng dữ liệu thật rồi cấy lỗi có chủ đích.</p>
@@ -761,7 +760,7 @@ assert set(clean["school"]) == {"GP"}</code></pre>
 
   <div class="slide-footer">
     <span>Nguồn: summary.json → dropout_profile, scopes.all / scopes.exclude_dropout · Môn Bồ Đào Nha: 15 trường hợp G3 = 0</span>
-    <span class="slide-number" data-current="14" data-total="24"></span>
+    <span class="slide-number" data-current="14" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Đây là phát hiện quan trọng nhất của bước kiểm soát chất lượng dữ liệu.</p>
@@ -806,7 +805,7 @@ assert set(clean["school"]) == {"GP"}</code></pre>
 
   <div class="slide-footer">
     <span>Phạm vi: môn Toán, 357 học sinh có G3 &gt; 0 · Nguồn: summary.json → scopes.exclude_dropout</span>
-    <span class="slide-number" data-current="15" data-total="24"></span>
+    <span class="slide-number" data-current="15" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Phần 4 là phân tích khám phá. Biểu đồ 1 so sánh điểm G3 trung bình theo thời gian tự học và theo việc có internet ở nhà, tính trên 357 học sinh.</p>
@@ -852,7 +851,7 @@ assert set(clean["school"]) == {"GP"}</code></pre>
 
   <div class="slide-footer">
     <span>Phạm vi: môn Toán, n = 357 · Nguồn: summary.json → scopes.exclude_dropout.corr_tests</span>
-    <span class="slide-number" data-current="16" data-total="24"></span>
+    <span class="slide-number" data-current="16" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Biểu đồ 3 là ma trận tương quan Pearson; bảng bên phải liệt kê tương quan của từng biến với G3 kèm khoảng tin cậy 95%.</p>
@@ -889,7 +888,7 @@ assert set(clean["school"]) == {"GP"}</code></pre>
 
   <div class="slide-footer">
     <span>Phạm vi: môn Toán, n = 357 · Mã nguồn: _group_tests (dòng 441), _holm (dòng 432) · Chi tiết: METHODS.md</span>
-    <span class="slide-number" data-current="17" data-total="24"></span>
+    <span class="slide-number" data-current="17" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Để trả lời câu hỏi "nhóm nào có điểm khác biệt", em dùng Welch t-test cho các biến yes/no và ANOVA một nhân tố cho các biến nhiều mức.</p>
@@ -950,7 +949,7 @@ def classify_risk(row: pd.Series) -&gt; str:
 
   <div class="slide-footer">
     <span>Nguồn: summary.json → risk_eval.all, scopes.all.by_risk_group · Quyết định thiết kế: docs/adr/0002</span>
-    <span class="slide-number" data-current="18" data-total="24"></span>
+    <span class="slide-number" data-current="18" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Phần 5 là ứng dụng: xây dựng quy tắc phân nhóm rủi ro để cảnh báo sớm.</p>
@@ -1006,7 +1005,7 @@ def classify_risk(row: pd.Series) -&gt; str:
 
   <div class="slide-footer">
     <span>Nguồn: summary.json → risk_eval.all, risk_eval.holdout_por_only · Mã nguồn: _risk_eval (dòng 519), _risk_holdout (dòng 678)</span>
-    <span class="slide-number" data-current="19" data-total="24"></span>
+    <span class="slide-number" data-current="19" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Để đánh giá quy tắc, em so sánh nhóm high với kết quả trượt thật.</p>
@@ -1063,7 +1062,7 @@ def classify_risk(row: pd.Series) -&gt; str:
 
   <div class="slide-footer">
     <span>Nguồn: Wikipedia "Programme for International Student Assessment" (revision 1378067005) · OECD (2026), PISA 2025 Results Vol. I, Table I.1, doi.org/10.1787/73451bc5-en</span>
-    <span class="slide-number" data-current="20" data-total="24"></span>
+    <span class="slide-number" data-current="20" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Phần 6 là bối cảnh quốc tế từ dữ liệu PISA đã cào. Em nhấn mạnh đây là số liệu cấp quốc gia và không được ghép với từng học sinh.</p>
@@ -1072,56 +1071,9 @@ def classify_risk(row: pd.Series) -&gt; str:
   </aside>
 </section>
 
-<!-- =============================== 21. MÃ NGUỒN & KIỂM THỬ =============================== -->
-<section class="slide" data-title="Mã nguồn và kiểm thử">
-  <p class="kicker">Phần 7 · Tổ chức mã nguồn</p>
-  <h2 class="h2">Đối chiếu yêu cầu đề bài và kiểm thử tự động</h2>
-
-  <div class="cols c-21 mt-s">
-    <table class="tbl sm">
-      <thead><tr><th style="width:30%">Yêu cầu của đề bài</th><th>Hiện thực trong mã nguồn</th></tr></thead>
-      <tbody>
-        <tr><td>4 hàm cơ bản</td><td><code>convert_yes_no</code>, <code>calc_pass_fail</code>, <code>classify_absences</code>, <code>calc_average_grade</code> (dòng 108–139)</td></tr>
-        <tr><td>List of dicts</td><td><code>SAMPLE_STUDENTS</code> – học sinh mẫu (dòng 95)</td></tr>
-        <tr><td>Dict mapping</td><td><code>VAR_DESCRIPTIONS</code> – mô tả biến (dòng 63)</td></tr>
-        <tr><td>Set</td><td><code>set()</code> lấy danh sách trường và nghề nghiệp duy nhất trong <code>analyze()</code></td></tr>
-        <tr><td>Tuple cấu hình ngưỡng</td><td><code>THRESHOLDS</code>, <code>ANOMALY_THRESHOLDS</code>, <code>PISA_CHECKS</code></td></tr>
-        <tr><td>OOP</td><td><code>StudentDataProcessor</code>: <code>load_data</code> → <code>clean_data</code> → <code>analyze</code> → <code>export_results</code></td></tr>
-        <tr><td>Tự động hoá</td><td><code>main.py</code> chạy toàn bộ pipeline, xuất <code>cleaned_students.csv</code> + <code>summary.json</code></td></tr>
-        <tr><td>Web scraping</td><td><code>scrape_pisa_table</code>, <code>_parse_pisa_html</code>, <code>validate_pisa_raw</code></td></tr>
-        <tr><td>Sản phẩm nộp</td><td><code>analysis.ipynb</code>, <code>data_processor.py</code> (832 dòng), <code>main.py</code> (72 dòng), dữ liệu raw/processed, 3 biểu đồ, báo cáo <code>report_vi.md</code></td></tr>
-      </tbody>
-    </table>
-
-    <div class="stack">
-      <div class="stat"><div class="v good">43 / 43</div><div class="l">Unit test đạt (pytest)</div><div class="s">17 hàm test, một số có tham số hoá; chạy trong 0,11 giây, không cần mạng</div></div>
-      <div class="card">
-        <h4>Nội dung được kiểm thử</h4>
-        <ul>
-          <li>Giá trị biên: đỗ/trượt, mức vắng, yes/no lạ.</li>
-          <li>Quy tắc rủi ro: không phụ thuộc G3, đúng ngưỡng.</li>
-          <li>Làm sạch: đếm lỗi cấy, gắn cờ G3 = 0.</li>
-          <li>Holm: đơn điệu, không vượt quá 1.</li>
-          <li>PISA: bóc tách HTML, từ chối bảng hỏng, đọc cache không gọi mạng, giữ cache khi trang lỗi, đối chiếu OECD.</li>
-          <li>Holdout loại học sinh trùng; xuất đủ các file CSV.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="slide-footer">
-    <span>tests/test_data_processor.py · Lệnh: uv run --with-requirements requirements.txt pytest → 43 passed in 0.11s</span>
-    <span class="slide-number" data-current="21" data-total="24"></span>
-  </div>
-  <aside class="notes">
-    <p>Slide này đối chiếu từng yêu cầu của đề bài với vị trí tương ứng trong mã nguồn: bốn hàm cơ bản, các cấu trúc dữ liệu list of dicts, dict, set, tuple, lớp hướng đối tượng <code>StudentDataProcessor</code> với bốn phương thức, file <code>main.py</code> chạy toàn bộ quy trình, và phần web scraping.</p>
-    <p>Dự án có 43 bài kiểm thử tự động, tất cả đều đạt và chạy không cần mạng. Các bài kiểm thử bao phủ giá trị biên của các hàm cơ bản, việc quy tắc rủi ro không phụ thuộc G3, khả năng phát hiện lỗi của bước làm sạch, thuật toán Holm, và các tình huống lỗi của bộ cào PISA.</p>
-  </aside>
-</section>
-
-<!-- =============================== 22. KẾT LUẬN =============================== -->
+<!-- =============================== 21. KẾT LUẬN =============================== -->
 <section class="slide" data-title="Kết luận">
-  <p class="kicker">Phần 8 · Kết luận</p>
+  <p class="kicker">Phần 7 · Kết luận</p>
   <h2 class="h2">Trả lời câu hỏi nghiên cứu</h2>
   <p class="lede">Trên 357 học sinh môn Toán có G3 &gt; 0; các kết quả là mối liên hệ, không phải quan hệ nhân quả.</p>
 
@@ -1146,7 +1098,7 @@ def classify_risk(row: pd.Series) -&gt; str:
 
   <div class="slide-footer">
     <span>Nguồn: summary.json · report_vi.md</span>
-    <span class="slide-number" data-current="22" data-total="24"></span>
+    <span class="slide-number" data-current="21" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Quay lại câu hỏi chính, em xin tóm tắt câu trả lời.</p>
@@ -1155,46 +1107,7 @@ def classify_risk(row: pd.Series) -&gt; str:
   </aside>
 </section>
 
-<!-- =============================== 23. HẠN CHẾ =============================== -->
-<section class="slide" data-title="Hạn chế">
-  <p class="kicker">Phần 8 · Kết luận</p>
-  <h2 class="h2">Hạn chế và hướng phát triển</h2>
-
-  <div class="cols c-11 mt-s">
-    <div class="card warn big">
-      <h4>Hạn chế</h4>
-      <ul>
-        <li>Chỉ 2 trường, 1 năm học, dữ liệu cắt ngang: kết quả là mối liên hệ, không phải nhân quả.</li>
-        <li>Thời gian tự học và số buổi vắng là số liệu khai báo/ghi nhận theo mức; các yếu tố như động lực, giáo viên, thu nhập không có trong dữ liệu.</li>
-        <li>Nhãn "nghi bỏ thi" (G3 = 0) là suy luận từ dữ liệu, chưa được nhà trường xác nhận.</li>
-        <li>Một số nhóm nhỏ cho trung bình kém tin cậy (vd tự học &gt; 10h, không có internet: n = 3).</li>
-        <li>Ngưỡng quy tắc rủi ro chọn trên môn Toán; tập holdout cùng trường, cùng năm học.</li>
-        <li>PISA chỉ là bối cảnh quốc gia; số liệu 2000–2018 chỉ lấy từ Wikipedia.</li>
-      </ul>
-    </div>
-    <div class="card good big">
-      <h4>Hướng phát triển</h4>
-      <ul>
-        <li>Kiểm chứng quy tắc rủi ro trên dữ liệu của trường khác hoặc năm học khác.</li>
-        <li>Xác nhận nhãn bỏ thi với dữ liệu hành chính của nhà trường.</li>
-        <li>Thử mô hình đa biến (hồi quy logistic, cây quyết định) với kiểm định chéo, so sánh với quy tắc đơn giản hiện tại.</li>
-        <li>Bổ sung các biến về môi trường học tập để giảm thiên lệch do biến bị bỏ sót.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="slide-footer">
-    <span>Nguồn: report_vi.md, mục 3 – Giới hạn</span>
-    <span class="slide-number" data-current="23" data-total="24"></span>
-  </div>
-  <aside class="notes">
-    <p>Em xin nêu các hạn chế của đồ án.</p>
-    <p>Dữ liệu chỉ gồm hai trường trong một năm học, nên kết quả là mối liên hệ chứ không phải nhân quả. Một số biến là số liệu khai báo theo mức, và nhiều yếu tố quan trọng không có trong dữ liệu. Nhãn nghi bỏ thi là suy luận, chưa được xác nhận. Ngưỡng của quy tắc rủi ro được chọn trên môn Toán, và tập kiểm chứng vẫn cùng trường, cùng năm học, nên khả năng tổng quát hoá còn hạn chế.</p>
-    <p>Hướng phát triển gồm: kiểm chứng trên dữ liệu trường hoặc năm học khác, xác nhận nhãn bỏ thi, thử các mô hình đa biến với kiểm định chéo để so sánh với quy tắc đơn giản hiện tại, và bổ sung thêm biến.</p>
-  </aside>
-</section>
-
-<!-- =============================== 24. CẢM ƠN =============================== -->
+<!-- =============================== 22. CẢM ƠN =============================== -->
 <section class="slide center-v" data-title="Hỏi đáp">
   <p class="kicker">Kết thúc</p>
   <div class="rule"></div>
@@ -1210,7 +1123,7 @@ def classify_risk(row: pd.Series) -&gt; str:
 
   <div class="slide-footer">
     <span>Mã nguồn: github.com/Stratoze/Python-data-scraping · Tài liệu: README.md, METHODS.md, PROJECT_GUIDE.md</span>
-    <span class="slide-number" data-current="24" data-total="24"></span>
+    <span class="slide-number" data-current="22" data-total="22"></span>
   </div>
   <aside class="notes">
     <p>Tóm lại, đồ án đã đi qua đầy đủ quy trình: thu thập dữ liệu từ UCI và cào dữ liệu PISA; làm sạch dữ liệu có kiểm soát và phát hiện 38 trường hợp điểm 0 không phản ánh điểm thi thật; phân tích và kiểm định có hiệu chỉnh đa kiểm định; xây dựng quy tắc cảnh báo sớm đạt recall 91,4% trên tập kiểm chứng độc lập; và đối chiếu dữ liệu cào với nguồn chính thức của OECD.</p>

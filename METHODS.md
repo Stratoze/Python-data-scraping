@@ -215,6 +215,23 @@ def _corr_tests(df: pd.DataFrame) -> dict:
 
 $$\text{Recall} = \frac{TP}{TP + FN} \quad (\text{bắt được bao nhiêu em sẽ trượt}), \qquad \text{Precision} = \frac{TP}{TP + FP} \quad (\text{báo động đúng bao nhiêu})$$
 
+### Recall và Precision nói bằng lời
+
+Cả hai đều lấy tử số là **TP** (rule báo `high` và em đó thật sự trượt), chỉ khác mẫu số:
+
+| | Câu hỏi trả lời | Mẫu số | Lỗi nó phạt |
+|---|---|---|---|
+| **Recall** (độ phủ) | Trong các em **thật sự trượt**, rule bắt được bao nhiêu em? | TP + FN = tổng số em trượt | **Bỏ sót** (FN): em trượt mà rule ko báo |
+| **Precision** (độ chính xác) | Trong các em **rule báo high**, bao nhiêu em thật sự trượt? | TP + FP = tổng số em bị báo | **Báo nhầm** (FP): rule báo mà em vẫn đỗ |
+
+Ví dụ với môn Toán (mat all, n = 395): có 130 em trượt thật (TP 122 + FN 8) và rule báo `high` cho 149 em (TP 122 + FP 27).
+- Recall = 122 / 130 = **93.8%** → bỏ sót 8 em trượt.
+- Precision = 122 / 149 = **81.9%** → 27 em bị báo nhầm (báo high mà vẫn đỗ).
+
+**Hai chỉ số đánh đổi nhau.** Báo rộng tay (cả `high_or_medium`) thì recall tăng lên 98.5% nhưng precision tụt còn 56.6%. Với cảnh báo sớm, **bỏ sót tốn kém hơn báo nhầm** (em trượt ko được hỗ trợ, còn báo nhầm chỉ tốn thêm một buổi phụ đạo), nên dự án ưu tiên **recall** và chấp nhận precision thấp hơn.
+
+Ko dùng accuracy (tỉ lệ đoán đúng chung) vì lớp "đỗ" chiếm đa số; rule chỉ cần luôn đoán "đỗ" vẫn đúng ~67%.
+
 ```python
 # data_processor.py, dòng 519–535
 def _risk_eval(df: pd.DataFrame) -> dict:
@@ -266,6 +283,18 @@ MERGE_KEYS = ["school", "sex", "age", "address", "famsize", "Pstatus", "Medu", "
             out[f"holdout_{subj}_only"] = _risk_eval(g[~shared])
         return out
 ```
+
+**Vì sao phải "chặt"?** Môn Toán và môn Bồ Đào Nha có nhiều em học **cả hai môn** (cùng một học sinh nằm ở cả 2 file). Nếu lấy cả `por` làm holdout thì phần lớn em trong đó rule đã "nhìn thấy" ở `mat`, nên kết quả vẫn lạc quan. Cách làm của dự án:
+
+1. Mỗi em định danh bằng bộ 13 cột `MERGE_KEYS` (school, sex, age, ... internet). Bộ này lấy theo `student-merge.R` của tác giả UCI, dùng để ghép em xuất hiện ở cả 2 môn.
+2. Em `por` nào có bộ khoá trùng một em `mat` → xem là **em đã thấy**, bỏ đi. Từ 649 em `por` bị loại 374 em, còn **275 em**.
+3. Giữ nguyên ngưỡng rule (ko tinh chỉnh lại), chỉ chạy `_risk_eval` trên 275 em còn lại.
+
+Vậy **strict holdout** = đánh giá rule **đã đóng băng** trên những học sinh **chưa từng xuất hiện** ở dữ liệu chọn ngưỡng. Đây là ước lượng trung thực nhất vì mô phỏng đúng tình huống thật: dùng rule cho học sinh mới.
+
+**Đọc kết quả:** recall gần như giữ nguyên (93.8% → 91.4%), tức rule vẫn bắt được 64/70 em trượt. Precision tụt (81.9% → 66.0%) một phần vì **precision phụ thuộc tỉ lệ trượt nền**: nhóm `mat` có 32.9% trượt còn holdout chặt chỉ 25.5% trượt, nên cùng một rule sẽ báo nhầm nhiều hơn. Recall ko bị ảnh hưởng bởi tỉ lệ nền này. Đó là lý do chọn recall làm chỉ số chính khi báo cáo.
+
+Caveat: holdout vẫn cùng 2 trường, cùng năm học, nên chưa chứng minh rule dùng được ở trường khác.
 
 **Kết quả thật (rule `high`):**
 
