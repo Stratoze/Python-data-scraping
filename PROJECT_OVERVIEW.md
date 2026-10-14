@@ -255,20 +255,20 @@ File này gồm 5 khối chức năng lớn:
 - **Dòng 39–50 (`PISA_CHECKS`, `ALPHA` & các biến kiểm định):** Ngưỡng kiểm định bảng PISA (tối thiểu 30 nước/kỳ, điểm từ 200–700), mức ý nghĩa $\alpha = 0.05$, danh sách biến đưa vào t-test/ANOVA/tương quan, `TEST_LEVEL_CAP` (gộp mức trượt 2 và 3 thành "2+" khi kiểm định) và `MIN_RELIABLE_N = 10` (cột ít hơn 10 học sinh trên biểu đồ 1 bị gạch chéo).
 - **Dòng 53–60 (`MERGE_KEYS` & `REG_FACTORS`):** 13 thuộc tính định danh học sinh trùng giữa 2 môn và danh sách 13 biến số đưa vào mô hình hồi quy đa biến OLS.
 - **Dòng 65–67 (`OECD_NAME_ALIASES`):** Ánh xạ 5 tên nước khác nhau giữa báo cáo OECD và Wikipedia.
-- **Dòng 69–106 (`VAR_DESCRIPTIONS`, `VALID_RANGES`, `REQUIRED_COLS`, `YES_NO_COLS`, `FLAG_COLS`, `SAMPLE_STUDENTS`):** Dict mô tả biến, miền giá trị hợp lệ của 16 cột số (theo `student.txt`), các cột bắt buộc, cột yes/no, tên 6 cờ bất thường và list of dicts học sinh mẫu.
+- **Dòng 69–108 (`VAR_DESCRIPTIONS`, `VALID_RANGES`, `REQUIRED_COLS`, `YES_NO_COLS`, `FLAG_COLS`, `SAMPLE_STUDENTS`):** Dict mô tả biến, miền giá trị hợp lệ của 16 cột số (theo `student.txt`), các cột bắt buộc, cột yes/no, tên 6 cờ bất thường và list of dicts học sinh mẫu.
 
-#### 🔹 Khối 2: 4 hàm cơ bản & Rule phân loại rủi ro (Dòng 112–156)
-- **Dòng 112–119 (`convert_yes_no`):** Mã hoá chuỗi `"yes"` $\rightarrow 1$, `"no"` $\rightarrow 0$, chuỗi lạ/trống $\rightarrow None$.
-- **Dòng 122–124 (`calc_pass_fail`):** Điểm cuối kỳ $G3 \ge 10 \rightarrow$ `"pass"`, ngược lại $\rightarrow$ `"fail"`.
-- **Dòng 127–134 (`classify_absences`):** Phân loại số buổi vắng thành 3 mức: `"low"` (0–3), `"medium"` (4–9), `"high"` ($\ge 10$).
-- **Dòng 137–139 (`calc_average_grade`):** Tính trung bình cộng 3 kỳ $(G1 + G2 + G3) / 3$ (chỉ dùng mô tả, không dùng dự báo vì dính G3).
-- **Dòng 142–156 (`classify_risk`):** **Quy tắc cảnh báo sớm rủi ro trượt môn** (hoàn toàn không dùng G3 để tránh rò rỉ dữ liệu):
+#### 🔹 Khối 2: 4 hàm cơ bản & Rule phân loại rủi ro (Dòng 114–162)
+- **Dòng 114–121 (`convert_yes_no`):** Mã hoá chuỗi `"yes"` $\rightarrow 1$, `"no"` $\rightarrow 0$, chuỗi lạ/trống $\rightarrow None$.
+- **Dòng 124–126 (`calc_pass_fail`):** Điểm cuối kỳ $G3 \ge 10 \rightarrow$ `"pass"`, ngược lại $\rightarrow$ `"fail"`.
+- **Dòng 129–136 (`classify_absences`):** Phân loại số buổi vắng thành 3 mức: `"low"` (0–3), `"medium"` (4–9), `"high"` ($\ge 10$).
+- **Dòng 139–145 (`calc_average_grade`):** Tính trung bình cộng 3 kỳ $(G1 + G2 + G3) / 3$ (chỉ dùng mô tả, không dùng dự báo vì dính G3).
+- **Dòng 148–162 (`classify_risk`):** **Quy tắc cảnh báo sớm rủi ro trượt môn** (hoàn toàn không dùng G3 để tránh rò rỉ dữ liệu):
   - `"high"`: nếu $G2 < 10$ hoặc từng trượt $\ge 2$ môn.
   - `"medium"`: nếu $G1 < 10$ hoặc từng trượt 1 môn hoặc vắng học mức cao.
   - `"low"`: các trường hợp còn lại.
 
 #### 🔹 Khối 3: Thu thập, Cào & Kiểm định dữ liệu Web (Dòng 165–416)
-- **Dòng 172–175 (`HTTP_HEADERS`):** Định danh `User-Agent` tuân thủ Wikimedia policy, khai báo repo GitHub và email tác giả.
+- **Dòng 172–175 (`HTTP_HEADERS`):** Định danh `User-Agent` tuân thủ Wikimedia policy: tên công cụ + link repo GitHub để liên hệ (không ghi email cá nhân).
 - **Dòng 179–192 (`fetch_uci_raw`):** Tải file nén `student+performance.zip` từ UCI qua `requests` và giải nén lấy các file CSV.
 - **Dòng 203–257 (`_parse_pisa_html`):** Dùng `BeautifulSoup` bóc tách cây DOM của Wikipedia: lấy bảng tóm tắt xếp hạng 2025 và chuyển bảng so sánh lịch sử 2000–2022 từ dạng ngang nhiều năm sang dạng dọc (wide-to-long).
 - **Dòng 264–296 (`validate_pisa_raw`):** Thuật toán kiểm tra tính toàn vẹn của bảng PISA: đảm bảo đủ 3 môn, năm thi từ 2000 trở đi, điểm từ 200–700, có dòng trung bình OECD, không trùng lặp nước. Bảng lỗi sẽ bị từ chối ngay.
@@ -348,3 +348,93 @@ File này gồm 5 khối chức năng lớn:
   - **Test ghép cặp 2 môn:** Đảm bảo `_paired_subjects` chỉ ghép đúng cùng một học sinh, bỏ các key bị lặp và các cặp có G3 = 0.
   - **Test gộp nhóm nhỏ:** Đảm bảo khi kiểm định, mức trượt 2 và 3 được gộp thành "2+".
   - **Test xuất file tách môn:** Đảm bảo `export_results` xuất song song cả file hợp nhất và 2 file riêng cho từng môn `mat` và `por`.
+
+---
+
+## 7. Nguyên lý cào dữ liệu (Web Scraping)
+
+Project lấy dữ liệu từ 3 nguồn, với 3 cách khác nhau:
+
+| Nguồn | Cách lấy | File lưu | Hàm |
+|---|---|---|---|
+| UCI Student Performance | Tải file zip qua HTTP (không phải cào HTML) | `data/raw/student-mat.csv`, `student-por.csv`, `student.txt`, `student-merge.R` | `fetch_uci_raw` |
+| Wikipedia — bài PISA | **Cào HTML** bằng `requests` + `BeautifulSoup` | `data/raw/pisa_reference.csv` + `pisa_reference.meta.json` | `scrape_pisa_table`, `_parse_pisa_html` |
+| OECD — *PISA 2025 Results (Vol. I)*, Table I.1 | Chép từ PDF chính thức (92 dòng), dùng để **đối chiếu**, không phải nguồn chính | `data/raw/oecd_pisa2025_table_I1.csv` + `.meta.json` (DOI, trang, licence CC BY 4.0) | `cross_check_pisa` |
+
+`fetch_uci_raw` chỉ tải khi thiếu file: zip ngoài chứa `student.zip` bên trong, code giải nén 2 lớp ngay trong RAM (`io.BytesIO`) rồi ghi 4 file ra `data/raw/`.
+
+### 7.1 Luồng cào PISA
+
+```mermaid
+flowchart LR
+    A{Đã có cache<br/>pisa_reference.csv?} -->|Có, không --refresh-pisa| B[Đọc cache + validate<br/>không gọi mạng]
+    A -->|Chưa có / --refresh-pisa| C[GET Wikipedia<br/>kèm User-Agent]
+    C --> D[_parse_pisa_html<br/>BeautifulSoup]
+    D --> E[validate_pisa_raw]
+    E -->|Hợp lệ| F[Ghi raw CSV + meta.json]
+    C & D & E -->|Lỗi| G{Có cache cũ?}
+    G -->|Có| B
+    G -->|Không| H[RuntimeError]
+    B & F --> I[clean_pisa → pisa_clean.csv]
+    I --> J[cross_check_pisa với bảng OECD]
+```
+
+### 7.2 Bước 1 — Gửi request lịch sự (`requests`)
+- `requests.get(PISA_URL, timeout=25, headers=HTTP_HEADERS)`: lấy toàn bộ HTML của bài *Programme for International Student Assessment*.
+- **User-Agent** `P1-edu-project/1.0 (+link repo GitHub) student coursework`: chính sách Wikimedia yêu cầu công cụ tự động khai tên + cách liên hệ; UA mặc định của `requests` có thể bị chặn.
+- `timeout` để không treo vô hạn khi mạng chập chờn; `raise_for_status()` biến mã lỗi HTTP (403, 404, 500…) thành exception để rơi vào nhánh fallback.
+- Ép `resp.encoding = "utf-8"` để tên nước có dấu không bị lỗi font.
+- Chỉ **1 request** mỗi lần cào, và mặc định đọc cache nên bình thường không gọi mạng.
+
+### 7.3 Bước 2 — Bóc tách HTML (`_parse_pisa_html`)
+Dữ liệu nằm trong các thẻ `<table class="wikitable">`. Code duyệt **tất cả** bảng `wikitable` và nhận diện 2 loại bảng **theo cấu trúc** (không theo thứ tự trên trang, để trang thêm/bớt bảng khác thì code vẫn chạy):
+
+1. **Bảng tóm tắt xếp hạng mới nhất (2025)** — `source = "summary"`:
+   - Dấu hiệu: hàng đầu là tên 3 môn (Mathematics / Science / Reading) và bên trong có đúng 3 bảng con lồng nhau.
+   - Mỗi bảng con có cột `Rank | Country/economy | Score`; năm lấy từ tiêu đề `<h2>/<h3>` gần nhất phía trên bảng.
+   - Dòng "International Average (OECD)" chỉ có 2 ô (không có hạng) → vẫn giữ, hạng để trống.
+2. **Bảng so sánh lịch sử 2000–2022** — `source = "comparison"`:
+   - Dấu hiệu: hàng 1 chỉ có 1 ô là tên môn, hàng 2 bắt đầu bằng `Country` rồi tới các năm, hàng 3 là `Score | Rank`.
+   - Bảng ở **dạng rộng** (1 nước = 1 dòng, mỗi năm 2 cột). Code chuyển sang **dạng dài** (wide → long): mỗi (nước, năm, môn) thành 1 dòng `source | year | subject | rank | country | score`.
+   - Dòng nào số ô ≠ `1 + 2 × số năm` (dòng lỗi/chú thích) thì bỏ qua.
+- Kỹ thuật: `find_all("tr", recursive=False)` chỉ lấy hàng của bảng hiện tại (không lẫn hàng bảng con); `get_text(" ", strip=True)` lấy chữ sạch; regex `_strip_footnote` bỏ chú thích kiểu `[41]` ở tiêu đề.
+- Không tìm thấy bảng nào → `ValueError("No PISA ranking table found")`.
+- **File raw giữ nguyên chuỗi gốc của trang** (có `*`, `—`) để truy vết được; làm sạch là bước riêng.
+
+Kết quả hiện tại: **2342 dòng** = 274 dòng tóm tắt 2025 + 2068 dòng lịch sử; các năm 2000, 2003, …, 2022, 2025.
+
+### 7.4 Bước 3 — Kiểm định bảng cào (`validate_pisa_raw`)
+Wikipedia đổi bố cục thì parser có thể **chạy không lỗi nhưng ra dữ liệu sai** (nhầm cột, thiếu môn). Hàm này chặn trường hợp đó và gom **mọi** lỗi vào 1 thông báo:
+- Đủ 3 môn cho cả 2 loại bảng `summary` và `comparison`.
+- Năm là số, từ 2000 đến năm hiện tại.
+- Điểm nằm trong khoảng hợp lý 200–700.
+- Mỗi (loại bảng, môn, năm): ≥ 30 nước có điểm, nước nào cũng có hạng là số, không nước nào lặp, và có **đúng 1** dòng trung bình OECD.
+
+Không qua kiểm định → bảng bị loại, **không ghi đè cache**.
+
+### 7.5 Bước 4 — Cache-first + fallback (`scrape_pisa_table`)
+- **Mặc định đọc cache** `pisa_reference.csv` (vẫn validate lại) → chạy offline được, mỗi lần chạy ra đúng cùng số, report không lệch vì trang Wikipedia vừa có người sửa.
+- Muốn cào mới: `python main.py --refresh-pisa`.
+- Cào mới thành công và hợp lệ → ghi đè cache, kèm `pisa_reference.meta.json` lưu **nguồn gốc**: URL, `revision_id` (mã phiên bản bài, lấy từ `"wgRevisionId"` trong HTML), permalink `?oldid=...` để mở lại đúng bản đã cào, thời điểm cào (UTC), số dòng. Bản đang dùng: revision `1378067005`, cào lúc 2026-10-13 06:44 UTC.
+- Mất mạng / bị chặn / parse lỗi / kiểm định trượt → cảnh báo (`warnings.warn`) rồi dùng lại cache cũ; không có cache → `RuntimeError`.
+
+### 7.6 Bước 5 — Làm sạch (`clean_pisa`)
+- Tên nước: bỏ chú thích `[..]`, bỏ dấu `*` cuối tên; "International Average (OECD)" → `OECD average`.
+- `year`, `rank`, `score` ép sang số; `—` (nước không tham gia năm đó) → bỏ dòng.
+- Bỏ dòng trùng theo (năm, môn, nước), sắp xếp theo môn, năm, hạng.
+- Kết quả: `data/processed/pisa_clean.csv`, **1662 dòng**.
+
+### 7.7 Bước 6 — Đối chiếu với nguồn chính thức (`cross_check_pisa`)
+Wikipedia ai cũng sửa được, nên phải kiểm lại với bảng gốc của OECD:
+- Chuẩn hoá tên nước giữa 2 nguồn bằng `OECD_NAME_ALIASES` (5 tên viết khác nhau).
+- **2025:** so điểm trực tiếp, phải khớp tuyệt đối → **274/274 khớp**.
+- **2022:** OECD không in điểm 2022 mà in mức thay đổi, nên suy ra `điểm 2022 = điểm 2025 − mức thay đổi`. OECD tính mức thay đổi từ điểm chưa làm tròn nên cho lệch ±1 → **208/211 nằm trong ±1**.
+- Liệt kê thêm các nước có ở nguồn này mà thiếu ở nguồn kia.
+
+### 7.8 Vì sao thiết kế như vậy (để trả lời vấn đáp)
+- **Raw tách khỏi clean:** làm sạch sai thì sửa code chạy lại, không cần cào lại; raw là bằng chứng gốc.
+- **Nhận bảng theo cấu trúc, không theo thứ tự:** bền hơn khi trang thêm/bớt bảng.
+- **Validate trước khi ghi cache:** một lần cào hỏng không phá được dữ liệu tốt đang có.
+- **Cache + revision id:** tái lập được, ai chạy lại cũng ra cùng số; muốn biết dữ liệu lấy từ bản trang nào thì mở permalink.
+- **Đối chiếu OECD:** chứng minh số cào về đáng tin, không chỉ "cào được là xong".
+- **Phạm vi dùng:** PISA chỉ là **bối cảnh cấp quốc gia** (ảnh 4), không ghép với từng học sinh UCI.
