@@ -369,8 +369,8 @@ G1;G2;G3
 
   <div class="cols c-111 mt-m">
     <div class="card warn"><h4>absences lệch phải mạnh</h4><p>Trung bình 5,71 &gt; trung vị 4; giá trị lớn nhất 75 buổi. → Cần ngưỡng ngoại lai riêng (IQR) thay vì dùng trung bình.</p></div>
-    <div class="card bad"><h4>G2 và G3 có giá trị 0</h4><p>Điểm G1 thấp nhất là 3 nhưng G2, G3 có giá trị 0. → Cần kiểm tra ý nghĩa của điểm 0 (trình bày ở slide 14).</p></div>
-    <div class="card accent"><h4>failures tập trung ở 0</h4><p>312/395 học sinh (79%) chưa từng trượt; mức 2 và 3 chỉ có 17 và 16 em. → Gộp thành nhóm "2+" khi chạy ANOVA.</p></div>
+    <div class="card bad"><h4>G2 và G3 có giá trị 0</h4><p>Điểm G1 thấp nhất là 3 nhưng G2, G3 có giá trị 0. → Cần kiểm tra ý nghĩa của điểm 0.</p></div>
+    <div class="card accent"><h4>failures tập trung ở 0</h4><p>312/395 học sinh (79%) chưa từng trượt; mức 2 và 3 chỉ có 17 và 16 em.</p></div>
   </div>
 
   <div class="slide-footer">
@@ -397,7 +397,7 @@ G1;G2;G3
     <span class="arrow">→</span>
     <div class="step"><b>3 · Mã hoá yes/no</b>8 cột yes/no → 1/0, giá trị lạ → rỗng</div>
     <span class="arrow">→</span>
-    <div class="step"><b>4 · Trùng và thiếu</b>Bỏ dòng trùng, bỏ dòng thiếu 7 cột bắt buộc</div>
+    <div class="step"><b>4 · Trùng và thiếu</b>Bỏ dòng trùng, bỏ dòng thiếu</div>
     <span class="arrow">→</span>
     <div class="step"><b>5 · Cột dẫn xuất</b>pass_fail, absence_level, avg_g1g2, risk_group…</div>
     <span class="arrow">→</span>
@@ -503,7 +503,7 @@ log["n_missing_required_dropped"] = int(before - len(df))</code></pre>
         <p><code>convert_yes_no</code> (dòng 108) trả về 1 cho "yes", 0 cho "no" và <b>None cho mọi giá trị khác</b>. Giá trị lạ không bị ép thành 0 mà được đếm vào log.</p>
       </div>
       <div class="card soft">
-        <p>Bộ dữ liệu UCI <b>sạch về mặt hình thức</b>: các bước 1–4 không phát hiện lỗi nào. Khả năng phát hiện lỗi của các bước này được kiểm chứng bằng dữ liệu cấy lỗi ở slide 13.</p>
+        <p>Bộ dữ liệu UCI <b>sạch về mặt hình thức</b>: các bước 1–4 không phát hiện lỗi.</p>
       </div>
     </div>
   </div>
@@ -552,7 +552,7 @@ df["age_outlier"] = df["age"] &gt;= AGE_OUTLIER
 df["inconsistent_grade"] = (df["G3"] &gt; 0) &amp; (df["G2"] == 0)</code></pre>
       </div>
       <div class="card soft">
-        <p><b>Ngưỡng ngoại lai số buổi vắng (Tukey, tính riêng từng môn):</b> fence = Q3 + 1,5 × IQR → Toán: 8 + 1,5 × 8 = <b>20</b> buổi; Bồ Đào Nha: 6 + 1,5 × 6 = <b>15</b> buổi.</p>
+        <p><b>Ngưỡng ngoại lai số buổi vắng:</b> fence = Q3 + 1,5 × IQR → Toán: 8 + 1,5 × 8 = <b>20</b> buổi; Văn: 6 + 1,5 × 6 = <b>15</b> buổi.</p>
       </div>
     </div>
 
@@ -569,7 +569,7 @@ df["inconsistent_grade"] = (df["G3"] &gt; 0) &amp; (df["G2"] == 0)</code></pre>
       </table>
 
       <table class="tbl sm">
-        <thead><tr><th>Cờ bất thường</th><th>Điều kiện</th><th class="num">Toán</th><th class="num">BĐN</th></tr></thead>
+        <thead><tr><th>Cờ bất thường</th><th>Điều kiện</th><th class="num">Toán</th><th class="num">Văn</th></tr></thead>
         <tbody>
           <tr class="hl"><td><code>dropout_suspect</code></td><td>G3 = 0</td><td class="num"><b>38</b></td><td class="num">15</td></tr>
           <tr><td><code>g2_zero</code></td><td>G2 = 0</td><td class="num">13</td><td class="num">7</td></tr>
